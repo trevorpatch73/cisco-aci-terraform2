@@ -1,5 +1,0 @@
-Fabric Name,Node Role,Node ID,Node Peer ID,Serial Number,Node Name
-public-sandbox,leaf,1,101,102,TEP-101,DC-TEP-101
-public-sandbox,leaf,1,102,101,TEP-102,DC-TEP-102
-public-sandbox,leaf,1,103,104,TEP-103,DC-TEP-103
-public-sandbox,leaf,1,104,103,TEP-104,DC-TEP-104
