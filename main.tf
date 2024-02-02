@@ -86,7 +86,7 @@
       for_each = local.filtered_node_role_leaf_rows
     
       name                          = join("_", [each.value.NODE_ID, "SW_PROF"])
-      description                   = "Attachment point for policies configuring node-id-${each.value.NODE-ID}"
+      description                   = "Attachment point for policies configuring node-id-${each.value.NODE_ID}"
       annotation                    = "orchestrator:terraform"
     
       leaf_selector {
