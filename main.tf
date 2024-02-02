@@ -134,5 +134,27 @@
         aci_access_switch_policy_group.localAciAccessSwitchPolicyGroupIteration
       ]
     }
+
+    # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/vpc_domain_policy
+    # resource index key is "${each.value.ODD_NODE_ID}:${each.value.EVEN_NODE_ID}"
+    resource "aci_vpc_domain_policy" "localAciVpcDomainPolicyIteration" {
+      for_each = local.aci_vpc_explicit_protection_group_rows
     
+      name       = join("_", [each.value.ODD_NODE_ID, each.value.EVEN_NODE_ID, "VDP"])
+      annotation = "orchestrator:terraform"
+      dead_intvl = "200"
+    }
+
+    # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/vpc_explicit_protection_group
+    # resource index key is "${each.value.ODD_NODE_ID}:${each.value.EVEN_NODE_ID}"
+    resource "aci_vpc_explicit_protection_group" "localAciVpcExplictProtectionGroupIteration" {
+      for_each = local.aci_vpc_explicit_protection_group_rows
+    
+      name                             = join("_", [each.value.ODD_NODE_ID, each.value.EVEN_NODE_ID, "VEPG"])
+      annotation                       = "orchestrator:terraform"
+      switch1                          = each.value.ODD_NODE_ID
+      switch2                          = each.value.EVEN_NODE_ID
+      vpc_domain_policy                = aci_vpc_domain_policy.localAciVpcDomainPolicyIteration["${each.value.ODD_NODE_ID}:${each.value.EVEN_NODE_ID}"].name
+      vpc_explicit_protection_group_id = each.value.GROUP_ID
+    }    
     
