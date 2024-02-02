@@ -18,5 +18,16 @@
             for key, value in local.aci_fabric_node_member_rows : key => value
             if value.NODE_ROLE == "leaf"
         }
+        
+        aci_vpc_explicit_protection_group_iterations = csvdecode(file("./data/aci_vpc_explicit_protection_group.csv")) 
+        
+        aci_vpc_explicit_protection_group_rows = {
+            for i in local.aci_vpc_explicit_protection_group_iterations : "${i.ODD_NODE_ID}:${i.EVEN_NODE_ID}" => {
+                FABRIC_NAME     = i.FABRIC_NAME
+                ODD_NODE_ID     = i.ODD_NODE_ID  
+                EVEN_NODE_ID    = i.EVEN_NODE_ID 
+                GROUP_ID        = i.GROUP_ID
+            }
+        }        
     }
     
