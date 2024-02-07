@@ -1,0 +1,3 @@
+NODE_ROLE,POD_ID,NODE_ID,SERIAL_NUMBER,NODE_NAME
+leaf,1,1101,SN1101,vaash-dc-aci-leaf-1101
+leaf,1,1102,SN1102,vaash-dc-aci-leaf-1102
