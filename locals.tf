@@ -100,7 +100,7 @@ locals {
         i.NODE_ID  => {
             POD_ID          = i.POD_ID
             NODE_ID         = i.NODE_ID
-            SERIAL_NUMBER   = 1.SERIAL_NUMBER
+            SERIAL_NUMBER   = i.SERIAL_NUMBER
             NETWORK_IP      = i.NETWORK_IP
             NETWORK_CIDR    = i.NETWORK_CIDR
             NETWORK_GATEWAY = i.NETWORK_GATEWAY   
