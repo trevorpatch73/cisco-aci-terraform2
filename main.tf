@@ -150,8 +150,8 @@ resource "aci_static_node_mgmt_address" "localAciStaticNodeMgmtAddressIteration"
   management_epg_dn = aci_node_mgmt_epg.localAciNodeMgmtEpg.id
   t_dn              = "topology/pod-${aci_fabric_node_member.localAciFabricNodeMemberIteration["${each.value.SERIAL_NUMBER}"].pod_id}/node-${aci_fabric_node_member.localAciFabricNodeMemberIteration["${each.value.SERIAL_NUMBER}"].node_id}"
   type              = "out_of_band"
-  description       = "Out-Of-Band IP-${NETWORK_IP} for Node-${NODE_ID}"
-  addr              = "${NETWORK_IP}/${NETWORK_CIDR}"
+  description       = "Out-Of-Band IP-${each.value.NETWORK_IP} for Node-${each.value.NODE_ID}"
+  addr              = "${each.value.NETWORK_IP}/${each.value.NETWORK_CIDR}"
   annotation        = "orchestrator:terraform"
   gw                = each.value.NETWORK_GATEWAY
 }
