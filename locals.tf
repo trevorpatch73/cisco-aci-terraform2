@@ -93,7 +93,7 @@ locals {
         }
     }
 
-    aci_static_node_mgmt_address_iterations = csvdecode(file("./data/aci_leaf_profile.csv"))
+    aci_static_node_mgmt_address_iterations = csvdecode(file("./data/aci_static_node_mgmt_address.csv"))
 
     aci_static_node_mgmt_address_rows = {
         for i in local.aci_static_node_mgmt_address_iterations : 
