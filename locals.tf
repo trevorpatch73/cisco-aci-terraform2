@@ -137,4 +137,59 @@ locals {
         if lower(value.TENANT) == "infra" && lower(value.ZONE) == "aci-mgmt" && lower(value.ETHER_TYPE) == "udp"      
     }
 
+    aci_fabric_node_software_staging_iterations = csvdecode(file("./data/aci_fabric_node_software_staging.csv"))
+
+    aci_fabric_node_software_staging_rows = {
+        for i in local.aci_fabric_node_software_staging_iterations : 
+        i.NODE_ID  => {
+            POD_ID          = i.POD_ID 
+            NODE_ID         = i.NODE_ID
+            TARGET_VERSION  = i.TARGET_VERSION  
+        }
+    }
+
+    aci_maintenance_group_schedule_policy_iterations = csvdecode(file("./data/aci_maintenance_group_schedule_policy.csv"))
+
+    aci_maintenance_group_schedule_policy_rows = {
+        for i in local.aci_maintenance_group_schedule_policy_iterations : 
+        i.MAINTENANCE_GROUP_NAME => {
+            MAINTENANCE_GROUP_NAME       = i.MAINTENANCE_GROUP_NAME
+        }
+    }
+
+    aci_maintenance_group_policy_iterations = csvdecode(file("./data/aci_maintenance_group_policy.csv"))
+
+    aci_maintenance_group_policy_rows = {
+        for i in local.aci_maintenance_group_policy_iterations : 
+        i.MAINTENANCE_GROUP_NAME => {
+            MAINTENANCE_GROUP_NAME  = i.MAINTENANCE_GROUP_NAME
+            OS_VERSION              = i.OS_VERSION
+            ADMIN_STATE             = i.ADMIN_STATE 
+            GRACEFUL                = i.GRACEFUL 
+            IGNORE_COMPATABILITY    = i.IGNORE_COMPATABILITY
+            NOTIFICATIONS           = i.NOTIFICATIONS
+            RUN_MODE                = i.RUN_MODE
+            OVERRIDE_STATE          = i.OVERRIDE_STATE
+        }
+    }
+
+    aci_maintenance_group_iterations = csvdecode(file("./data/aci_maintenance_group.csv"))
+
+    aci_maintenance_group_rows = {
+        for i in local.aci_maintenance_group_iterations : 
+        i.MAINTENANCE_GROUP_NAME => {
+            MAINTENANCE_GROUP_NAME       = i.MAINTENANCE_GROUP_NAME
+        }
+    }
+
+    aci_maintenance_group_node_iterations = csvdecode(file("./data/aci_maintenance_group_node.csv"))
+
+    aci_maintenance_group_node_rows = {
+        for i in local.aci_maintenance_group_iterations : 
+        i.NODE_ID => {
+            NODE_ID                      = i.NODE_ID
+            MAINTENANCE_GROUP_NAME       = i.MAINTENANCE_GROUP_NAME
+        }
+    }
+
 }

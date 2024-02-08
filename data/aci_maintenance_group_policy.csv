@@ -1,0 +1,9 @@
+MAINTENANCE_GROUP_NAME,OS_VERSION,ADMIN_STATE,GRACEFUL,IGNORE_COMPATABILITY,NOTIFICATIONS,RUN_MODE,OVERRIDE_STATE
+ODD_LEAF_POD_1,simsw-6.0(2h),untriggered,yes,no,notifyNever,pauseNever,untriggered
+EVEN_LEAF_POD_1,simsw-6.0(2h),untriggered,yes,no,notifyNever,pauseNever,untriggered
+ODD_SPINE_POD_1,simsw-6.0(2h),untriggered,yes,no,notifyNever,pauseNever,untriggered
+EVEN_SPINE_POD_1,simsw-6.0(2h),untriggered,yes,no,notifyNever,pauseNever,untriggered
+ODD_LEAF_POD_2,simsw-6.0(2h),untriggered,yes,no,notifyNever,pauseNever,untriggered
+EVEN_LEAF_POD_2,simsw-6.0(2h),untriggered,yes,no,notifyNever,pauseNever,untriggered
+ODD_SPINE_POD_2,simsw-6.0(2h),untriggered,yes,no,notifyNever,pauseNever,untriggered
+EVEN_SPINE_POD_2,simsw-6.0(2h),untriggered,yes,no,notifyNever,pauseNever,untriggered

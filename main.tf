@@ -232,7 +232,7 @@ resource "aci_filter_entry" "localAciNodeMgmtOobCtrSubjFiltProtocolTcpIteration"
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/aci_filter_entry
-# resource index key is "${i.ENVIRONMENT}:${i.TENANT}:${i.ZONE}:${i.ETHER_TYPE}:${i.PROTOCOL}:${i.PORT}"
+# resource index key is "${each.value.ENVIRONMENT}:${each.value.TENANT}:${each.value.ZONE}:${each.value.ETHER_TYPE}:${each.value.PROTOCOL}:${each.value.PORT}"
 resource "aci_filter_entry" "localAciNodeMgmtOobCtrSubjFiltProtocolUdpIteration" {
   for_each      = local.FilterlocalAciNodeMgmtOobCtrSubjFiltProtocolUdpIteration
 
@@ -244,4 +244,100 @@ resource "aci_filter_entry" "localAciNodeMgmtOobCtrSubjFiltProtocolUdpIteration"
   d_from_port   = each.value.PORT
   d_to_port     = each.value.PORT
   description   = "to/from the Terraform Managed Node Out-Of-Band Management Interface."
+}
+
+/*
+# https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource
+# resource index key is "${each.value.NODE_ID}"
+resource "null_resource" "localAciFabricNodeSoftwareStagingIterations" {
+  for_each = local.aci_fabric_node_software_staging_rows
+
+  provisioner "local-exec" {
+    command = "python ./scripts/aci_fabric_node_software_staging.py"
+
+    environment = {
+      SWITCH_POD_ID  = each.value.POD_ID
+      SWITCH_NODE_ID = each.value.NODE_ID
+      TARGET_VERISON = var.TARGET_VERISON
+    }
+  }
+
+  depends_on = [
+    aci_fabric_node_member.localAciFabricNodeMemberIteration
+  ]
+}
+*/
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/aci_rest_managed
+# resource index key is "${each.value.MAINTENANCE_GROUP_NAME}"
+resource "aci_rest_managed" "localAciMaintenanceGroupSchedulePolicyIteration" {
+  for_each      = local.aci_maintenance_group_schedule_policy_rows
+
+  dn         = "uni/fabric/schedp-${each.value.MAINTENANCE_GROUP_NAME}_SCHD"
+  class_name = "trigSchedP"
+  content = {
+    name   = "${each.value.MAINTENANCE_GROUP_NAME}_SCHD"
+    status = "created,modified"
+  }
+
+  child {
+    rn         = "abswinp-${each.value.MAINTENANCE_GROUP_NAME}_TRIG"
+    class_name = "trigAbsWindowP"
+    content = {
+      name   = "${each.value.MAINTENANCE_GROUP_NAME}_TRIG"
+      date   = timestamp() # UTC timestamp.
+      status = "created,modified"
+    }
+  }
+
+  depends_on = [
+    aci_fabric_node_member.localAciFabricNodeMemberIteration
+  ]
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/data-sources/maintenance_policy
+# resource index key is "${each.value.MAINTENANCE_GROUP_NAME}"
+resource "aci_maintenance_policy" "localAciMaintenanceGroupPolicyIteration" {
+  for_each               = local.aci_maintenance_group_policy_rows
+
+  name                   = "${each.value.MAINTENANCE_GROUP_NAME}_MNTPOL"
+  admin_st               = each.value.ADMIN_STATE
+  description            = "This Maintenance Policy Defines the Firmware/Software Version for ${each.value.MAINTENANCE_GROUP_NAME}"
+  annotation             = "orchestrator:terraform"
+  graceful               = each.value.GRACEFUL
+  ignore_compat          = each.value.IGNORE_COMPATABILITY 
+  notif_cond             = each.value.NOTIFICATIONS
+  run_mode               = each.value.RUN_MODE
+  version                = each.value.OS_VERSION
+  version_check_override = each.value.OVERRIDE_STATE 
+
+  relation_maint_rs_pol_scheduler = aci_rest_managed.localAciMaintenanceGroupSchedulePolicyIteration["${each.value.MAINTENANCE_GROUP_NAME}"].dn
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/pod_maintenance_group
+# resource index key is "${each.value.MAINTENANCE_GROUP_NAME}"
+resource "aci_pod_maintenance_group" "localAciPodMaintenanceGroupIteration" {
+  for_each                    = local.aci_maintenance_group_rows
+
+  name                        = "${each.value.MAINTENANCE_GROUP_NAME}_MNTGRP"
+  description                 = "Container to Associate Nodes to Maintenance Policy"
+  annotation                  = "orchestrator:terraform"
+  fwtype                      = "switch"
+  pod_maintenance_group_type  = "range"
+
+  relation_maint_rs_mgrpp = aci_maintenance_policy.localAciMaintenanceGroupPolicyIteration["${each.value.MAINTENANCE_GROUP_NAME}"].id
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/maintenance_group_node
+# resource index key is "${each.value.NODE_ID}"
+resource "aci_maintenance_group_node" "localAciMaintenanceGroupNodeIteration" {
+  for_each = local.aci_maintenance_group_node_rows
+
+  name        = join("_", ["MaintGrpNodeBlk", each.value.NODE_ID])
+  description = "NODE-${each.value.NODE_ID} is in Maintenance Group ${each.value.MAINTENANCE_GROUP_NAME}"
+  annotation  = "orchestrator:terraform"
+  from_       = each.value.NODE_ID
+  to_         = each.value.NODE_ID
+
+  pod_maintenance_group_dn = aci_pod_maintenance_group.localAciPodMaintenanceGroupIteration["${each.value.MAINTENANCE_GROUP_NAME}"].id
 }
