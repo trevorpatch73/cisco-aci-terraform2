@@ -154,6 +154,7 @@ locals {
         for i in local.aci_maintenance_group_schedule_policy_iterations : 
         i.MAINTENANCE_GROUP_NAME => {
             MAINTENANCE_GROUP_NAME       = i.MAINTENANCE_GROUP_NAME
+            TRIGGER_INDEX                = i.TRIGGER_INDEX
         }
     }
 

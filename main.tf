@@ -281,10 +281,10 @@ resource "aci_rest_managed" "localAciMaintenanceGroupSchedulePolicyIteration" {
   }
 
   child {
-    rn         = "abswinp-${each.value.MAINTENANCE_GROUP_NAME}_TRIG"
+    rn         = "abswinp-TRIGGER-${each.value.TRIGGER_INDEX}"
     class_name = "trigAbsWindowP"
     content = {
-      name   = "${each.value.MAINTENANCE_GROUP_NAME}_TRIG"
+      name   = "TRIGGER-${each.value.TRIGGER_INDEX}"
       date   = timestamp() # UTC timestamp.
       status = "created,modified"
     }
