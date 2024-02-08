@@ -185,7 +185,7 @@ locals {
     aci_maintenance_group_node_iterations = csvdecode(file("./data/aci_maintenance_group_node.csv"))
 
     aci_maintenance_group_node_rows = {
-        for i in local.aci_maintenance_group_iterations : 
+        for i in local.aci_maintenance_group_node_iterations: 
         i.NODE_ID => {
             NODE_ID                      = i.NODE_ID
             MAINTENANCE_GROUP_NAME       = i.MAINTENANCE_GROUP_NAME
