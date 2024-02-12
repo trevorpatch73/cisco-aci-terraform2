@@ -222,7 +222,7 @@ locals {
 
     aci_vrf_rows = {
         for i in local.aci_vrf_iterations: 
-        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}" => {
+        "${i.TENANT_NAME}:${i.VRF_NAME}" => {
             TENANT_NAME                    = i.TENANT_NAME
             ZONE_NAME                      = i.ZONE_NAME
             VRF_NAME                       = i.VRF_NAME
