@@ -372,3 +372,20 @@ resource "aci_application_profile" "localAciApplicationProfileIteration" {
   description = join(" ", [each.value.ZONE_NAME, "application profile was created as a macro-segmentation zone via Terraform from a CI/CD Pipeline."])
 
 }
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/vrf
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}" 
+resource "aci_vrf" "localAciVrfIteration" {
+  for_each                = local.aci_vrf_rows
+
+  tenant_dn               = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
+  name                    = each.value.VRF_NAME
+  description             = join(" ", [each.value.VRF_NAME, " was created as a macro-segmentation zone via Terraform from a CI/CD Pipeline."])
+  annotation              = "orchestrator:terraform"
+  bd_enforced_enable      = each.value.BD_ENF
+  ip_data_plane_learning  = each.value.IP_DATA_PLANE_LRN
+  knw_mcast_act           = each.value.KNWN_MCAST_FWD 
+  pc_enf_dir              = each.value.POL_ENF_DIR
+  pc_enf_pref             = each.value.POL_ENF_PREF
+
+}

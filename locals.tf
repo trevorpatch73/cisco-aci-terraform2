@@ -218,5 +218,20 @@ locals {
         }
     }
 
+    aci_vrf_iterations = csvdecode(file("./data/aci_vrf.csv"))
+
+    aci_vrf_rows = {
+        for i in local.aci_vrf_iterations: 
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}" => {
+            TENANT_NAME                    = i.TENANT_NAME
+            ZONE_NAME                      = i.ZONE_NAME
+            VRF_NAME                       = i.ZONE_NAME
+            BD_ENF                         = i.BD_ENF
+            IP_DATA_PLANE_LRN              = i.IP_DATA_PLANE_LRN
+            KNWN_MCAST_FWD                 = i.KNWN_MCAST_FWD 
+            POL_ENF_DIR                    = i.POL_ENF_DIR
+            POL_ENF_PREF                   = i.POL_ENF_PREF
+        }
+    }
 
 }
