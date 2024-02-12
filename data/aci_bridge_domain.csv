@@ -21,4 +21,4 @@ BU2,MISC,MISC_VRF,SpiritJourney,2003,regular,yes,proxy,00:22:BD:F8:19:FF,no,no,n
 BU2,FRONTEND,FRONTEND_VRF,TrailTrekker,2004,regular,yes,proxy,00:22:BD:F8:19:FF,no,no,no,garp,yes,yes,no,drop,no,::,opt-flood
 BU2,MIDTIER,MIDTIER_VRF,TrailTrekker,2005,regular,yes,proxy,00:22:BD:F8:19:FF,no,no,no,garp,yes,yes,no,drop,no,::,opt-flood
 BU2,BACKEND,BACKEND_VRF,TrailTrekker,2006,regular,yes,proxy,00:22:BD:F8:19:FF,no,no,no,garp,yes,yes,no,drop,no,::,opt-flood
-BU2,MISC,MISC_VRF,TrailTrekker,2007,regular,yes,proxy,00:22:BD:F8:19:FF,no,no,no,garp,yes,yes,no,drop,no,::,opt-floodSS,unspecified,NO_ROUTE_VRF,yes,enabled,deny,ingress,enforced
+BU2,MISC,MISC_VRF,TrailTrekker,2007,regular,yes,proxy,00:22:BD:F8:19:FF,no,no,no,garp,yes,yes,no,drop,no,::,opt-floodSS
