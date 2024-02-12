@@ -356,7 +356,7 @@ resource "aci_tenant" "localAciTenantIteration" {
   for_each = local.aci_tenant_rows 
 
   name        = each.value.TENANT_NAME
-  description = join(" ", [each.value, "tenant was created via Terraform from a CI/CD Pipeline."])
+  description = join(" ", [each.value.TENANT_NAME, "tenant was created via Terraform from a CI/CD Pipeline."])
   annotation  = "orchestrator:terraform"
 
 }
