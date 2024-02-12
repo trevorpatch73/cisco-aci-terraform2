@@ -374,7 +374,7 @@ resource "aci_application_profile" "localAciApplicationProfileIteration" {
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/vrf
-# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}" 
+# resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}" 
 resource "aci_vrf" "localAciVrfIteration" {
   for_each                = local.aci_vrf_rows
 
@@ -421,6 +421,6 @@ resource "aci_bridge_domain" "localAciBridgeDomainIteration" {
   v6unk_mcast_act             = each.value.V6_UNK_MCAST_ACT
   vmac                        = "not-applicable" # ISN via Nexus Dashboard MSO Not Used
 
-  relation_fv_rs_ctx = aci_vrf.localAciVrfIteration["${each.value.VRF_NAME}"].id
+  relation_fv_rs_ctx = aci_vrf.localAciVrfIteration["${each.value.TENANT_NAME}:${each.value.VRF_NAME}"].id
 
 }
