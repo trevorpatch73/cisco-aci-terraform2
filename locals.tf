@@ -212,7 +212,7 @@ locals {
 
     aci_application_profile_rows = {
         for i in local.aci_application_profile_iterations: 
-        "${i.TENANT_NAME}:${ZONE_NAME}" => {
+        "${i.TENANT_NAME}:${i.ZONE_NAME}" => {
             TENANT_NAME                  = i.TENANT_NAME
             ZONE_NAME                    = i.ZONE_NAME
         }
