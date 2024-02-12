@@ -262,4 +262,25 @@ locals {
         }
     }
 
+    aci_subnet_iterations = csvdecode(file("./data/aci_subnet.csv"))
+
+    aci_subnet_rows = {
+        for i in local.aci_subnet_iterations: 
+        i.NETWORK_PREFIX => {
+            TENANT_NAME         = i.TENANT_NAME 
+            ZONE_NAME           = i.ZONE_NAME    
+            APPLICATION_NAME    = i.APPLICATION_NAME  
+            NETWORK_PREFIX      = i.NETWORK_PREFIX
+            NETWORK_CIDR        = i.NETWORK_CIDR 
+            NETWORK_GW          = i.NETWORK_GW 
+            ANYCAST_MAC         = i.ANYCAST_MAC 
+            PREFERRED           = i.PREFERRED
+            SCOPE               = i.SCOPE 
+            CONTROL_STATE       = i.CONTROL_STATE
+            IP_DATA_PLANE_LRN   = i.IP_DATA_PLANE_LRN
+        }
+    }
+
+
+
 }

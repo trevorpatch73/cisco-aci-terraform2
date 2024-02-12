@@ -424,3 +424,19 @@ resource "aci_bridge_domain" "localAciBridgeDomainIteration" {
   relation_fv_rs_ctx = aci_vrf.localAciVrfIteration["${each.value.TENANT_NAME}:${each.value.VRF_NAME}"].id
 
 }
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/subnet
+# resource index key is "${each.value.NETWORK_PREFIX}"
+resource "aci_subnet" "localAciSubnet" {
+  for_each                = local.aci_subnet_rows
+
+  parent_dn               = aci_bridge_domain.localAciBridgeDomainIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
+  description             = join(" ", [each.value.NETWORK_PREFIX, each.value.NETWORK_CIDR, "subnet was created as a NCI Mode VLAN for a segmentation zone via Terraform from a CI/CD Pipeline."])
+  ip                      = "${each.value.NETWORK_GW}/${each.value.NETWORK_CIDR}"
+  annotation              = "orchestrator:terraform"
+  ctrl                    = ["${each.value.CONTROL_STATE}"]
+  scope                   = ["${each.value.SCOPE}"]
+  preferred               = each.value.PREFERRED
+  virtual                 = "no"  # ISN via Nexus Dashboard MSO Not Used
+
+}
