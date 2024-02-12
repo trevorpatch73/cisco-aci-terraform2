@@ -417,7 +417,7 @@ resource "aci_bridge_domain" "localAciBridgeDomainIteration" {
   bridge_domain_type          = each.value.BD_TYPE
   unicast_route               = each.value.UNICAST_ROUTE 
   unk_mac_ucast_act           = each.value.UNK_MAC_UCAST_ACT
-  unk_mcast_act               = each.value.MCAST_PKT_ACT 
+  unk_mcast_act               = each.value.V6_UNK_MCAST_ACT
   v6unk_mcast_act             = each.value.V6_UNK_MCAST_ACT
   vmac                        = "not-applicable" # ISN via Nexus Dashboard MSO Not Used
 
