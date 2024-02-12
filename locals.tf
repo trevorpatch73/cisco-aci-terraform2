@@ -225,7 +225,7 @@ locals {
         "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}" => {
             TENANT_NAME                    = i.TENANT_NAME
             ZONE_NAME                      = i.ZONE_NAME
-            VRF_NAME                       = i.ZONE_NAME
+            VRF_NAME                       = i.VRF_NAME
             BD_ENF                         = i.BD_ENF
             IP_DATA_PLANE_LRN              = i.IP_DATA_PLANE_LRN
             KNWN_MCAST_FWD                 = i.KNWN_MCAST_FWD 
