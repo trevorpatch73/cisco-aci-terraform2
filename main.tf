@@ -389,3 +389,38 @@ resource "aci_vrf" "localAciVrfIteration" {
   pc_enf_pref             = each.value.POL_ENF_PREF
 
 }
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/bridge_domain
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}" 
+resource "aci_bridge_domain" "localAciBridgeDomainIteration" {
+  for_each                    = local.aci_bridge_domain_rows
+
+  tenant_dn                   = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
+  name                        = join("_", ["VLAN", each.value.VLAN_ID, each.value.TENANT_NAME, each.value.ZONE_NAME, each.value.APPLICATION_NAME, "BD"])
+  annotation                  = "orchestrator:terraform"
+  description                 = join(" ", [each.value.ZONE_NAME, each.value.APPLICATION_NAME, "bridge domain was created as a NCI Mode VLAN for a segmentation zone via Terraform from a CI/CD Pipeline."])
+
+  optimize_wan_bandwidth      = each.value.OPTMZE_WAN_BW
+  arp_flood                   = each.value.ARP_FLOOD
+  ep_clear                    = each.value.EP_CLEAR 
+  ep_move_detect_mode         = each.value.EP_MV_DETECT_MODE
+  host_based_routing          = "no" # ISN via Nexus Dashboard MSO Not Used
+  intersite_bum_traffic_allow = "no" # ISN via Nexus Dashboard MSO Not Used
+  intersite_l2_stretch        = "no" # ISN via Nexus Dashboard MSO Not Used
+  ip_learning                 = each.value.IP_LRN 
+  ipv6_mcast_allow            = each.value.IPV6_MCAST_ALLOW 
+  limit_ip_learn_to_subnets   = each.value.LIMIT_IP_LRN_SNET
+  ll_addr                     = each.value.IPV6_LL_ADDR
+  mac                         = each.value.BD_MAC
+  mcast_allow                 = each.value.IPV4_MCAST_ALLOW
+  multi_dst_pkt_act           = each.value.MCAST_PKT_ACT 
+  bridge_domain_type          = each.value.BD_TYPE
+  unicast_route               = each.value.UNICAST_ROUTE 
+  unk_mac_ucast_act           = each.value.UNK_MAC_UCAST_ACT
+  unk_mcast_act               = each.value.MCAST_PKT_ACT 
+  v6unk_mcast_act             = each.value.V6_UNK_MCAST_ACT
+  vmac                        = "not-applicable" # ISN via Nexus Dashboard MSO Not Used
+
+  relation_fv_rs_ctx = aci_vrf.localAciVrfIteration["${each.value.VRF_NAME}"].id
+
+}

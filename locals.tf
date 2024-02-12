@@ -234,4 +234,32 @@ locals {
         }
     }
 
+    aci_bridge_domain_iterations = csvdecode(file("./data/aci_bridge_domain.csv"))
+
+    aci_bridge_domain_rows = {
+        for i in local.aci_bridge_domain_iterations: 
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.APPLICATION_NAME}" => {
+            TENANT_NAME             = i.TENANT_NAME  
+            ZONE_NAME               = i.ZONE_NAME  
+            VRF_NAME                = i.VRF_NAME 
+            APPLICATION_NAME        = i.APPLICATION_NAME
+            VLAN_ID                 = i.VLAN_ID  
+            BD_TYPE                 = i.BD_TYPE 
+            UNICAST_ROUTE           = i.UNICAST_ROUTE   
+            UNK_MAC_UCAST_ACT       = i.UNK_MAC_UCAST_ACT
+            BD_MAC                  = i.BD_MAC 
+            OPTMZE_WAN_BW           = i.OPTMZE_WAN_BW
+            ARP_FLOOD               = i.ARP_FLOOD  
+            EP_CLEAR                = i.EP_CLEAR 
+            EP_MV_DETECT_MODE       = i.EP_MV_DETECT_MODE 
+            IP_LRN                  = i.IP_LRN  
+            LIMIT_IP_LRN_SNET       = i.LIMIT_IP_LRN_SNET
+            IPV4_MCAST_ALLOW        = i.IPV4_MCAST_ALLOW
+            MCAST_PKT_ACT           = i.MCAST_PKT_ACT  
+            IPV6_MCAST_ALLOW        = i.IPV6_MCAST_ALLOW 
+            IPV6_LL_ADDR            = i.IPV6_LL_ADDR
+            V6_UNK_MCAST_ACT        = i.V6_UNK_MCAST_ACT
+        }
+    }
+
 }

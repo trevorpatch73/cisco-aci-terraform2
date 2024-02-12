@@ -1,41 +1,42 @@
-NETWORK_PREFIX,NETWORK_CIDR,LOCATION,ENVIRONMENT,TENANT,ZONE,NOTES
-30.0.0.0,23,sandboxapicdc.cisco.com,sbox,infra,aci-mgmt,To be used IP ACI Node Mgmt Ports
-30.0.2.0,23,sandboxapicdc.cisco.com,sbox,infra,rtr-id,To be used as Router-IDs for L3Outs per VRF per Node
-30.1.0.0,28,sandboxapicdc.cisco.com,sbox,shared_services,bu1_transit,To be used to IP L3Outs per interface per VRF per Node connecting to Tenant NGFW Outside interface
-30.1.0.16,28,sandboxapicdc,sbox,bu1,out_transit,To be used to IP L3Outs per interface per VRF per Node connecting to shared_services default VRF
-30.1.0.32,28,sandboxapicdc,sbox,bu1,adc_transit,To be used to IP L3Outs per interface per VRF per Node connecting to Application Delivery Controller
-30.1.0.48,28,sandboxapicdc,sbox,bu1,fe_app1_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.1.0.64,28,sandboxapicdc,sbox,bu1,mid_app1_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.1.0.80,28,sandboxapicdc,sbox,bu1,be_app1_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.1.0.96,28,sandboxapicdc,sbox,bu1,misc_app1_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.1.0.112,28,sandboxapicdc,sbox,bu1,fe_app2_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.1.0.128,28,sandboxapicdc,sbox,bu1,mid_app2_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.1.0.144,28,sandboxapicdc,sbox,bu1,be_app2_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.1.0.160,28,sandboxapicdc,sbox,bu1,misc_app2_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.1.1.0,26,sandboxapicdc,sbox,bu1,fe_app1_zone,To be used by application frontend type workloads
-30.1.1.32,26,sandboxapicdc,sbox,bu1,mid_app1_zone,To be used by application midtier type workloads
-30.1.1.64,26,sandboxapicdc,sbox,bu1,be_app1_zone,To be used by application backend type workloads
-30.1.1.96,26,sandboxapicdc,sbox,bu1,misc_app1_zone,To be used by application miscellaneous type workloads
-30.1.2.0,26,sandboxapicdc,sbox,bu1,fe_app2_zone,To be used by application frontend type workloads
-30.1.2.32,26,sandboxapicdc,sbox,bu1,mid_app2_zone,To be used by application midtier type workloads
-30.1.2.64,26,sandboxapicdc,sbox,bu1,be_app2_zone,To be used by application backend type workloads
-30.1.2.96,26,sandboxapicdc,sbox,bu1,misc_app2_zone,To be used by application miscellaneous type workloads
-30.2.0.0,28,sandboxapicdc.cisco.com,sbox,shared_services,bu1_transit,To be used to IP L3Outs per interface per VRF per Node connecting to Tenant NGFW Outside interface
-30.2.0.16,28,sandboxapicdc,sbox,bu2,out_transit,To be used to IP L3Outs per interface per VRF per Node connecting to shared_services default VRF
-30.2.0.32,28,sandboxapicdc,sbox,bu2,adc_transit,To be used to IP L3Outs per interface per VRF per Node connecting to Application Delivery Controller
-30.2.0.48,28,sandboxapicdc,sbox,bu2,fe_app1_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.2.0.64,28,sandboxapicdc,sbox,bu2,mid_app1_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.2.0.80,28,sandboxapicdc,sbox,bu2,be_app1_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.2.0.96,28,sandboxapicdc,sbox,bu2,misc_app1_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.2.0.112,28,sandboxapicdc,sbox,bu2,fe_app2_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.2.0.128,28,sandboxapicdc,sbox,bu2,mid_app2_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.2.0.144,28,sandboxapicdc,sbox,bu2,be_app2_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.2.0.160,28,sandboxapicdc,sbox,bu2,misc_app2_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
-30.2.1.0,26,sandboxapicdc,sbox,bu2,fe_app1_zone,To be used by application frontend type workloads
-30.2.1.32,26,sandboxapicdc,sbox,bu2,mid_app1_zone,To be used by application midtier type workloads
-30.2.1.64,26,sandboxapicdc,sbox,bu2,be_app1_zone,To be used by application backend type workloads
-30.2.1.96,26,sandboxapicdc,sbox,bu2,misc_app1_zone,To be used by application miscellaneous type workloads
-30.2.2.0,26,sandboxapicdc,sbox,bu2,fe_app2_zone,To be used by application frontend type workloads
-30.2.2.32,26,sandboxapicdc,sbox,bu2,mid_app2_zone,To be used by application midtier type workloads
-30.2.2.64,26,sandboxapicdc,sbox,bu2,be_app2_zone,To be used by application backend type workloads
-30.2.2.96,26,sandboxapicdc,sbox,bu2,misc_app2_zone,To be used by application miscellaneous type workloads
+NETWORK_PREFIX,NETWORK_CIDR,VLAN_ID,LOCATION,ENVIRONMENT,TENANT,ZONE,APPLICATION,NOTES
+30.0.0.0,23,10,sandboxapicdc,sbox,infra,aci-mgmt,OOB,To be used IP ACI Node Mgmt Ports
+30.0.2.0,23,unspecified,sandboxapicdc,sbox,infra,rtr-id,NTWK,To be used as Router-IDs for L3Outs per VRF per Node
+30.0.4.0,28,11,sandboxapicdc,sbox,SS,ss_transit,ss_transit,To be used to IP L3Outs per interface per VRF per Node connecting to Tenant NGFW Outside interface
+30.0.4.32,28,13,sandboxapicdc,sbox,SS,adc_transit,adc_transit,To be used to IP L3Outs per interface per VRF per Node connecting to Application Delivery Controller
+30.0.4.48,28,14,sandboxapicdc,sbox,SS,mgmt_transit,zone_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
+30.0.4.96,28,17,sandboxapicdc,sbox,SS,storage_transit,zone_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
+30.0.6.0,23,20,sandboxapicdc,sbox,SS,MGMT,RMT_MGMT,To be used for workload ILO/iDRAC like ports
+30.0.8.0,23,21,sandboxapicdc,sbox,SS,MGMT,NTNX_MGMT,To be used by Nutanix Hypervisor
+30.0.10.0,23,22,sandboxapicdc,sbox,SS,MGMT,IPMI,To be used by Nutanix IPMI
+30.0.12.0,23,23,sandboxapicdc,sbox,SS,MISC,VMOTION,To be used by Nutanix VMOTION
+30.0.14.0,23,24,sandboxapicdc,sbox,SS,STORAGE,NTWK_STO,To be used by Network Based Storage Protocols
+30.0.16.0,24,25,sandboxapicdc,sbox,SS,PAN,HEARTBEAT,To be used by Palo Alto Firewall High Availability Heartbeat Signals
+30.0.17.0,24,26,sandboxapicdc,sbox,SS,PAN,SYNC,To be used by Palo Alto Firewall High Availability Sync Traffic
+30.1.0.0,28,100,sandboxapicdc,sbox,SS,bu1_transit,bu1_transit,To be used to IP L3Outs per interface per VRF per Node connecting to Tenant NGFW Outside interface
+30.1.0.32,28,102,sandboxapicdc,sbox,bu1,adc_transit,adc_transit,To be used to IP L3Outs per interface per VRF per Node connecting to Application Delivery Controller
+30.1.0.48,28,103,sandboxapicdc,sbox,bu1,frontend_transit,zone_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
+30.1.0.64,28,104,sandboxapicdc,sbox,bu1,midtier_transit,zone_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
+30.1.0.80,28,105,sandboxapicdc,sbox,bu1,backend_transit,zone_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
+30.1.0.96,28,106,sandboxapicdc,sbox,bu1,misc_transit,zone_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
+30.1.1.0,26,1000,sandboxapicdc,sbox,bu1,FRONTEND,SparkleQuest,To be used by application frontend type workloads
+30.1.1.32,26,1001,sandboxapicdc,sbox,bu1,MIDTIER,SparkleQuest,To be used by application midtier type workloads
+30.1.1.64,26,1002,sandboxapicdc,sbox,bu1,BACKEND,SparkleQuest,To be used by application backend type workloads
+30.1.1.96,26,1003,sandboxapicdc,sbox,bu1,MISC,SparkleQuest,To be used by application miscellaneous type workloads
+30.1.2.0,26,1004,sandboxapicdc,sbox,bu1,FRONTEND,RainbowSky,To be used by application frontend type workloads
+30.1.2.32,26,1005,sandboxapicdc,sbox,bu1,MIDTIER,RainbowSky,To be used by application midtier type workloads
+30.1.2.64,26,1006,sandboxapicdc,sbox,bu1,BACKEND,RainbowSky,To be used by application backend type workloads
+30.1.2.96,26,1007,sandboxapicdc,sbox,bu1,MISC,RainbowSky,To be used by application miscellaneous type workloads
+30.2.0.0,28,120,sandboxapicdc,sbox,SS,bu2_transit,bu2_transit,To be used to IP L3Outs per interface per VRF per Node connecting to Tenant NGFW Outside interface
+30.2.0.32,28,122,sandboxapicdc,sbox,bu2,adc_transit,adc_transit,To be used to IP L3Outs per interface per VRF per Node connecting to Application Delivery Controller
+30.2.0.48,28,123,sandboxapicdc,sbox,bu2,frontend_transit,zone_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
+30.2.0.64,28,124,sandboxapicdc,sbox,bu2,midtier_transit,zone_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
+30.2.0.80,28,125,sandboxapicdc,sbox,bu2,backend_transit,zone_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
+30.2.0.96,28,126,sandboxapicdc,sbox,bu2,misc_transit,zone_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
+30.2.1.0,26,2000,sandboxapicdc,sbox,bu2,FRONTEND,SpiritJourney,To be used by application frontend type workloads
+30.2.1.32,26,2001,sandboxapicdc,sbox,bu2,MIDTIER,SpiritJourney,To be used by application midtier type workloads
+30.2.1.64,26,2002,sandboxapicdc,sbox,bu2,BACKEND,SpiritJourney,To be used by application backend type workloads
+30.2.1.96,26,2003,sandboxapicdc,sbox,bu2,MISC,SpiritJourney,To be used by application miscellaneous type workloads
+30.2.2.0,26,2004,sandboxapicdc,sbox,bu2,FRONTEND,TrailTrekker,To be used by application frontend type workloads
+30.2.2.32,26,2005,sandboxapicdc,sbox,bu2,MIDTIER,TrailTrekker,To be used by application midtier type workloads
+30.2.2.64,26,2006,sandboxapicdc,sbox,bu2,BACKEND,TrailTrekker,To be used by application backend type workloads
+30.2.2.96,26,2007,sandboxapicdc,sbox,bu2,MISC,TrailTrekker,To be used by application miscellaneous type workloads
