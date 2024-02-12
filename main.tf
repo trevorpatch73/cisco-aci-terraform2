@@ -1,3 +1,7 @@
+#######################################
+#####  FABRIC INVENTORY WORKFLOW ######
+#######################################
+
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/fabric_node_member
 # resource index key is "${each.value.SERIAL_NUMBER}"
 resource "aci_fabric_node_member" "localAciFabricNodeMemberIteration" {
@@ -340,4 +344,31 @@ resource "aci_maintenance_group_node" "localAciMaintenanceGroupNodeIteration" {
   to_         = each.value.NODE_ID
 
   pod_maintenance_group_dn = aci_pod_maintenance_group.localAciPodMaintenanceGroupIteration["${each.value.MAINTENANCE_GROUP_NAME}"].id
+}
+
+###########################################
+#####  TENANT CONFIGURATION WORKFLOW ######
+###########################################
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/tenant
+# resource index key is "${each.value.TENANT_NAME}"
+resource "aci_tenant" "localAciTenantIteration" {
+  for_each = local.aci_tenant_rows 
+
+  name        = each.value.TENANT_NAME
+  description = join(" ", [each.value, "tenant was created via Terraform from a CI/CD Pipeline."])
+  annotation  = "orchestrator:terraform"
+
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/application_profile
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}"
+resource "aci_application_profile" "localAciApplicationProfileIteration" {
+  for_each    = local.aci_application_profile_rows
+
+  tenant_dn   = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
+  name        = each.value.ZONE_NAME
+  annotation  = "orchestrator:terraform"
+  description = join(" ", [each.value.ZONE_NAME, "application profile was created as a macro-segmentation zone via Terraform from a CI/CD Pipeline."])
+
 }

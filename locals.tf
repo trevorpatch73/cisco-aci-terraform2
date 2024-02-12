@@ -1,9 +1,11 @@
 locals {
-    # Decode CSV data for ACI fabric node members from a file
+
+    #######################################
+    #####  FABRIC INVENTORY WORKFLOW ######
+    #######################################
+
     aci_fabric_node_member_iterations = csvdecode(file("./data/aci_fabric_node_member.csv"))
     
-    # Transform the list of ACI fabric node member data into a map for easier access
-    # Each device serial number maps to its respective details
     aci_fabric_node_member_rows = {
         for i in local.aci_fabric_node_member_iterations : 
         i.SERIAL_NUMBER => {
@@ -192,5 +194,29 @@ locals {
             MAINTENANCE_GROUP_NAME       = i.MAINTENANCE_GROUP_NAME
         }
     }
+
+    ###########################################
+    #####  TENANT CONFIGURATION WORKFLOW ######
+    ###########################################
+
+    aci_tenant_iterations = csvdecode(file("./data/aci_tenant.csv"))
+
+    aci_tenant_rows = {
+        for i in local.aci_tenant_iterations: 
+        i.TENANT_NAME => {
+            TENANT_NAME                  = i.TENANT_NAME
+        }
+    }
+
+    aci_application_profile_iterations = csvdecode(file("./data/aci_application_profile.csv"))
+
+    aci_application_profile_rows = {
+        for i in local.aci_application_profile_iterations: 
+        "${i.TENANT_NAME}:${ZONE_NAME}" => {
+            TENANT_NAME                  = i.TENANT_NAME
+            ZONE_NAME                    = i.ZONE_NAME
+        }
+    }
+
 
 }
