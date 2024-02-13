@@ -520,7 +520,7 @@ resource "aci_contract_subject" "localAciContractSubjectIterationEpgInbound" {
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/filter
 # resource index key is "${entry.TENANT}:${entry.ETHER_TYPE}:${entry.PROTOCOL}:${entry.PORT}"
 resource "aci_filter" "localAciFiltersIteration" {
-  for_each    = local.aci_filter_map
+  for_each    = local.FilterlocalAciFiltersIteration
 
   tenant_dn   = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
   description = join(" ", ["Allows", each.value.ETHER_TYPE, each.value.PROTOCOL, each.value.PORT, "as specified by Terraform CI/CD Pipeline for EPGs"])

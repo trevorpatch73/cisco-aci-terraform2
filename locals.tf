@@ -372,6 +372,11 @@ locals {
         }
     }       
 
+    # Filter Underlay / OOB Stuff
+    FilterlocalAciFiltersIteration ={
+        for key, value in local.aci_filter_map : key => value
+        if lower(value.TENANT) != "infra"     
+    }
 
 }
 
