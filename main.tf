@@ -390,6 +390,28 @@ resource "aci_vrf" "localAciVrfIteration" {
 
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/vrf_snmp_context
+# resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}" 
+resource "aci_vrf_snmp_context" "localAciVrfSnmpContextIteration" {
+  for_each = local.aci_vrf_rows
+
+  vrf_dn     = aci_vrf.localAciVrfIteration["${each.value.TENANT_NAME}:${each.value.VRF_NAME}"].id
+  name       = join("_", [each.value.VRF_NAME, "SNMP"])
+  annotation = "orchestrator:terraform"
+
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/vrf_snmp_context_community
+# resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}" 
+resource "aci_vrf_snmp_context_community" "localAciVrfSnmpContectCommunityIteration" {
+  for_each = local.aci_vrf_rows
+
+  vrf_snmp_context_dn = aci_vrf_snmp_context.localAciVrfSnmpContextIteration["${each.value.TENANT_NAME}:${each.value.VRF_NAME}"].id
+  name = join("-", [replace(each.value.VRF_NAME, "_", "-"),"VRF"])
+  description = join(" ", [replace(each.value.VRF_NAME, "_", "-"),"VRF created via Terraform CI/CD"])
+  annotation = "orchestrator:terraform"
+}
+
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/bridge_domain
 # resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}" 
 resource "aci_bridge_domain" "localAciBridgeDomainIteration" {
