@@ -516,3 +516,28 @@ resource "aci_contract_subject" "localAciContractSubjectIterationEpgInbound" {
   target_dscp   = each.value.TARGET_DSCP
 
 }
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/filter
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"
+resource "aci_filter" "localAciFiltersIteration" {
+  for_each    = local.aci_filter_map
+
+  tenant_dn   = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
+  description = join(" ", ["Allows", each.value.PROTOCOL, each.value.PORT, "as specified by Terraform CI/CD Pipeline for EPGs"])
+  name        = join("_", [each.value.TENANT_NAME, upper(each.value.PROTOCOL), each.value.PORT, "FILT"])
+  annotation  = "orchestrator:terraform"
+
+}
+
+/*
+resource "aci_contract_subject_filter" "localAciContractSubjectFilterIterationEpgInbound" {
+  for_each            = local.aci_contract_subject_filter_rows
+
+  contract_subject_dn = aci_contract_subject.localAciContractSubjectIterationEpgInbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
+  filter_dn           = aci_filter.localAciFiltersIteration["${each.value.TENANT_NAME}.${each.value.INBOUND_PORT}"].id
+  action              = each.value.ACTION
+  directives          = ["${each.value.DIRECTIVES}"]
+  priority_override   = each.value.PRIORITY_OVERRIDE
+
+}
+*/

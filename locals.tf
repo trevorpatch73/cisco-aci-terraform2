@@ -1,4 +1,24 @@
 locals {
+    ###################################
+    #####  MULTI-WORKFLOW INPUTS ######
+    ###################################
+
+    aci_filter_entry_iterations = csvdecode(file("./data/aci_filter_entry.csv"))
+
+    aci_filter_entry_rows = {
+        for i in local.aci_filter_entry_iterations : 
+        "${i.ENVIRONMENT}:${i.TENANT}:${i.ZONE}:${i.APPLICATION}:${i.DIRECTION}:${i.ETHER_TYPE}:${i.PROTOCOL}:${i.PORT}"  => {
+             ENVIRONMENT    = i.ENVIRONMENT
+             TENANT         = i.TENANT
+             ZONE           = i.ZONE
+             APPLICATION    = i.APPLICATION
+             DIRECTION      = i.DIRECTION
+             ETHER_TYPE     = i.ETHER_TYPE
+             PROTOCOL       = i.PROTOCOL
+             PORT           = i.PORT
+             APPLICATION    = i.APPLICATION  
+        }
+    }
 
     #######################################
     #####  FABRIC INVENTORY WORKFLOW ######
@@ -109,35 +129,19 @@ locals {
         }
     }
 
-    aci_filter_entry_iterations = csvdecode(file("./data/aci_filter_entry.csv"))
-
-    aci_filter_entry_rows = {
-        for i in local.aci_filter_entry_iterations : 
-        "${i.ENVIRONMENT}:${i.TENANT}:${i.ZONE}:${i.DIRECTION}:${i.ETHER_TYPE}:${i.PROTOCOL}:${i.PORT}"  => {
-             ENVIRONMENT    = i.ENVIRONMENT
-             TENANT         = i.TENANT
-             ZONE           = i.ZONE
-             DIRECTION      = i.DIRECTION
-             ETHER_TYPE     = i.ETHER_TYPE
-             PROTOCOL       = i.PROTOCOL
-             PORT           = i.PORT
-             APPLICATION    = i.APPLICATION  
-        }
-    }
-
     FilterlocalAciNodeMgmtOobCtrSubjFiltArpIterations ={
         for key, value in local.aci_filter_entry_rows : key => value
-        if lower(value.TENANT) == "infra" && lower(value.ZONE) == "aci-mgmt" && lower(value.ETHER_TYPE) == "arp"      
+        if lower(value.TENANT) == "infra" && lower(value.ZONE) == "aci-mgmt" && lower(value.APPLICATION) == "oob" && lower(value.ETHER_TYPE) == "arp"      
     }
 
     FilterlocalAciNodeMgmtOobCtrSubjFiltProtocolTcpIteration ={
         for key, value in local.aci_filter_entry_rows : key => value
-        if lower(value.TENANT) == "infra" && lower(value.ZONE) == "aci-mgmt" && lower(value.ETHER_TYPE) == "tcp"      
+        if lower(value.TENANT) == "infra" && lower(value.ZONE) == "aci-mgmt" && lower(value.APPLICATION) == "oob" && lower(value.ETHER_TYPE) == "tcp"      
     }
 
     FilterlocalAciNodeMgmtOobCtrSubjFiltProtocolUdpIteration ={
         for key, value in local.aci_filter_entry_rows : key => value
-        if lower(value.TENANT) == "infra" && lower(value.ZONE) == "aci-mgmt" && lower(value.ETHER_TYPE) == "udp"      
+        if lower(value.TENANT) == "infra" && lower(value.ZONE) == "aci-mgmt" && lower(value.APPLICATION) == "oob" && lower(value.ETHER_TYPE) == "udp"      
     }
 
     aci_fabric_node_software_staging_iterations = csvdecode(file("./data/aci_fabric_node_software_staging.csv"))
@@ -335,4 +339,41 @@ locals {
         }
     }
 
+    aci_contract_subject_filter_iterations = csvdecode(file("./data/aci_contract_subject_filter.csv"))
+
+    aci_contract_subject_filter_rows = {
+        for i in local.aci_contract_subject_filter_iterations: 
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.APPLICATION_NAME}" => {
+            TENANT_NAME             = i.TENANT_NAME  
+            ZONE_NAME               = i.ZONE_NAME  
+            APPLICATION_NAME        = i.APPLICATION_NAME
+            ACTION                  = i.ACTION
+            DIRECTIVES              = i.DIRECTIVES
+            PRIORITY_OVERRIDE       = i.PRIORITY_OVERRIDE
+        }
+    }
+
+    ### resource "aci_filter" "localAciFiltersIteration" for application tenants ###
+    # Create a concatenated string for each row with only the required fields
+    aci_filter_combinations = [
+        for entry in local.aci_filter_entry_iterations : 
+        "${entry.TENANT}:${entry.ETHER_TYPE}:${entry.PROTOCOL}:${entry.PORT}"
+    ]
+
+    # Use the distinct function to ensure the list only contains unique combinations
+    unique_aci_filter_combinations = distinct(local.aci_filter_combinations) 
+
+    # Place the unique combinationsinto a map for resource "aci_filter" "localAciFiltersIteration"
+    aci_filter_map = { 
+        for item in local.unique_aci_filter_combinations : item => {
+            TENANT      = split(":", item)[0]
+            ETHER_TYPE  = split(":", item)[1]
+            PROTOCOL    = split(":", item)[2]
+            PORT        = split(":", item)[3]
+        }
+    }       
+
+
 }
+
+
