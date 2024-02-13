@@ -365,10 +365,10 @@ locals {
     # Place the unique combinationsinto a map for resource "aci_filter" "localAciFiltersIteration"
     aci_filter_map = { 
         for item in local.unique_aci_filter_combinations : item => {
-            TENANT      = split(":", item)[0]
-            ETHER_TYPE  = split(":", item)[1]
-            PROTOCOL    = split(":", item)[2]
-            PORT        = split(":", item)[3]
+            TENANT_NAME      = split(":", item)[0]
+            ETHER_TYPE       = split(":", item)[1]
+            PROTOCOL         = split(":", item)[2]
+            PORT             = split(":", item)[3]
         }
     }       
 
