@@ -462,3 +462,26 @@ resource "aci_subnet" "localAciSubnet" {
   virtual                 = "no"  # ISN via Nexus Dashboard MSO Not Used
 
 }
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/application_epg
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}" 
+resource "aci_application_epg" "localAciApplicationEndpointGroupIteration" {
+  for_each                = local.aci_application_epg_rows
+
+  application_profile_dn  = aci_application_profile.localAciApplicationProfileIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}"].id
+  name                    = join("_", ["VLAN", each.value.VLAN_ID, each.value.TENANT_NAME, each.value.ZONE_NAME, each.value.APPLICATION_NAME, "EPG"])
+  description             = join(" ", [each.value.ZONE_NAME, each.value.APPLICATION_NAME, " was created as a NCI Mode VLAN for a segmentation zone via Terraform from a CI/CD Pipeline."])
+  annotation              = "orchestrator:terraform"
+  flood_on_encap          = each.value.FLOOD_ON_ENCAP 
+  fwd_ctrl                = each.value.FWD_CTRL
+  has_mcast_source        = each.value.HAS_MCAST_SRC
+  is_attr_based_epg       = each.value.IS_ATTR_BASED
+  match_t                 = each.value.MATCH_T
+  pc_enf_pref             = each.value.PC_ENF_PREF 
+  pref_gr_memb            = each.value.PREF_GR_MEMB
+  prio                    = each.value.PRIO 
+  shutdown                = each.value.SHUTDOWN
+  relation_fv_rs_bd       = aci_bridge_domain.localAciTenantBridgeDomainIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
+
+}
+

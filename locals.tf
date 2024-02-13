@@ -117,6 +117,7 @@ locals {
              ENVIRONMENT    = i.ENVIRONMENT
              TENANT         = i.TENANT
              ZONE           = i.ZONE
+             DIRECTION      = i.DIRECTION
              ETHER_TYPE     = i.ETHER_TYPE
              PROTOCOL       = i.PROTOCOL
              PORT           = i.PORT
@@ -281,6 +282,26 @@ locals {
         }
     }
 
+    aci_application_epg_iterations = csvdecode(file("./data/aci_application_epg.csv"))
+
+    aci_application_epg_rows = {
+        for i in local.aci_application_epg_iterations: 
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.APPLICATION_NAME}" => {
+            TENANT_NAME             = i.TENANT_NAME  
+            ZONE_NAME               = i.ZONE_NAME  
+            APPLICATION_NAME        = i.APPLICATION_NAME
+            VLAN_ID                 = i.VLAN_ID  
+            SHUTDOWN                = i.SHUTDOWN
+            FLOOD_ON_ENCAP          = i.FLOOD_ON_ENCAP 
+            FWD_CTRL                = i.FWD_CTRL
+            HAS_MCAST_SRC           = i.HAS_MCAST_SRC
+            IS_ATTR_BASED           = i.IS_ATTR_BASED
+            MATCH_T                 = i.MATCH_T
+            PC_ENF_PREF             = i.PC_ENF_PREF 
+            PREF_GR_MEMB            = i.PREF_GR_MEMB
+            PRIO                    = i.PRIO 
+        }
+    }
 
 
 }
