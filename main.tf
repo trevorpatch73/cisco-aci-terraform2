@@ -485,3 +485,34 @@ resource "aci_application_epg" "localAciApplicationEndpointGroupIteration" {
 
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/contract
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"
+resource "aci_contract" "localAciContractIterationEpgInbound" {
+  for_each    = local.aci_contract_rows
+
+  tenant_dn   = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
+  description = join(" ", [each.value.APPLICATION_NAME, each.value.ZONE_NAME, "inbound contract epg was created as a NCI Mode segmentation zone via Terraform from a CICD."])
+  name        = join("_", ["VLAN", each.value.VLAN_ID, each.value.TENANT_NAME, each.value.ZONE_NAME, each.value.APPLICATION_NAME, "IN", "CTR"])
+  annotation  = "orchestrator:terraform"
+  prio        = each.value.PRIO
+  scope       = each.value.SCOPE
+  target_dscp = each.value.TARGET_DSCP
+
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/contract_subject
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"
+resource "aci_contract_subject" "localAciContractSubjectIterationEpgInbound" {
+  for_each      = local.aci_contract_subject_rows
+
+  contract_dn   = aci_contract.localAciContractIterationEpgInbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
+  description   = join(" ", [each.value.APPLICATION_NAME, each.value.ZONE_NAME, "inbound contract epg was created as a NCI Mode segmentation zone via Terraform from a CICD."])
+  name          = join("_", ["VLAN", each.value.VLAN_ID, each.value.TENANT_NAME, each.value.ZONE_NAME, each.value.APPLICATION_NAME, "IN", "CTR"])
+  annotation    = "orchestrator:terraform"
+  cons_match_t  = each.value.CONS_MATCH_T
+  prio          = each.value.PRIO 
+  prov_match_t  = each.value.PROV_MATCH_T
+  rev_flt_ports = each.value.REV_FLT_PORTS
+  target_dscp   = each.value.TARGET_DSCP
+
+}
