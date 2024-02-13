@@ -16,7 +16,6 @@ locals {
              ETHER_TYPE     = i.ETHER_TYPE
              PROTOCOL       = i.PROTOCOL
              PORT           = i.PORT
-             APPLICATION    = i.APPLICATION  
         }
     }
 

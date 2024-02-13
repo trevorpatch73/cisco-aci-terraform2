@@ -518,13 +518,13 @@ resource "aci_contract_subject" "localAciContractSubjectIterationEpgInbound" {
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/filter
-# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"
+# resource index key is "${entry.TENANT}:${entry.ETHER_TYPE}:${entry.PROTOCOL}:${entry.PORT}"
 resource "aci_filter" "localAciFiltersIteration" {
   for_each    = local.aci_filter_map
 
   tenant_dn   = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
-  description = join(" ", ["Allows", each.value.PROTOCOL, each.value.PORT, "as specified by Terraform CI/CD Pipeline for EPGs"])
-  name        = join("_", [each.value.TENANT_NAME, upper(each.value.PROTOCOL), each.value.PORT, "FILT"])
+  description = join(" ", ["Allows", each.value.ETHER_TYPE, each.value.PROTOCOL, each.value.PORT, "as specified by Terraform CI/CD Pipeline for EPGs"])
+  name        = join("_", [each.value.TENANT_NAME, each.value.ETHER_TYPE, upper(each.value.PROTOCOL), each.value.PORT, "FILT"])
   annotation  = "orchestrator:terraform"
 
 }

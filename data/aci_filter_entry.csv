@@ -1,4 +1,4 @@
-ENVIRONMENT,TENANT,ZONE,APPLICATION,DIRECTION,ETHER_TYPE,PROTOCOL,PORT,APPLICATION
+ENVIRONMENT,TENANT,ZONE,APPLICATION,DIRECTION,ETHER_TYPE,PROTOCOL,PORT,SIGNATURE
 sbox,infra,aci-mgmt,OOB,both,arp,unspecified,reply,arp
 sbox,infra,aci-mgmt,OOB,both,arp,unspecified,req,arp
 sbox,infra,aci-mgmt,OOB,both,ipv4,icmp,unspecified,icmp
