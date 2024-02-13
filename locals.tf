@@ -113,7 +113,7 @@ locals {
 
     aci_filter_entry_rows = {
         for i in local.aci_filter_entry_iterations : 
-        "${i.ENVIRONMENT}:${i.TENANT}:${i.ZONE}:${i.ETHER_TYPE}:${i.PROTOCOL}:${i.PORT}"  => {
+        "${i.ENVIRONMENT}:${i.TENANT}:${i.ZONE}:${i.DIRECTION}:${i.ETHER_TYPE}:${i.PROTOCOL}:${i.PORT}"  => {
              ENVIRONMENT    = i.ENVIRONMENT
              TENANT         = i.TENANT
              ZONE           = i.ZONE

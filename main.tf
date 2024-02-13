@@ -481,7 +481,7 @@ resource "aci_application_epg" "localAciApplicationEndpointGroupIteration" {
   pref_gr_memb            = each.value.PREF_GR_MEMB
   prio                    = each.value.PRIO 
   shutdown                = each.value.SHUTDOWN
-  relation_fv_rs_bd       = aci_bridge_domain.localAciTenantBridgeDomainIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
+  relation_fv_rs_bd       = aci_bridge_domain.localAciBridgeDomainIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
 
 }
 
