@@ -425,6 +425,7 @@ resource "aci_bridge_domain" "localAciBridgeDomainIteration" {
 
 }
 
+/*
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/subnet
 # resource index key is "${each.value.NETWORK_PREFIX}"
 resource "aci_subnet" "localAciSubnet" {
@@ -440,3 +441,4 @@ resource "aci_subnet" "localAciSubnet" {
   virtual                 = "no"  # ISN via Nexus Dashboard MSO Not Used
 
 }
+*/
