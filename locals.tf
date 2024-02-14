@@ -359,6 +359,11 @@ locals {
         if lower(value.DIRECTION) == "inbound" || lower(value.DIRECTION) == "both"     
     }
 
+    FilterlocalAciContractSubjectFilterIterationEpgOutbound ={
+        for key, value in local.aci_contract_subject_filter_rows : key => value
+        if lower(value.DIRECTION) == "outbound" || lower(value.DIRECTION) == "both"     
+    }
+
     ### resource "aci_filter" "localAciFiltersIteration" for application tenants ###
     # Create a concatenated string for each row with only the required fields
     aci_filter_combinations = [
