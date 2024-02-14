@@ -30,6 +30,20 @@ locals {
         }
     }    
 
+    aci_ranges_iterations = csvdecode(file("./data/aci_ranges.csv"))
+
+    aci_ranges_rows = {
+        for i in local.aci_ranges_iterations : 
+        i.VLAN_ID => {
+             TENANT_NAME     = i.TENANT_NAME
+             POOL_DOMAIN     = i.POOL_DOMAIN          
+             VLAN_ID         = i.VLAN_ID
+             ALLOCATION_MODE = i.ALLOCATION_MODE
+             ROLE            = i.ROLE
+        }
+    } 
+
+
     #######################################
     #####  FABRIC INVENTORY WORKFLOW ######
     #######################################
@@ -405,6 +419,10 @@ locals {
         if lower(value.POOL_DOMAIN) != "physical"     
     }
 
+    FilterlocalAciPhysicalDomainVlanPoolRangesIteration ={
+        for key, value in local.aci_vlan_pool_rows : key => value
+        if lower(value.POOL_DOMAIN) != "physical"     
+    }
 
 }
 

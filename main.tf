@@ -599,6 +599,20 @@ resource "aci_vlan_pool" "localAciPhysicalDomainVlanPoolIteration" {
 
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/ranges
+# resource index key is "${each.value.VLAN_ID}"
+resource "aci_ranges" "localAciPhysicalDomainVlanPoolRangesIteration" {
+  for_each      = local.FilterlocalAciPhysicalDomainVlanPoolRangesIteration
+
+  annotation    = "orchestrator:terraform"
+  description   = join(" ", ["VLAN-", each.value.VLAN_ID, " was created as a NCI Mode VLAN for a segmentation zone via Terraform from a CI/CD Pipeline."])
+  vlan_pool_dn  = aci_vlan_pool.localAciPhysicalDomainVlanPoolIteration["${each.value.TENANT_NAME}:${each.value.POOL_DOMAIN}"].id
+  from          = "vlan-${each.value.VLAN_ID}"
+  to            = "vlan-${each.value.VLAN_ID}"
+  alloc_mode    = each.value.ALLOCATION_MODE
+  role          = each.value.ROLE
+
+}
 
 /*
 
