@@ -1,0 +1,7 @@
+TENANT_NAME,POOL_DOMAIN,ALLOCATION_MODE
+SS,physical,static
+SS,external,static
+BU1,physical,static
+BU1,external,static
+BU2,physical,static
+BU2,external,static

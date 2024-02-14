@@ -19,6 +19,17 @@ locals {
         }
     }
 
+    aci_vlan_pool_iterations = csvdecode(file("./data/aci_vlan_pool.csv"))
+
+    aci_vlan_pool_rows = {
+        for i in local.aci_vlan_pool_iterations : 
+        "${i.TENANT_NAME}:${i.POOL_DOMAIN}" => {
+             TENANT_NAME     = i.TENANT_NAME
+             POOL_DOMAIN     = i.POOL_DOMAIN
+             ALLOCATION_MODE = i.ALLOCATION_MODE
+        }
+    }    
+
     #######################################
     #####  FABRIC INVENTORY WORKFLOW ######
     #######################################
@@ -384,11 +395,16 @@ locals {
         }
     }       
 
-    # Filter Underlay / OOB Stuff
     FilterlocalAciFiltersIteration ={
         for key, value in local.aci_filter_map : key => value
         if lower(value.TENANT_NAME) != "infra"     
     }
+
+    FilterlocalAciPhysicalDomainVlanPoolIteration ={
+        for key, value in local.aci_vlan_pool_rows : key => value
+        if lower(value.POOL_DOMAIN) != "physical"     
+    }
+
 
 }
 

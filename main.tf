@@ -587,6 +587,19 @@ resource "aci_filter" "localAciFiltersIteration" {
 
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/vlan_pool
+# resource index key is "${each.value.TENANT_NAME}:${each.value.POOL_DOMAIN}"
+resource "aci_vlan_pool" "localAciPhysicalDomainVlanPoolIteration" {
+  for_each = local.FilterlocalAciPhysicalDomainVlanPoolIteration
+
+  name        = join("_", [each.value.TENANT_NAME, "PHYS-DOM", "VLAN-POOL"])
+  description = join(" ", [each.value.TENANT_NAME, " tenant VLAN Pool was created in a NCI Mode via Terraform from a CI/CD Pipeline."])
+  annotation  = "orchestrator:terraform"
+  alloc_mode  = each.value.ALLOCATION_MODE
+
+}
+
+
 /*
 
 */
