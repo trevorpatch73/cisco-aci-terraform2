@@ -517,27 +517,29 @@ resource "aci_contract_subject" "localAciContractSubjectIterationEpgInbound" {
 
 }
 
+resource "aci_contract_subject_filter" "localAciContractSubjectFilterIterationEpgInbound" {
+  for_each            = local.FilterlocalAciContractSubjectFilterIterationEpgInbound
+
+  contract_subject_dn = aci_contract_subject.localAciContractSubjectIterationEpgInbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
+  filter_dn           = aci_filter.localAciFiltersIteration["${each.value.FILTERS}"].id
+  action              = each.value.ACTION
+  directives          = ["${each.value.DIRECTIVES}"]]
+  priority_override   = each.value.PRIORITY_OVERRIDE
+
+}
+
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/filter
-# resource index key is "${entry.TENANT}:${entry.ETHER_TYPE}:${entry.PROTOCOL}:${entry.PORT}"
+# resource index key is "${each.value.TENANT}:${each.value.ETHER_TYPE}:${each.value.PROTOCOL}:${each.value.PORT}"
 resource "aci_filter" "localAciFiltersIteration" {
   for_each    = local.FilterlocalAciFiltersIteration
 
   tenant_dn   = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
-  description = join(" ", ["Allows", each.value.ETHER_TYPE, each.value.PROTOCOL, each.value.PORT, "as specified by Terraform CI/CD Pipeline for EPGs"])
-  name        = join("_", [each.value.TENANT_NAME, each.value.ETHER_TYPE, upper(each.value.PROTOCOL), each.value.PORT, "FILT"])
+  description = join(" ", ["Allows", upper(each.value.ETHER_TYPE), upper(each.value.PROTOCOL), upper(each.value.PORT), "as specified by Terraform CI/CD Pipeline for EPGs"])
+  name        = join("_", [upper(each.value.TENANT_NAME), upper(each.value.ETHER_TYPE), upper(each.value.PROTOCOL), upper(each.value.PORT), "FILT"])
   annotation  = "orchestrator:terraform"
 
 }
 
 /*
-resource "aci_contract_subject_filter" "localAciContractSubjectFilterIterationEpgInbound" {
-  for_each            = local.aci_contract_subject_filter_rows
 
-  contract_subject_dn = aci_contract_subject.localAciContractSubjectIterationEpgInbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
-  filter_dn           = aci_filter.localAciFiltersIteration["${each.value.TENANT_NAME}.${each.value.INBOUND_PORT}"].id
-  action              = each.value.ACTION
-  directives          = ["${each.value.DIRECTIVES}"]
-  priority_override   = each.value.PRIORITY_OVERRIDE
-
-}
 */

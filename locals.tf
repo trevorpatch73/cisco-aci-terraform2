@@ -342,14 +342,21 @@ locals {
 
     aci_contract_subject_filter_rows = {
         for i in local.aci_contract_subject_filter_iterations: 
-        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.APPLICATION_NAME}" => {
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.APPLICATION_NAME}:${i.DIRECTION}:${i.FILTERS}" => {
             TENANT_NAME             = i.TENANT_NAME  
             ZONE_NAME               = i.ZONE_NAME  
             APPLICATION_NAME        = i.APPLICATION_NAME
             ACTION                  = i.ACTION
             DIRECTIVES              = i.DIRECTIVES
             PRIORITY_OVERRIDE       = i.PRIORITY_OVERRIDE
+            DIRECTION               = i.DIRECTION
+            FILTERS                 = i.FILTERS
         }
+    }
+
+    FilterlocalAciContractSubjectFilterIterationEpgInbound ={
+        for key, value in local.aci_contract_subject_filter_rows : key => value
+        if lower(value.DIRECTION) == "inbound" || lower(value.DIRECTION) == "both"     
     }
 
     ### resource "aci_filter" "localAciFiltersIteration" for application tenants ###
