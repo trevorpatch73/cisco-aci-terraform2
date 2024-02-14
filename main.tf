@@ -523,7 +523,7 @@ resource "aci_contract_subject_filter" "localAciContractSubjectFilterIterationEp
   contract_subject_dn = aci_contract_subject.localAciContractSubjectIterationEpgInbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
   filter_dn           = aci_filter.localAciFiltersIteration["${each.value.FILTERS}"].id
   action              = each.value.ACTION
-  directives          = ["${each.value.DIRECTIVES}"]]
+  directives          = ["${each.value.DIRECTIVES}"]
   priority_override   = each.value.PRIORITY_OVERRIDE
 
 }
