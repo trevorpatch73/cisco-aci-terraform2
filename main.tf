@@ -628,7 +628,7 @@ resource "aci_epg_to_domain" "localAciEpgToPhysicalDomainIteration" {
   for_each              = local.FilterlocalAciEpgToPhysicalDomainIteration
 
   application_epg_dn    = aci_application_epg.localAciApplicationEndpointGroupIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
-  tdn                   = aci_physical_domain.localAciEpgToDomainIteration["${each.value.TENANT_NAME}"].id
+  tdn                   = aci_physical_domain.localAciPhysicalDomainIteration["${each.value.TENANT_NAME}"].id
 
   annotation            = "orchestrator:terraform"
   binding_type          = each.value.BINDING_TYPE
