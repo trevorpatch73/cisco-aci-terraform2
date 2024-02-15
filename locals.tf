@@ -415,12 +415,12 @@ locals {
 
     FilterlocalAciPhysicalDomainVlanPoolIteration ={
         for key, value in local.aci_vlan_pool_rows : key => value
-        if lower(value.POOL_DOMAIN) != "physical"     
+        if lower(value.POOL_DOMAIN) == "physical"     
     }
 
     FilterlocalAciPhysicalDomainVlanPoolRangesIteration ={
         for key, value in local.aci_ranges_rows : key => value
-        if lower(value.POOL_DOMAIN) != "physical"     
+        if lower(value.POOL_DOMAIN) == "physical"     
     }
 
     aci_physical_domain_iterations = csvdecode(file("./data/aci_physical_domain.csv"))
