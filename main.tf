@@ -614,6 +614,16 @@ resource "aci_ranges" "localAciPhysicalDomainVlanPoolRangesIteration" {
 
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/physical_domain
+# resource index key is "${each.value.TENANT_NAME}"
+resource "aci_physical_domain" "localAciPhysicalDomainIteration" {
+  for_each                  = local.aci_physical_domain_rows
+
+  name                      = join("_", [each.value.TENANT_NAME, "PHYS-DOM"])
+  annotation                = "orchestrator:terraform"
+  relation_infra_rs_vlan_ns = aci_vlan_pool.localAciPhysicalDomainVlanPoolIteration["${each.value.TENANT_NAME}:${each.value.POOL_DOMAIN}"].id
+}
+
 /*
 
 */

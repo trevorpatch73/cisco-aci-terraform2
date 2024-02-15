@@ -41,8 +41,7 @@ locals {
              ALLOCATION_MODE = i.ALLOCATION_MODE
              ROLE            = i.ROLE
         }
-    } 
-
+    }  
 
     #######################################
     #####  FABRIC INVENTORY WORKFLOW ######
@@ -423,6 +422,17 @@ locals {
         for key, value in local.aci_ranges_rows : key => value
         if lower(value.POOL_DOMAIN) != "physical"     
     }
+
+    aci_physical_domain_iterations = csvdecode(file("./data/aci_physical_domain.csv"))
+
+    aci_physical_domain_rows = {
+        for i in local.aci_physical_domain_iterations : 
+        i.TENANT_NAME => {
+             TENANT_NAME     = i.TENANT_NAME
+             POOL_DOMAIN     = i.POOL_DOMAIN
+        }
+    } 
+
 
 }
 
