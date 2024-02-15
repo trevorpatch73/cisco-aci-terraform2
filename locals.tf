@@ -433,6 +433,37 @@ locals {
         }
     } 
 
+    aci_epg_to_domain_iterations = csvdecode(file("./data/aci_epg_to_domain.csv"))
+
+    aci_epg_to_domain_rows = {
+        for i in local.aci_epg_to_domain_iterations : 
+        "${i.TENANT_NAME}:${i.ZONE_NAME }:${i.APPLICATION_NAME}:${i.VLAN_ID}:${i.DOMAIN_TYPE}" => {
+             TENANT_NAME            = i.TENANT_NAME
+             ZONE_NAME              = i.ZONE_NAME  
+             APPLICATION_NAME       = i.APPLICATION_NAME
+             VLAN_ID                = i.VLAN_ID 
+             DOMAIN_TYPE            = i.DOMAIN_TYPE
+             BINDING_TYPE           = i.BINDING_TYPE 
+             ALLOW_MICRO_SEG        = i.ALLOW_MICRO_SEG 
+             ENCAP_MODE             = i.ENCAP_MODE 
+             EPG_COS                = i.EPG_COS 
+             EPG_COS_PREF           = i.EPG_COS_PREF
+             INSTRUCTION_IMMEDIACY  = i.INSTRUCTION_IMMEDIACY
+             NETFLOW_DIR            = i.NETFLOW_DIR
+             NETFLOW_PREF           = i.NETFLOW_PREF
+             NUM_PORTS              = i.NUM_PORTS
+             PORT_ALLOCATION        = i.PORT_ALLOCATION
+             PRIMARY_ENCAP          = i.PRIMARY_ENCAP
+             PRIMARY_ENCAP_INNER    = i.PRIMARY_ENCAP_INNER
+             RESOLUTION_IMMEDIACY   = i.RESOLUTION_IMMEDIACY
+             SWITCHING_MODE         = i.SWITCHING_MODE 
+        }
+    } 
+
+    FilterlocalAciEpgToPhysicalDomainIteration ={
+        for key, value in local.aci_epg_to_domain_rows : key => value
+        if lower(value.DOMAIN_TYPE) == "physical"     
+    }
 
 }
 

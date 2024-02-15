@@ -624,6 +624,31 @@ resource "aci_physical_domain" "localAciPhysicalDomainIteration" {
   relation_infra_rs_vlan_ns = aci_vlan_pool.localAciPhysicalDomainVlanPoolIteration["${each.value.TENANT_NAME}:${each.value.POOL_DOMAIN}"].id
 }
 
+resource "aci_epg_to_domain" "localAciEpgToPhysicalDomainIteration" {
+  for_each              = local.FilterlocalAciEpgToPhysicalDomainIteration
+
+  application_epg_dn    = aci_application_epg.localAciApplicationEndpointGroupIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
+  tdn                   = aci_physical_domain.localAciEpgToDomainIteration["${each.value.TENANT_NAME}"].id
+
+  annotation            = "orchestrator:terraform"
+  binding_type          = each.value.BINDING_TYPE
+  allow_micro_seg       = each.value.ALLOW_MICRO_SEG 
+  encap                 = "vlan-${each.value.VLAN_ID}"
+  encap_mode            = each.value.ENCAP_MODE 
+  epg_cos               = each.value.EPG_COS 
+  epg_cos_pref          = each.value.EPG_COS_PREF
+  instr_imedcy          = each.value.INSTRUCTION_IMMEDIACY
+  netflow_dir           = each.value.NETFLOW_DIR
+  netflow_pref          = each.value.NETFLOW_PREF
+  num_ports             = each.value.NUM_PORTS
+  port_allocation       = each.value.PORT_ALLOCATION
+  primary_encap         = each.value.PRIMARY_ENCAP
+  primary_encap_inner   = each.value.PRIMARY_ENCAP_INNER
+  res_imedcy            = each.value.RESOLUTION_IMMEDIACY
+  switching_mode        = each.value.SWITCHING_MODE
+
+}
+
 /*
 
 */
