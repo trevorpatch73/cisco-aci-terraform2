@@ -484,6 +484,16 @@ locals {
         if lower(value.POOL_DOMAIN) == "external"     
     }
 
+    aci_l3_domain_profile_iterations = csvdecode(file("./data/aci_l3_domain_profile.csv"))
+
+    aci_l3_domain_profile_rows = {
+        for i in local.aci_l3_domain_profile_iterations : 
+        i.TENANT_NAME => {
+             TENANT_NAME     = i.TENANT_NAME
+             POOL_DOMAIN     = i.POOL_DOMAIN
+        }
+    } 
+
 }
 
 
