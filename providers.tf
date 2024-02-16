@@ -7,7 +7,7 @@ terraform {
     aci = {
       source  = "ciscodevnet/aci"
       version = "2.13.2"
-    }
+    } 
   }
   
   # Define the required Terraform version for this configuration

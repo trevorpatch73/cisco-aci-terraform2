@@ -542,6 +542,64 @@ locals {
         }
     }   
 
+    ###############################################
+    #####  SWITCHPORT CONFIGURATION WORKFLOW ######
+    ###############################################
+
+    aci_lacp_policy_iterations = csvdecode(file("./data/aci_lacp_policy.csv"))
+
+    aci_lacp_policy_rows = {
+        for i in local.aci_lacp_policy_iterations : 
+        i.POLICY_NAME => {
+             POLICY_NAME    = i.POLICY_NAME
+             MODE           = i.MODE
+             CONTROL        = split(";", i.CONTROL)
+             MIN_LINKS      = i.MIN_LINKS
+             MAX_LINKS      = i.MAX_LINKS
+        }
+    }  
+
+    aci_cdp_interface_policy_iterations = csvdecode(file("./data/aci_cdp_interface_policy.csv"))
+
+    aci_cdp_interface_policy_rows = {
+        for i in local.aci_cdp_interface_policy_iterations : 
+        i.POLICY_NAME => {
+             POLICY_NAME    = i.POLICY_NAME
+             ADMIN_STATE    = i.ADMIN_STATE
+        }
+    }  
+
+    aci_lldp_interface_policy_iterations = csvdecode(file("./data/aci_lldp_interface_policy.csv"))
+
+    aci_lldp_interface_policy_rows = {
+        for i in local.aci_lldp_interface_policy_iterations : 
+        i.POLICY_NAME => {
+             POLICY_NAME            = i.POLICY_NAME
+             ADMIN_RECIEVE_STATE    = i.ADMIN_RECIEVE_STATE
+             ADMIN_TRANSMIT_STATE   = i.ADMIN_TRANSMIT_STATE
+        }
+    }  
+
+    aci_miscabling_protocol_interface_policy_iterations = csvdecode(file("./data/aci_miscabling_protocol_interface_policy.csv"))
+
+    aci_miscabling_protocol_interface_policy_rows = {
+        for i in local.aci_miscabling_protocol_interface_policy_iterations : 
+        i.POLICY_NAME => {
+             POLICY_NAME            = i.POLICY_NAME
+             ADMIN_STATE            = i.ADMIN_STATE
+        }
+    }  
+
+    aci_spanning_tree_interface_policy_iterations = csvdecode(file("./data/aci_spanning_tree_interface_policy.csv"))
+
+    aci_spanning_tree_interface_policy_rows = {
+        for i in local.aci_spanning_tree_interface_policy_iterations : 
+        i.POLICY_NAME => {
+             POLICY_NAME             = i.POLICY_NAME
+             CONTROL                 = split(";", i.CONTROL)
+        }
+    }  
+
 }
 
 

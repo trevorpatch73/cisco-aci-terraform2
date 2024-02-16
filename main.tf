@@ -844,6 +844,68 @@ resource "aci_filter_entry" "localAciFilterEntryIterationIpAny" {
 
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/lacp_policy
+# resource index key is "${each.value.POLICY_NAME}"
+resource "aci_lacp_policy" "localAciLacpActivePolicyIteration" {
+  for_each    = local.aci_lacp_policy_rows
+
+  name        = each.value.POLICY_NAME
+  description = "created via Terraform CI/CD Pipeline"
+  annotation  = "orchestrator:terraform"
+  ctrl        = each.value.CONTROL
+  max_links   = each.value.MAX_LINKS
+  min_links   = each.value.MIN_LINKS
+  mode        = each.value.MODE
+  
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/cdp_interface_policy
+# resource index key is "${each.value.POLICY_NAME}"
+resource "aci_cdp_interface_policy" "localAciCdpInterfacePolicyIteration" {
+  for_each    = local.aci_cdp_interface_policy_rows
+
+  name        = each.value.POLICY_NAME
+  admin_st    = each.value.ADMIN_STATE
+  annotation  = "orchestrator:terraform"
+  description = "created via Terraform CI/CD Pipeline"
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/lldp_interface_policy
+# resource index key is "${each.value.POLICY_NAME}"
+resource "aci_lldp_interface_policy" "localAciLldpInterfacePolicyIteration" {
+  for_each    = local.aci_lldp_interface_policy_rows
+
+  description = "created via Terraform CI/CD Pipeline"
+  name        = each.value.POLICY_NAME
+  admin_rx_st = each.value.ADMIN_RECIEVE_STATE
+  admin_tx_st = each.value.ADMIN_TRANSMIT_STATE
+  annotation  = "orchestrator:terraform"
+
+} 
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/miscabling_protocol_interface_policy
+# resource index key is "${each.value.POLICY_NAME}"
+resource "aci_miscabling_protocol_interface_policy" "localAciMiscablingProtocolInterfacePolicy" {
+  for_each    = local.aci_miscabling_protocol_interface_policy_rows
+
+  description = "created via Terraform CI/CD Pipeline"
+  name        = each.value.POLICY_NAME
+  admin_st    = each.value.ADMIN_STATE
+  annotation  = "orchestrator:terraform"
+
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/spanning_tree_interface_policy
+# resource index key is "${each.value.POLICY_NAME}"
+resource "aci_spanning_tree_interface_policy" "localAciSpanningTreeInterfacePolicyIteration" {
+  for_each    = local.aci_spanning_tree_interface_policy_rows
+
+  name        = each.value.POLICY_NAME
+  annotation  = "orchestrator:terraform"
+  description = "created via Terraform CI/CD Pipeline"
+  ctrl        = each.value.CONTROL
+}
+
 /*
 
 */

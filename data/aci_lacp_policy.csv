@@ -1,0 +1,13 @@
+POLICY_NAME,MODE,CONTROL,MIN_LINKS,MAX_LINKS
+LACP_ACTIVE_FULL,active,fast-sel-hot-stdby;graceful-conv;susp-individual,1,16
+LACP_ACTIVE_NO-SUSP,active,fast-sel-hot-stdby;graceful-conv,1,16
+LACP_ACTIVE_NO-HOT,active,graceful-conv;susp-individual,1,8
+LACP_ACTIVE_NO-GRACE,active,fast-sel-hot-stdby;susp-individual,1,16
+LACP_PASSIVE_FULL,active,fast-sel-hot-stdby;graceful-conv;susp-individual,1,16
+LACP_PASSIVE_NO-SUSP,active,fast-sel-hot-stdby;graceful-conv,1,16
+LACP_PASSIVE_NO-HOT,active,graceful-conv;susp-individual,1,8
+LACP_PASSIVE_NO-GRACE,active,fast-sel-hot-stdby;susp-individual,1,16
+LACP_OFF_FULL,active,fast-sel-hot-stdby;graceful-conv;susp-individual,1,16
+LACP_OFF_NO-SUSP,active,fast-sel-hot-stdby;graceful-conv,1,16
+LACP_OFF_NO-HOT,active,graceful-conv;susp-individual,1,8
+LACP_OFF_NO-GRACE,active,fast-sel-hot-stdby;susp-individual,1,16

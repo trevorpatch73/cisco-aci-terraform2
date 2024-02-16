@@ -1,0 +1,5 @@
+POLICY_NAME,ADMIN_RECIEVE_STATE,ADMIN_TRANSMIT_STATE
+LLDP_ENABLED,enabled,enabled
+LLDP_DISABLED,disabled,disabled
+LLDP_RX_ONLY,enabled,disabled
+LLDP_TX_ONLY,disabled,enabled

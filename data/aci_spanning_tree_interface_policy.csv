@@ -1,0 +1,5 @@
+POLICY_NAME,CONTROL
+STP_BPDU-X,bpdu-filter;bpdu-guard
+STP_BPDU-FILTER,bpdu-filter
+STP_BPDU-GUARD,bpdu-guard
+STP_NATIVE,unspecified
