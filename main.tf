@@ -537,7 +537,7 @@ resource "aci_contract" "localAciContractIterationEpgOutbound" {
 
   tenant_dn   = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
   description = join(" ", [each.value.APPLICATION_NAME, each.value.ZONE_NAME, "Outbound contract epg was created as a NCI Mode segmentation zone via Terraform from a CICD."])
-  name        = join("_", ["VLAN", each.value.VLAN_ID, each.value.TENANT_NAME, each.value.ZONE_NAME, each.value.APPLICATION_NAME, "IN", "CTR"])
+  name        = join("_", ["VLAN", each.value.VLAN_ID, each.value.TENANT_NAME, each.value.ZONE_NAME, each.value.APPLICATION_NAME, "OUT", "CTR"])
   annotation  = "orchestrator:terraform"
   prio        = each.value.PRIO
   scope       = each.value.SCOPE
@@ -551,8 +551,8 @@ resource "aci_contract_subject" "localAciContractSubjectIterationEpgOutbound" {
   for_each      = local.aci_contract_subject_rows
 
   contract_dn   = aci_contract.localAciContractIterationEpgOutbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
-  description   = join(" ", [each.value.APPLICATION_NAME, each.value.ZONE_NAME, "Outbound contract epg was created as a NCI Mode segmentation zone via Terraform from a CICD."])
-  name          = join("_", ["VLAN", each.value.VLAN_ID, each.value.TENANT_NAME, each.value.ZONE_NAME, each.value.APPLICATION_NAME, "IN", "CTR"])
+  description   = join(" ", [each.value.APPLICATION_NAME, each.value.ZONE_NAME, "outbound contract epg was created as a NCI Mode segmentation zone via Terraform from a CICD."])
+  name          = join("_", ["VLAN", each.value.VLAN_ID, each.value.TENANT_NAME, each.value.ZONE_NAME, each.value.APPLICATION_NAME, "OUT", "CTR"])
   annotation    = "orchestrator:terraform"
   cons_match_t  = each.value.CONS_MATCH_T
   prio          = each.value.PRIO 
