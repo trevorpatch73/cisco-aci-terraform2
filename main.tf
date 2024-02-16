@@ -797,7 +797,16 @@ resource "aci_contract_subject" "localAciContractSubjectIterationL3Out" {
    
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/filter
+# resource index key is "${each.value.TENANT_NAME}"
+resource "aci_filter" "localAciContractFilterIterationIPAny" {
+  for_each    = local.aci_tenant_rows
 
+  tenant_dn   = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
+  name        = join("_",[each.value.TENANT_NAME, "IP", "ANY", "FILT"])
+  description = "Filter for Any IP traffic"
+  annotation  = "orchestrator:terraform" 
+}
 
 /*
 
