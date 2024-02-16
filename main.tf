@@ -687,12 +687,14 @@ resource "aci_vlan_pool" "localAciExternalDomainVlanPoolIteration" {
 
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/ranges
+# resource index key is "${each.value.VLAN_ID}"
 resource "aci_ranges" "localAciExternalDomainVlanPoolRangesIteration" {
   for_each      = local.FilterlocalAciExternalDomainVlanPoolRangesIteration 
 
   annotation    = "orchestrator:terraform"
   description   = join(" ", ["VLAN-", each.value.VLAN_ID, "L3Out Transit was created via Terraform"])
-  vlan_pool_dn  = aci_vlan_pool.localAciExternalDomainVlanPoolIteration["${each.value.TENANT_NAME}"].id
+  vlan_pool_dn  = aci_vlan_pool.localAciExternalDomainVlanPoolIteration["${each.value.TENANT_NAME}:${each.value.POOL_DOMAIN}"].id
   from          = "vlan-${each.value.VLAN_ID}"
   to            = "vlan-${each.value.VLAN_ID}"
   alloc_mode    = each.value.ALLOCATION_MODE
