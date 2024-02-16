@@ -652,14 +652,26 @@ resource "aci_epg_to_domain" "localAciEpgToPhysicalDomainIteration" {
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/attachable_access_entity_profile
-# resource index key is "${each.value.TENANT_NAME}""
+# resource index key is "${each.value.TENANT_NAME}"
 resource "aci_attachable_access_entity_profile" "localAciAttachableEntityAccessProfileIteration" {
   for_each                = local.aci_attachable_access_entity_profile_rows
 
-  name                    = join("_", [each.value.TENANT_NAME, "AAEP"])
+  name                    = join("_", [each.value.TENANT_NAME,"PHYS", "AAEP"])
   description             = join(" ", [each.value.TENANT_NAME, " AAEP allows access to the associated tenant in a NCI Mode via Terraform from a CI/CD Pipeline."])
   annotation              = "orchestrator:terraform"
   relation_infra_rs_dom_p = [aci_physical_domain.localAciPhysicalDomainIteration["${each.value.TENANT_NAME}"].id]
+
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/attachable_access_entity_profile
+# resource index key is NULL
+resource "aci_attachable_access_entity_profile" "localAciGlobalAttachableEntityAccessProfileIteration" {
+  name        = "GLOBAL_PHYS_AAEP"
+  description = "Global AAEP for all tenants"
+  annotation  = "orchestrator:terraform"
+
+  # Attached to all physical domains created by terraform
+  relation_infra_rs_dom_p = values(aci_physical_domain.localAciPhysicalDomainIteration)[*].id
 
 }
 
