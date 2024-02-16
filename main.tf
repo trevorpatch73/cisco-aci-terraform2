@@ -797,6 +797,19 @@ resource "aci_contract_subject" "localAciContractSubjectIterationL3Out" {
    
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/filter_entry
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"
+resource "aci_contract_subject_filter" "localAciContractSubjectFilterIterationL3Out" {
+  for_each              = local.aci_external_network_instance_profile_rows
+
+  contract_subject_dn   = aci_contract_subject.localAciContractSubjectIterationL3Out["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
+  filter_dn             = aci_filter.localAciFilterIterationIPAny["${each.value.TENANT_NAME}"].id
+  annotation            = "orchestrator:terraform"
+  action                = "permit"
+  directives            = ["log"]
+  priority_override     = "default"
+}
+
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/filter
 # resource index key is "${each.value.TENANT_NAME}"
 resource "aci_filter" "localAciFilterIterationIPAny" {
