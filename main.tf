@@ -799,13 +799,36 @@ resource "aci_contract_subject" "localAciContractSubjectIterationL3Out" {
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/filter
 # resource index key is "${each.value.TENANT_NAME}"
-resource "aci_filter" "localAciContractFilterIterationIPAny" {
+resource "aci_filter" "localAciFilterIterationIPAny" {
   for_each    = local.aci_tenant_rows
 
   tenant_dn   = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
   name        = join("_",[each.value.TENANT_NAME, "IP", "ANY", "FILT"])
   description = "Filter for Any IP traffic"
   annotation  = "orchestrator:terraform" 
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/filter_entry
+# resource index key is "${each.value.TENANT_NAME}"
+resource "aci_filter_entry" "localAciFilterEntryIterationIpAny" {
+  for_each      = local.aci_tenant_rows
+
+  filter_dn     = aci_filter.localAciFilterIterationIPAny["${each.value.TENANT_NAME}"].id
+  annotation    = "orchestrator:terraform"
+  name          = join("_",[each.value.TENANT_NAME, "ALLOW", "IP", "ANY"])
+  apply_to_frag = "yes"
+  arp_opc       = "unspecified"
+  d_from_port   = "unspecified"
+  d_to_port     = "unspecified"
+  ether_t       = "ip"
+  icmpv4_t      = "unspecified"
+  icmpv6_t      = "unspecified"
+  match_dscp    = "unspecified"
+  prot          = "unspecified"
+  s_from_port   = "unspecified"
+  s_to_port     = "unspecified"
+  stateful      = "yes"
+
 }
 
 /*
