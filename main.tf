@@ -773,8 +773,30 @@ resource "aci_contract" "localAciContractIterationL3Out" {
   name        = join("_", [each.value.TENANT_NAME, each.value.ZONE_NAME, each.value.VRF_NAME, each.value.NEXT_HOP_TYPE, "L3OUT-EPG", "CTR"])
   description = "Defines what communication is allowed to happen in and out of the L3out EPG"
   annotation  = "orchestrator:terraform" 
-  
+  prio        = "unspecified"
+  scope       = "context"
+  target_dscp = "unspecified"
+
 }
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/contract_subject
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"
+resource "aci_contract_subject" "localAciContractSubjectIterationL3Out" {
+  for_each              = local.aci_external_network_instance_profile_rows
+
+  contract_dn           = aci_contract.localAciContractIterationL3Out["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
+  description           = "Defines what communication is allowed to happen in and out of the L3out EPG"
+  name                  = join("_", [each.value.TENANT_NAME, each.value.ZONE_NAME, each.value.VRF_NAME, each.value.NEXT_HOP_TYPE, "L3OUT-EPG", "CTR", "SUBJ"])
+  annotation            = "orchestrator:terraform" 
+  cons_match_t          = "AtleastOne"
+  prio                  = "unspecified"
+  prov_match_t          = "AtleastOne"
+  rev_flt_ports         = "yes"
+  target_dscp           = "unspecified"
+  apply_both_directions = "yes"
+   
+}
+
 
 
 /*
