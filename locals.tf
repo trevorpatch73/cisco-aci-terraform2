@@ -474,6 +474,16 @@ locals {
         }
     } 
 
+    FilterlocalAciExternalDomainVlanPoolIteration ={
+        for key, value in local.aci_vlan_pool_rows : key => value
+        if lower(value.POOL_DOMAIN) == "external"     
+    }
+
+    FilterlocalAciExternalDomainVlanPoolRangesIteration ={
+        for key, value in local.aci_ranges_rows : key => value
+        if lower(value.POOL_DOMAIN) == "external"     
+    }
+
 }
 
 

@@ -666,12 +666,24 @@ resource "aci_attachable_access_entity_profile" "localAciAttachableEntityAccessP
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/attachable_access_entity_profile
 # resource index key is NULL
 resource "aci_attachable_access_entity_profile" "localAciGlobalAttachableEntityAccessProfileIteration" {
-  name        = "GLOBAL_PHYS_AAEP"
-  description = "Global AAEP for all tenants"
-  annotation  = "orchestrator:terraform"
+  name                    = "GLOBAL_PHYS_AAEP"
+  description             = "Global AAEP for all tenants"
+  annotation              = "orchestrator:terraform"
 
   # Attached to all physical domains created by terraform
   relation_infra_rs_dom_p = values(aci_physical_domain.localAciPhysicalDomainIteration)[*].id
+
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/vlan_pool
+# resource index key is "${each.value.TENANT_NAME}:${each.value.POOL_DOMAIN}"
+resource "aci_vlan_pool" "localAciExternalDomainVlanPoolIteration" {
+  for_each    = local.FilterlocalAciExternalDomainVlanPoolIteration
+
+  name        = join("_", [each.value.TENANT_NAME, "EXT-DOM", "VLAN-POOL"])
+  description = join(" ", [each.value.TENANT_NAME, " tenant L3Out VLAN Pool was created in a NCI Mode via Terraform from a CI/CD Pipeline."])
+  annotation  = "orchestrator:terraform"
+  alloc_mode  = "static"
 
 }
 
