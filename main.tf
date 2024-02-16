@@ -746,12 +746,12 @@ resource "aci_external_network_instance_profile" "localAciExternalNetworkInstanc
   prio            = each.value.PRIO 
   target_dscp     = each.value.TARGET_DSCP
   
-  #relation_fv_rs_prov  = [aci_contract.localAciTenantAppProfVrfL3OutContractIteration[each.key].id]
-  #relation_fv_rs_cons  = [aci_contract.localAciTenantAppProfVrfL3OutContractIteration[each.key].id]
+  relation_fv_rs_prov  = [aci_contract.localAciContractIterationL3Out["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id]
+  relation_fv_rs_cons  = [aci_contract.localAciContractIterationL3Out["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id]
 
 }  
 
-# https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/l3_ext_subnet
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3_ext_subnet
 # resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ALLOWED_PREFIX}"
 resource "aci_l3_ext_subnet" "localAciL3ExtSubnetIteration" {
   for_each                              = local.aci_l3_ext_subnet_rows
@@ -762,7 +762,19 @@ resource "aci_l3_ext_subnet" "localAciL3ExtSubnetIteration" {
   annotation                            = "orchestrator:terraform" 
   scope                                 = ["${each.value.SCOPE}"]
 
-}  
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/contract
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"
+resource "aci_contract" "localAciContractIterationL3Out" {
+  for_each    = local.aci_external_network_instance_profile_rows
+
+  tenant_dn   = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
+  name        = join("_", [each.value.TENANT_NAME, each.value.ZONE_NAME, each.value.VRF_NAME, each.value.NEXT_HOP_TYPE, "L3OUT-EPG", "CTR"])
+  description = "Defines what communication is allowed to happen in and out of the L3out EPG"
+  annotation  = "orchestrator:terraform" 
+  
+}
 
 
 /*
