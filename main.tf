@@ -707,7 +707,7 @@ resource "aci_ranges" "localAciExternalDomainVlanPoolRangesIteration" {
 resource "aci_l3_domain_profile" "localAciExternalDomainIteration" {
   for_each                  = local.aci_l3_domain_profile_rows
 
-  name                      = join("_", [each.value, "EXT-DOM"])
+  name                      = join("_", [each.value.TENANT_NAME, "EXT-DOM"])
   annotation                = "orchestrator:terraform"
   relation_infra_rs_vlan_ns = aci_vlan_pool.localAciExternalDomainVlanPoolIteration["${each.value.TENANT_NAME}:${each.value.POOL_DOMAIN}"].id
 
