@@ -734,7 +734,7 @@ resource "aci_l3_outside" "localAciL3OutsideIteration" {
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/external_network_instance_profile
 # resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"
-resource "aci_external_network_instance_profile" "localAciTenantAppProfVrfL3OutEpgNgfwIteration" {
+resource "aci_external_network_instance_profile" "localAciExternalNetworkInstanceProfileIteration" {
   for_each        = local.aci_external_network_instance_profile_rows
   
   l3_outside_dn   = aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
@@ -750,6 +750,21 @@ resource "aci_external_network_instance_profile" "localAciTenantAppProfVrfL3OutE
   #relation_fv_rs_cons  = [aci_contract.localAciTenantAppProfVrfL3OutContractIteration[each.key].id]
 
 }  
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/l3_ext_subnet
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ALLOWED_PREFIX}"
+resource "aci_l3_ext_subnet" "localAciL3ExtSubnetIteration" {
+  for_each                              = local.aci_l3_ext_subnet_rows
+  
+  external_network_instance_profile_dn  = aci_external_network_instance_profile.localAciExternalNetworkInstanceProfileIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
+  description                           = "Allowed"
+  ip                                    = "${each.value.ALLOWED_PREFIX}/${each.value.ALLOWED_CIDR}"
+  annotation                            = "orchestrator:terraform" 
+  scope                                 = ["${each.value.SCOPE}"]
+
+}  
+
+
 /*
 
 */

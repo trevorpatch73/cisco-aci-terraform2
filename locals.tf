@@ -527,6 +527,21 @@ locals {
         }
     }     
 
+    aci_l3_ext_subnet_iterations = csvdecode(file("./data/aci_l3_ext_subnet.csv"))
+
+    aci_l3_ext_subnet_rows = {
+        for i in local.aci_l3_ext_subnet_iterations : 
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${i.ALLOWED_PREFIX}" => {
+             TENANT_NAME    = i.TENANT_NAME
+             ZONE_NAME      = i.ZONE_NAME
+             VRF_NAME       = i.VRF_NAME
+             NEXT_HOP_TYPE  = i.NEXT_HOP_TYPE
+             ALLOWED_PREFIX = i.ALLOWED_PREFIX
+             ALLOWED_CIDR   = i.ALLOWED_CIDR 
+             SCOPE          = i.SCOPE  
+        }
+    }   
+
 }
 
 
