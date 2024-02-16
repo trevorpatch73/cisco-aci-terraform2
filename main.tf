@@ -713,6 +713,25 @@ resource "aci_l3_domain_profile" "localAciExternalDomainIteration" {
 
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3_outside
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"
+resource "aci_l3_outside" "localAciL3OutsideIteration" {
+  for_each                      = local.aci_l3_outside_rows
+  
+  tenant_dn                     = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
+  name                          = join("_", [each.value.TENANT_NAME, each.value.ZONE_NAME, each.value.VRF_NAME, each.value.NEXT_HOP_TYPE, "L3OUT"])
+  description                   = join(" ", [each.value.ZONE_NAME, "L3Out routes to the", each.value.NEXT_HOP_TYPE ,"as part of a macro-segmentation zone via Terraform."])
+  annotation                    = "orchestrator:terraform"
+  enforce_rtctrl                = ["${each.value.ENF_RT_CTRL}"]
+  target_dscp                   = each.value.TARGET_DSCP
+  mpls_enabled                  = each.value.MPLS_ENABLED
+  pim                           = ["${each.value.PIM}"]
+  
+  relation_l3ext_rs_ectx        = aci_vrf.localAciVrfIteration["${each.value.TENANT_NAME}:${each.value.VRF_NAME}" ].id
+  relation_l3ext_rs_l3_dom_att  = aci_l3_domain_profile.localAciExternalDomainIteration["${each.value.TENANT_NAME}"].id
+
+}
+
 /*
 
 */

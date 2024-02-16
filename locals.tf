@@ -494,6 +494,22 @@ locals {
         }
     } 
 
+    aci_l3_outside_iterations = csvdecode(file("./data/aci_l3_outside.csv"))
+
+    aci_l3_outside_rows = {
+        for i in local.aci_l3_outside_iterations : 
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}" => {
+             TENANT_NAME    = i.TENANT_NAME
+             ZONE_NAME      = i.ZONE_NAME
+             VRF_NAME       = i.VRF_NAME
+             NEXT_HOP_TYPE  = i.NEXT_HOP_TYPE
+             ENF_RT_CTRL    = i.ENF_RT_CTRL
+             TARGET_DSCP    = i.TARGET_DSCP
+             MPLS_ENABLED   = i.MPLS_ENABLED
+             PIM            = i.PIM
+        }
+    } 
+
 }
 
 

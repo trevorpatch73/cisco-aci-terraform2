@@ -1,0 +1,15 @@
+TENANT_NAME,ZONE_NAME,VRF_NAME,NEXT_HOP_TYPE,ENF_RT_CTRL,TARGET_DSCP,MPLS_ENABLED,PIM
+SS,SS,DEFAULT_VRF,NGFW,export,unspecified,no,ipv4
+SS,BU1,DEFAULT_VRF,NGFW,export,unspecified,no,ipv4
+SS,BU2,DEFAULT_VRF,NGFW,export,unspecified,no,ipv4
+SS,MGMT,MGMT_VRF,NGFW,export,unspecified,no,ipv4
+SS,STORAGE,STORAGE_VRF,NGFW,export,unspecified,no,ipv4
+SS,unspecified,NO_ROUTE_VRF,NGFW,export,unspecified,no,ipv4
+BU1,FRONTEND,FRONTEND_VRF,NGFW,export,unspecified,no,ipv4
+BU1,MIDTIER,MIDTIER_VRF,NGFW,export,unspecified,no,ipv4
+BU1,BACKEND,BACKEND_VRF,NGFW,export,unspecified,no,ipv4
+BU1,MISC,MISC_VRF,NGFW,export,unspecified,no,ipv4
+BU2,FRONTEND,FRONTEND_VRF,NGFW,export,unspecified,no,ipv4
+BU2,MIDTIER,MIDTIER_VRF,NGFW,export,unspecified,no,ipv4
+BU2,BACKEND,BACKEND_VRF,NGFW,export,unspecified,no,ipv4
+BU2,MISC,MISC_VRF,NGFW,export,unspecified,no,ipv4
