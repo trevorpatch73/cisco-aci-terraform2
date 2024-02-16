@@ -844,6 +844,10 @@ resource "aci_filter_entry" "localAciFilterEntryIterationIpAny" {
 
 }
 
+###############################################
+#####  SWITCHPORT CONFIGURATION WORKFLOW ######
+###############################################
+
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/lacp_policy
 # resource index key is "${each.value.POLICY_NAME}"
 resource "aci_lacp_policy" "localAciLacpActivePolicyIteration" {
@@ -904,6 +908,36 @@ resource "aci_spanning_tree_interface_policy" "localAciSpanningTreeInterfacePoli
   annotation  = "orchestrator:terraform"
   description = "created via Terraform CI/CD Pipeline"
   ctrl        = each.value.CONTROL
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l2_interface_policy
+# resource index key is "${each.value.POLICY_NAME}"
+resource "aci_l2_interface_policy" "localAciL2InterfacePolicy" {
+  for_each    = local.aci_l2_interface_policy_rows 
+
+  name        = each.value.POLICY_NAME
+  annotation  = "orchestrator:terraform"
+  description = "created via Terraform CI/CD Pipeline"
+  qinq        = each.value.Q_In_Q
+  vepa        = each.value.vETHPORT_AGG
+  vlan_scope  = each.value.VLAN_SCOPE
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/access_port_selector
+# resource index key is "${each.value.NODE_ID}:${each.value.NODE_SLOT}:${each.value.NODE_PORT}"
+resource "aci_access_port_selector" "localAciAccessPortSelectorIteration" {
+  for_each                  = local.aci_access_port_selector_rows 
+  
+  leaf_interface_profile_dn = aci_leaf_interface_profile.localAciLeafInterfaceProfileIteration["${each.value.NODE_ID}"].id
+  name                      = join("_", ["Eth", each.value.NODE_SLOT, each.value.NODE_PORT])
+  access_port_selector_type = "range"
+  annotation                = "orchestrator:terraform"
+  
+  lifecycle {
+    ignore_changes = [
+      relation_infra_rs_acc_base_grp #bug, creates noise
+    ]
+  }  
 }
 
 /*

@@ -63,7 +63,7 @@ locals {
     aci_leaf_interface_profile_iterations = csvdecode(file("./data/aci_leaf_interface_profile.csv"))
 
     aci_leaf_interface_profile_rows = {
-        for i in local.aci_fabric_node_member_iterations : 
+        for i in local.aci_leaf_interface_profile_iterations : 
         i.NODE_ID  => {
             NODE_ID         = i.NODE_ID  
         }
@@ -600,6 +600,28 @@ locals {
         }
     }  
 
+    aci_l2_interface_policy_iterations = csvdecode(file("./data/aci_l2_interface_policy.csv"))
+
+    aci_l2_interface_policy_rows = {
+        for i in local.aci_l2_interface_policy_iterations : 
+        i.POLICY_NAME => {
+             POLICY_NAME             = i.POLICY_NAME
+             Q_In_Q                  = i.Q_In_Q
+             vETHPORT_AGG            = i.vETHPORT_AGG 
+             VLAN_SCOPE              = i.VLAN_SCOPE
+        }
+    }  
+
+    aci_access_port_selector_iterations = csvdecode(file("./data/aci_access_port_selector.csv"))
+
+    aci_access_port_selector_rows = {
+        for i in local.aci_access_port_selector_iterations : 
+        "${i.NODE_ID}:${i.NODE_SLOT}:${i.NODE_PORT}" => {
+             NODE_ID        = i.NODE_ID
+             NODE_SLOT      = i.NODE_SLOT 
+             NODE_PORT      = i.NODE_PORT
+        }
+    } 
 }
 
 
