@@ -737,7 +737,7 @@ resource "aci_l3_outside" "localAciL3OutsideIteration" {
 resource "aci_external_network_instance_profile" "localAciTenantAppProfVrfL3OutEpgNgfwIteration" {
   for_each        = local.aci_external_network_instance_profile_rows
   
-  l3_outside_dn   = aci_l3_outside.localAciTenantAppProfVrfL3OutProfNgfwIteration[each.key].id
+  l3_outside_dn   = aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
   name            = join("_", [each.value.TENANT_NAME, each.value.ZONE_NAME, each.value.VRF_NAME, each.value.NEXT_HOP_TYPE, "L3OUT-EPG"])
   annotation      = "orchestrator:terraform"  
   flood_on_encap  = each.value.FLOOD_ON_ENCAP
