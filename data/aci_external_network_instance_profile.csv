@@ -1,0 +1,17 @@
+TENANT_NAME,ZONE_NAME,VRF_NAME,NEXT_HOP_TYPE,FLOOD_ON_ENCAP,MATCH_T,PREF_GR_MEMB,PRIO,TARGET_DSCP
+SS,SS,DEFAULT_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified
+SS,BU1,DEFAULT_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified
+SS,BU2,DEFAULT_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified
+SS,ADC,ADC_VRF,F5,disabled,AtleastOne,exclude,unspecified,unspecified
+SS,MGMT,MGMT_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified
+SS,STORAGE,STORAGE_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified
+BU1,ADC,ADC_VRF,F5,disabled,AtleastOne,exclude,unspecified,unspecified
+BU1,FRONTEND,FRONTEND_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified
+BU1,MIDTIER,MIDTIER_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified
+BU1,BACKEND,BACKEND_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified
+BU1,MISC,MISC_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified
+BU2,ADC,ADC_VRF,F5,disabled,AtleastOne,exclude,unspecified,unspecified
+BU2,FRONTEND,FRONTEND_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified
+BU2,MIDTIER,MIDTIER_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified
+BU2,BACKEND,BACKEND_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified
+BU2,MISC,MISC_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified

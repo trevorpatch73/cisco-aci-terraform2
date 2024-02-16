@@ -1,12 +1,15 @@
 TENANT_NAME,ZONE_NAME,VRF_NAME,BD_ENF,IP_DATA_PLANE_LRN,KNWN_MCAST_FWD,POL_ENF_DIR,POL_ENF_PREF
 SS,unspecified,DEFAULT_VRF,no,disabled,deny,ingress,unenforced
+SS,ADC,ADC_VRF,yes,enabled,deny,ingress,enforced
 SS,MGMT,MGMT_VRF,yes,enabled,deny,ingress,enforced
 SS,STORAGE,STORAGE_VRF,yes,enabled,deny,ingress,enforced
 SS,unspecified,NO_ROUTE_VRF,yes,enabled,deny,ingress,enforced
+BU1,ADC,ADC_VRF,yes,enabled,deny,ingress,enforced
 BU1,FRONTEND,FRONTEND_VRF,yes,enabled,deny,ingress,enforced
 BU1,MIDTIER,MIDTIER_VRF,yes,enabled,deny,ingress,enforced
 BU1,BACKEND,BACKEND_VRF,yes,enabled,deny,ingress,enforced
 BU1,MISC,MISC_VRF,yes,enabled,deny,ingress,enforced
+BU2,ADC,ADC_VRF,yes,enabled,deny,ingress,enforced
 BU2,FRONTEND,FRONTEND_VRF,yes,enabled,deny,ingress,enforced
 BU2,MIDTIER,MIDTIER_VRF,yes,enabled,deny,ingress,enforced
 BU2,BACKEND,BACKEND_VRF,yes,enabled,deny,ingress,enforced

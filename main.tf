@@ -732,6 +732,24 @@ resource "aci_l3_outside" "localAciL3OutsideIteration" {
 
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/external_network_instance_profile
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"
+resource "aci_external_network_instance_profile" "localAciTenantAppProfVrfL3OutEpgNgfwIteration" {
+  for_each        = local.aci_external_network_instance_profile_rows
+  
+  l3_outside_dn   = aci_l3_outside.localAciTenantAppProfVrfL3OutProfNgfwIteration[each.key].id
+  name            = join("_", [each.value.TENANT_NAME, each.value.ZONE_NAME, each.value.VRF_NAME, each.value.NEXT_HOP_TYPE, "L3OUT-EPG"])
+  annotation      = "orchestrator:terraform"  
+  flood_on_encap  = each.value.FLOOD_ON_ENCAP
+  match_t         = each.value.MATCH_T
+  pref_gr_memb    = each.value.PREF_GR_MEMB
+  prio            = each.value.PRIO 
+  target_dscp     = each.value.TARGET_DSCP
+  
+  #relation_fv_rs_prov  = [aci_contract.localAciTenantAppProfVrfL3OutContractIteration[each.key].id]
+  #relation_fv_rs_cons  = [aci_contract.localAciTenantAppProfVrfL3OutContractIteration[each.key].id]
+
+}  
 /*
 
 */
