@@ -940,6 +940,27 @@ resource "aci_access_port_selector" "localAciAccessPortSelectorIteration" {
   }  
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/access_port_selector
+# resource index key is "${each.value.NODE_ID}:${each.value.NODE_SLOT}:${each.value.NODE_PORT}"
+resource "aci_access_port_block" "localAciAccessPortBlockIteration" {
+  for_each                          = local.aci_access_port_selector_rows
+
+  access_port_selector_dn           = aci_access_port_selector.localAciAccessPortSelectorIteration["${each.value.NODE_ID}:${each.value.NODE_SLOT}:${each.value.NODE_PORT}"].id
+  name                              = join("_", ["Eth", each.value.NODE_SLOT, each.value.NODE_PORT])
+  annotation                        = "orchestrator:terraform"
+  from_card                         = "${each.value.NODE_SLOT}"
+  from_port                         = "${each.value.NODE_PORT}"
+  to_card                           = "${each.value.NODE_SLOT}"
+  to_port                           = "${each.value.NODE_PORT}"
+
+  lifecycle {
+    ignore_changes = [
+      description,
+      relation_infra_rs_acc_bndl_subgrp
+    ]
+  }   
+}
+
 /*
 
 */
