@@ -624,6 +624,8 @@ resource "aci_physical_domain" "localAciPhysicalDomainIteration" {
   relation_infra_rs_vlan_ns = aci_vlan_pool.localAciPhysicalDomainVlanPoolIteration["${each.value.TENANT_NAME}:${each.value.POOL_DOMAIN}"].id
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/epg_to_domain
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME }:${each.value.APPLICATION_NAME}:${each.value.VLAN_ID}:${each.value.DOMAIN_TYPE}"
 resource "aci_epg_to_domain" "localAciEpgToPhysicalDomainIteration" {
   for_each              = local.FilterlocalAciEpgToPhysicalDomainIteration
 
@@ -646,6 +648,18 @@ resource "aci_epg_to_domain" "localAciEpgToPhysicalDomainIteration" {
   primary_encap_inner   = each.value.PRIMARY_ENCAP_INNER
   res_imedcy            = each.value.RESOLUTION_IMMEDIACY
   switching_mode        = each.value.SWITCHING_MODE
+
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/attachable_access_entity_profile
+# resource index key is "${each.value.TENANT_NAME}""
+resource "aci_attachable_access_entity_profile" "localAciAttachableEntityAccessProfileIteration" {
+  for_each                = local.aci_attachable_access_entity_profile_rows
+
+  name                    = join("_", [each.value.TENANT_NAME, "AAEP"])
+  description             = join(" ", [each.value.TENANT_NAME, " AAEP allows access to the associated tenant in a NCI Mode via Terraform from a CI/CD Pipeline."])
+  annotation              = "orchestrator:terraform"
+  relation_infra_rs_dom_p = [aci_physical_domain.localAciPhysicalDomainIteration["${each.value.TENANT_NAME}"].id]
 
 }
 

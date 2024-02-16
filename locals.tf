@@ -465,6 +465,15 @@ locals {
         if lower(value.DOMAIN_TYPE) == "physical"     
     }
 
+    aci_attachable_access_entity_profile_iterations = csvdecode(file("./data/aci_attachable_access_entity_profile.csv"))
+
+    aci_attachable_access_entity_profile_rows = {
+        for i in local.aci_attachable_access_entity_profile_iterations : 
+        i.TENANT_NAME => {
+             TENANT_NAME     = i.TENANT_NAME
+        }
+    } 
+
 }
 
 
