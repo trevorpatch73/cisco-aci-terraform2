@@ -653,7 +653,7 @@ resource "aci_epg_to_domain" "localAciEpgToPhysicalDomainIteration" {
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/attachable_access_entity_profile
 # resource index key is "${each.value.TENANT_NAME}"
-resource "aci_attachable_access_entity_profile" "localAciAttachableEntityAccessProfileIteration" {
+resource "aci_attachable_access_entity_profile" "localAciAttachableEntityAccessProfileIterationPhysical" {
   for_each                = local.aci_attachable_access_entity_profile_rows
 
   name                    = join("_", [each.value.TENANT_NAME,"PHYS", "AAEP"])
@@ -665,13 +665,38 @@ resource "aci_attachable_access_entity_profile" "localAciAttachableEntityAccessP
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/attachable_access_entity_profile
 # resource index key is NULL
-resource "aci_attachable_access_entity_profile" "localAciGlobalAttachableEntityAccessProfileIteration" {
+resource "aci_attachable_access_entity_profile" "localAciGlobalAttachableEntityAccessProfileIterationPhysical" {
   name                    = "GLOBAL_PHYS_AAEP"
   description             = "Global AAEP for all tenants"
   annotation              = "orchestrator:terraform"
 
   # Attached to all physical domains created by terraform
   relation_infra_rs_dom_p = values(aci_physical_domain.localAciPhysicalDomainIteration)[*].id
+
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/attachable_access_entity_profile
+# resource index key is "${each.value.TENANT_NAME}"
+resource "aci_attachable_access_entity_profile" "localAciAttachableEntityAccessProfileIterationExternal" {
+  for_each                = local.aci_attachable_access_entity_profile_rows
+
+  name                    = join("_", [each.value.TENANT_NAME,"EXT", "AAEP"])
+  description             = join(" ", [each.value.TENANT_NAME, " AAEP allows access to the associated tenant in a NCI Mode via Terraform from a CI/CD Pipeline."])
+  annotation              = "orchestrator:terraform"
+
+  relation_infra_rs_dom_p = [aci_l3_domain_profile.localAciExternalDomainIteration["${each.value.TENANT_NAME}"].id]
+
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/attachable_access_entity_profile
+# resource index key is NULL
+resource "aci_attachable_access_entity_profile" "localAciGlobalAttachableEntityAccessProfileIterationExternal" {
+  name                    = "GLOBAL_EXT_AAEP"
+  description             = "Global AAEP for all tenants"
+  annotation              = "orchestrator:terraform"
+
+  # Attached to all physical domains created by terraform
+  relation_infra_rs_dom_p = values(aci_l3_domain_profile.localAciExternalDomainIteration)[*].id
 
 }
 
@@ -912,7 +937,7 @@ resource "aci_spanning_tree_interface_policy" "localAciSpanningTreeInterfacePoli
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l2_interface_policy
 # resource index key is "${each.value.POLICY_NAME}"
-resource "aci_l2_interface_policy" "localAciL2InterfacePolicy" {
+resource "aci_l2_interface_policy" "localAciL2InterfacePolicyIteration" {
   for_each    = local.aci_l2_interface_policy_rows 
 
   name        = each.value.POLICY_NAME
@@ -930,23 +955,26 @@ resource "aci_access_port_selector" "localAciAccessPortSelectorIteration" {
   
   leaf_interface_profile_dn = aci_leaf_interface_profile.localAciLeafInterfaceProfileIteration["${each.value.NODE_ID}"].id
   name                      = join("_", ["Eth", each.value.NODE_SLOT, each.value.NODE_PORT])
+  description               = join("_", [each.value.ENDPOINT_NAME, each.value.ENDPOINT_SLOT, each.value.ENDPOINT_PORT])
   access_port_selector_type = "range"
   annotation                = "orchestrator:terraform"
   
   lifecycle {
     ignore_changes = [
+      description,
       relation_infra_rs_acc_base_grp #bug, creates noise
     ]
   }  
 }
 
-# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/access_port_selector
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/access_port_block
 # resource index key is "${each.value.NODE_ID}:${each.value.NODE_SLOT}:${each.value.NODE_PORT}"
 resource "aci_access_port_block" "localAciAccessPortBlockIteration" {
   for_each                          = local.aci_access_port_selector_rows
 
   access_port_selector_dn           = aci_access_port_selector.localAciAccessPortSelectorIteration["${each.value.NODE_ID}:${each.value.NODE_SLOT}:${each.value.NODE_PORT}"].id
   name                              = join("_", ["Eth", each.value.NODE_SLOT, each.value.NODE_PORT])
+  description                       = join("_", [each.value.ENDPOINT_NAME, each.value.ENDPOINT_SLOT, each.value.ENDPOINT_PORT])
   annotation                        = "orchestrator:terraform"
   from_card                         = "${each.value.NODE_SLOT}"
   from_port                         = "${each.value.NODE_PORT}"
@@ -955,10 +983,177 @@ resource "aci_access_port_block" "localAciAccessPortBlockIteration" {
 
   lifecycle {
     ignore_changes = [
-      description,
       relation_infra_rs_acc_bndl_subgrp
     ]
   }   
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/leaf_access_port_policy_group
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ENDPOINT_MAKE}:${each.value.ENDPOINT_MODEL}:${each.value.ENDPOINT_OS}:${each.value.ENDPOINT_INTERFACE_TYPE}" 
+resource "aci_leaf_access_port_policy_group" "localAciLeafAccessPortPolicyGroupPhysical" {
+  for_each                      = local.FilterlocalAciLeafAccessPortPolicyGroupPhysical
+  
+  name                          = join("_",[each.value.TENANT_NAME, each.value.ENDPOINT_MAKE, each.value.ENDPOINT_MODEL, each.value.ENDPOINT_OS, each.value.ENDPOINT_INTERFACE_TYPE, "INT_POL_GRP"])
+  description                   = join(" ",["Affects all", each.value.ENDPOINT_MAKE, each.value.ENDPOINT_MODEL, each.value.ENDPOINT_OS, each.value.ENDPOINT_INTERFACE_TYPE, "interface policy settings within tenant", each.value.TENANT_NAME])
+  annotation                    = "orchestrator:terraform"
+  
+  # Attachable Access Entity Profile:
+  relation_infra_rs_att_ent_p   = lower(each.value.TENANT_NAME) != "global" ? aci_attachable_access_entity_profile.localAciAttachableEntityAccessProfileIterationPhysical["${each.value.TENANT_NAME}"].id : aci_attachable_access_entity_profile.localAciGlobalAttachableEntityAccessProfileIterationPhysical.id
+  
+  # L2 Interface Policy:
+  relation_infra_rs_l2_if_pol   = aci_l2_interface_policy.localAciL2InterfacePolicyIteration["${each.value.L2_POLICY_NAME}"].id 
+
+  # Spanning Treee Interface Policy:
+  relation_infra_rs_stp_if_pol  = aci_spanning_tree_interface_policy.localAciSpanningTreeInterfacePolicyIteration["${each.value.STP_POLICY_NAME}"].id 
+
+  # CDP Neighbors Interface Policy:
+  relation_infra_rs_cdp_if_pol  = aci_cdp_interface_policy.localAciCdpInterfacePolicyIteration["${each.CDP_value.POLICY_NAME}"].id 
+
+  # Miscabling Procotol Interface Policy:
+  relation_infra_rs_mcp_if_pol  = aci_miscabling_protocol_interface_policy.localAciMiscablingProtocolInterfacePolicy["${each.value.MCP_POLICY_NAME}"].id 
+
+  # LLDP Interface Policy:
+  relation_infra_rs_lldp_if_pol = aci_lldp_interface_policy.localAciLldpInterfacePolicyIteration["${each.value.LLDP_POLICY_NAME}"].id 
+
+  lifecycle {
+    ignore_changes = [
+      relation_infra_rs_qos_egress_dpp_if_pol,
+      relation_infra_rs_l2_inst_pol,
+      relation_infra_rs_qos_ingress_dpp_if_pol,
+      relation_infra_rs_fc_if_pol,
+      relation_infra_rs_mon_if_infra_pol,
+      relation_infra_rs_qos_sd_if_pol,
+      relation_infra_rs_qos_pfc_if_pol,
+      relation_infra_rs_dwdm_if_pol,
+      relation_infra_rs_span_v_dest_grp,
+      relation_infra_rs_copp_if_pol,
+      relation_infra_rs_l2_port_security_pol,
+      relation_infra_rs_l2_port_auth_pol,
+      relation_infra_rs_netflow_monitor_pol,
+      relation_infra_rs_h_if_pol,
+      relation_infra_rs_qos_dpp_if_pol,
+      relation_infra_rs_macsec_if_pol,
+      relation_infra_rs_poe_if_pol,
+      relation_infra_rs_stormctrl_if_pol,
+      relation_infra_rs_span_v_src_grp
+    ]
+  }  
+
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/leaf_access_port_policy_group
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ENDPOINT_MAKE}:${each.value.ENDPOINT_MODEL}:${each.value.ENDPOINT_OS}:${each.value.ENDPOINT_INTERFACE_TYPE}" 
+resource "aci_leaf_access_port_policy_group" "localAciLeafAccessPortPolicyGroupExternal" {
+  for_each    = local.FilterlocalAciLeafAccessPortPolicyGroupExternal
+  
+  name        = join("_",[each.value.TENANT_NAME, each.value.ENDPOINT_MAKE, each.value.ENDPOINT_MODEL, each.value.ENDPOINT_OS, each.value.ENDPOINT_INTERFACE_TYPE, "INT_POL_GRP"])
+  description = join(" ",["Affects all", each.value.ENDPOINT_MAKE, each.value.ENDPOINT_MODEL, each.value.ENDPOINT_OS, each.value.ENDPOINT_INTERFACE_TYPE, "interface policy settings within tenant", each.value.TENANT_NAME])
+  annotation  = "orchestrator:terraform"
+  
+  #Attachable Access Entity Profile:
+  relation_infra_rs_att_ent_p   = lower(each.value.TENANT_NAME) != "global" ? aci_attachable_access_entity_profile.localAciAttachableEntityAccessProfileIterationExternal["${each.value.TENANT_NAME}"].id : aci_attachable_access_entity_profile.localAciGlobalAttachableEntityAccessProfileIterationExternal.id
+
+  # L2 Interface Policy:
+  relation_infra_rs_l2_if_pol   = aci_l2_interface_policy.localAciL2InterfacePolicyIteration["${each.value.L2_POLICY_NAME}"].id 
+
+  # Spanning Treee Interface Policy:
+  relation_infra_rs_stp_if_pol  = aci_spanning_tree_interface_policy.localAciSpanningTreeInterfacePolicyIteration["${each.value.STP_POLICY_NAME}"].id 
+
+  # CDP Neighbors Interface Policy:
+  relation_infra_rs_cdp_if_pol  = aci_cdp_interface_policy.localAciCdpInterfacePolicyIteration["${each.value.CDP_POLICY_NAME}"].id 
+
+  # Miscabling Procotol Interface Policy:
+  relation_infra_rs_mcp_if_pol  = aci_miscabling_protocol_interface_policy.localAciMiscablingProtocolInterfacePolicy["${each.value.MCP_POLICY_NAME}"].id 
+
+  # LLDP Interface Policy:
+  relation_infra_rs_lldp_if_pol = aci_lldp_interface_policy.localAciLldpInterfacePolicyIteration["${each.value.LLDP_POLICY_NAME}"].id 
+
+  lifecycle {
+    ignore_changes = [
+      relation_infra_rs_qos_egress_dpp_if_pol,
+      relation_infra_rs_l2_inst_pol,
+      relation_infra_rs_qos_ingress_dpp_if_pol,
+      relation_infra_rs_fc_if_pol,
+      relation_infra_rs_mon_if_infra_pol,
+      relation_infra_rs_qos_sd_if_pol,
+      relation_infra_rs_qos_pfc_if_pol,
+      relation_infra_rs_dwdm_if_pol,
+      relation_infra_rs_span_v_dest_grp,
+      relation_infra_rs_copp_if_pol,
+      relation_infra_rs_l2_port_security_pol,
+      relation_infra_rs_l2_port_auth_pol,
+      relation_infra_rs_netflow_monitor_pol,
+      relation_infra_rs_h_if_pol,
+      relation_infra_rs_qos_dpp_if_pol,
+      relation_infra_rs_macsec_if_pol,
+      relation_infra_rs_poe_if_pol,
+      relation_infra_rs_stormctrl_if_pol,
+      relation_infra_rs_span_v_src_grp
+    ]
+  }  
+
+}
+
+resource "aci_leaf_access_bundle_policy_group" "localAciLeafAccessBundlePolicyGroupIterationPhysical" {
+  for_each                        = local.FilterlocalAciLeafAccessBundlePolicyGroupIterationPhysical
+
+  name                            = lower(each.value.BOND_TYPE) == "vpc" ? join("_",["VPC", "L2", each.value.TENANT_NAME, each.value.ENDPOINT_NAME, each.value.ENDPOINT_INTERFACE_TYPE, "INT_POL_GRP"]) : join("_",["PC", "L2", each.value.TENANT_NAME, each.value.ENDPOINT_NAME, each.value.ENDPOINT_INTERFACE_TYPE, "INT_POL_GRP"])
+  annotation                      = "orchestrator:terraform"
+  description                     = join(" ",[each.value.ENDPOINT_NAME, each.value.ENDPOINT_MAKE, each.value.ENDPOINT_MODEL, each.value.ENDPOINT_OS, each.value.ENDPOINT_INTERFACE_TYPE ])
+  lag_t                           = lower(each.value.BOND_TYPE) == "vpc" ? "node" : "link"
+
+  #Attachable Access Entity Profile:
+  relation_infra_rs_att_ent_p     = lower(each.value.TENANT_NAME) != "global" ? aci_attachable_access_entity_profile.localAciAttachableEntityAccessProfileIterationPhysical["${each.value.TENANT_NAME}"].id : aci_attachable_access_entity_profile.localAciGlobalAttachableEntityAccessProfileIterationPhysical.id
+  
+  # LACP Policy:
+  relation_infra_rs_lacp_pol      = aci_lacp_policy.localAciLacpActivePolicyIteration["${each.value.LACP_POLICY_NAME}"].id 
+
+  # L2 Interface Policy:
+  relation_infra_rs_l2_if_pol     = aci_l2_interface_policy.localAciL2InterfacePolicyIteration["${each.value.L2_POLICY_NAME}"].id 
+
+  # Spanning Treee Interface Policy:
+  relation_infra_rs_stp_if_pol    = aci_spanning_tree_interface_policy.localAciSpanningTreeInterfacePolicyIteration["${each.value.STP_POLICY_NAME}"].id 
+
+  # CDP Neighbors Interface Policy:
+  relation_infra_rs_cdp_if_pol    = aci_cdp_interface_policy.localAciCdpInterfacePolicyIteration["${each.value.CDP_POLICY_NAME}"].id 
+
+  # Miscabling Procotol Interface Policy:
+  relation_infra_rs_mcp_if_pol    = aci_miscabling_protocol_interface_policy.localAciMiscablingProtocolInterfacePolicy["${each.value.MCP_POLICY_NAME}"].id 
+
+  # LLDP Interface Policy:
+  relation_infra_rs_lldp_if_pol   = aci_lldp_interface_policy.localAciLldpInterfacePolicyIteration["${each.value.LLDP_POLICY_NAME}"].id 
+
+}
+
+resource "aci_leaf_access_bundle_policy_group" "localAciLeafAccessBundlePolicyGroupIterationExternal" {
+  for_each                        = local.FilterlocalAciLeafAccessBundlePolicyGroupIterationExternal
+
+  name                            = lower(each.value.BOND_TYPE) == "vpc" ? join("_",["VPC", "L3", each.value.TENANT_NAME, each.value.ENDPOINT_NAME, each.value.ENDPOINT_INTERFACE_TYPE, "INT_POL_GRP"]) : join("_",["PC", "L3", each.value.TENANT_NAME, each.value.ENDPOINT_NAME, each.value.ENDPOINT_INTERFACE_TYPE, "INT_POL_GRP"])
+  annotation                      = "orchestrator:terraform"
+  description                     = join(" ",[each.value.ENDPOINT_NAME, each.value.ENDPOINT_MAKE, each.value.ENDPOINT_MODEL, each.value.ENDPOINT_OS, each.value.ENDPOINT_INTERFACE_TYPE ])
+  lag_t                           = lower(each.value.BOND_TYPE) == "vpc" ? "node" : "link"
+
+  #Attachable Access Entity Profile:
+  relation_infra_rs_att_ent_p     = lower(each.value.TENANT_NAME) != "global" ? aci_attachable_access_entity_profile.localAciAttachableEntityAccessProfileIterationExternal["${each.value.TENANT_NAME}"].id : aci_attachable_access_entity_profile.localAciGlobalAttachableEntityAccessProfileIterationExternal.id
+  
+  # LACP Policy:
+  relation_infra_rs_lacp_pol      = aci_lacp_policy.localAciLacpActivePolicyIteration["${each.value.LACP_POLICY_NAME}"].id 
+
+  # L2 Interface Policy:
+  relation_infra_rs_l2_if_pol     = aci_l2_interface_policy.localAciL2InterfacePolicyIteration["${each.value.L2_POLICY_NAME}"].id 
+
+  # Spanning Treee Interface Policy:
+  relation_infra_rs_stp_if_pol    = aci_spanning_tree_interface_policy.localAciSpanningTreeInterfacePolicyIteration["${each.value.STP_POLICY_NAME}"].id 
+
+  # CDP Neighbors Interface Policy:
+  relation_infra_rs_cdp_if_pol    = aci_cdp_interface_policy.localAciCdpInterfacePolicyIteration["${each.value.CDP_POLICY_NAME}"].id 
+
+  # Miscabling Procotol Interface Policy:
+  relation_infra_rs_mcp_if_pol    = aci_miscabling_protocol_interface_policy.localAciMiscablingProtocolInterfacePolicy["${each.value.MCP_POLICY_NAME}"].id 
+
+  # LLDP Interface Policy:
+  relation_infra_rs_lldp_if_pol   = aci_lldp_interface_policy.localAciLldpInterfacePolicyIteration["${each.value.LLDP_POLICY_NAME}"].id 
+
 }
 
 /*

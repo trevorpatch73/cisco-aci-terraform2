@@ -620,8 +620,73 @@ locals {
              NODE_ID        = i.NODE_ID
              NODE_SLOT      = i.NODE_SLOT 
              NODE_PORT      = i.NODE_PORT
+             ENDPOINT_NAME  = i.ENDPOINT_NAME
+             ENDPOINT_SLOT  = i.ENDPOINT_SLOT
+             ENDPOINT_PORT  = i.ENDPOINT_PORT
         }
     } 
+
+    aci_leaf_access_port_policy_group_iterations = csvdecode(file("./data/aci_leaf_access_port_policy_group.csv"))
+
+    aci_leaf_access_port_policy_group_rows = {
+        for i in local.aci_leaf_access_port_policy_group_iterations : 
+        "${i.TENANT_NAME}:${i.ENDPOINT_MAKE}:${i.ENDPOINT_MODEL}:${i.ENDPOINT_OS}:${i.ENDPOINT_INTERFACE_TYPE}" => {
+             TENANT_NAME                = i.TENANT_NAME
+             ENDPOINT_MAKE              = i.ENDPOINT_MAKE 
+             ENDPOINT_MODEL             = i.ENDPOINT_MODEL
+             ENDPOINT_OS                = i.ENDPOINT_OS
+             ENDPOINT_INTERFACE_TYPE    = i.ENDPOINT_INTERFACE_TYPE
+             DOMAIN_TYPE                = i.DOMAIN_TYPE
+             CDP_POLICY_NAME            = i.CDP_POLICY_NAME 
+             LLDP_POLICY_NAME           = i.LLDP_POLICY_NAME
+             L2_POLICY_NAME             = i.L2_POLICY_NAME
+             STP_POLICY_NAME            = i.STP_POLICY_NAME
+             MCP_POLICY_NAME            = i.MCP_POLICY_NAME 
+        }
+    } 
+
+    FilterlocalAciLeafAccessPortPolicyGroupPhysical ={
+        for key, value in local.aci_ranges_rows : key => value
+        if lower(value.DOMAIN_TYPE) == "physical"     
+    }
+
+    FilterlocalAciLeafAccessPortPolicyGroupExternal ={
+        for key, value in local.aci_ranges_rows : key => value
+        if lower(value.DOMAIN_TYPE) == "external"     
+    }
+
+    aci_leaf_access_bundle_policy_group_iterations = csvdecode(file("./data/aci_leaf_access_bundle_policy_group.csv"))
+
+    aci_leaf_access_bundle_policy_group_rows = {
+        for i in local.aci_leaf_access_bundle_policy_group_iterations : 
+        "${i.TENANT_NAME}:${i.ENDPOINT_NAME}:${i.ENDPOINT_INTERFACE_TYPE}" => {
+             TENANT_NAME                = i.TENANT_NAME
+             ENDPOINT_NAME              = i.ENDPOINT_NAME
+             ENDPOINT_MAKE              = i.ENDPOINT_MAKE 
+             ENDPOINT_MODEL             = i.ENDPOINT_MODEL
+             ENDPOINT_OS                = i.ENDPOINT_OS
+             ENDPOINT_INTERFACE_TYPE    = i.ENDPOINT_INTERFACE_TYPE
+             DOMAIN_TYPE                = i.DOMAIN_TYPE
+             BOND_TYPE                  = i.BOND_TYPE
+             LACP_POLICY_NAME           = i.LACP_POLICY_NAME
+             CDP_POLICY_NAME            = i.CDP_POLICY_NAME 
+             LLDP_POLICY_NAME           = i.LLDP_POLICY_NAME 
+             L2_POLICY_NAME             = i.L2_POLICY_NAME
+             STP_POLICY_NAME            = i.STP_POLICY_NAME
+             MCP_POLICY_NAME            = i.MCP_POLICY_NAME
+        }
+    }
+
+    FilterlocalAciLeafAccessBundlePolicyGroupIterationPhysical ={
+        for key, value in local.aci_ranges_rows : key => value
+        if lower(value.DOMAIN_TYPE) == "physical"     
+    }
+
+    FilterlocalAciLeafAccessBundlePolicyGroupIterationExternal ={
+        for key, value in local.aci_ranges_rows : key => value
+        if lower(value.DOMAIN_TYPE) == "external"     
+    }
+
 }
 
 
