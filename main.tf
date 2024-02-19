@@ -1094,6 +1094,8 @@ resource "aci_leaf_access_port_policy_group" "localAciLeafAccessPortPolicyGroupE
 
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/leaf_access_bundle_policy_group
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}"
 resource "aci_leaf_access_bundle_policy_group" "localAciLeafAccessBundlePolicyGroupIterationPhysical" {
   for_each                        = local.FilterlocalAciLeafAccessBundlePolicyGroupIterationPhysical
 
@@ -1123,8 +1125,32 @@ resource "aci_leaf_access_bundle_policy_group" "localAciLeafAccessBundlePolicyGr
   # LLDP Interface Policy:
   relation_infra_rs_lldp_if_pol   = aci_lldp_interface_policy.localAciLldpInterfacePolicyIteration["${each.value.LLDP_POLICY_NAME}"].id 
 
+  lifecycle {
+    ignore_changes = [
+      relation_infra_rs_span_v_src_grp,
+      relation_infra_rs_stormctrl_if_pol,
+      relation_infra_rs_macsec_if_pol,
+      relation_infra_rs_qos_dpp_if_pol,
+      relation_infra_rs_h_if_pol,
+      relation_infra_rs_netflow_monitor_pol,
+      relation_infra_rs_l2_port_auth_pol,
+      relation_infra_rs_l2_port_security_pol,
+      relation_infra_rs_copp_if_pol,
+      relation_infra_rs_span_v_dest_grp,
+      relation_infra_rs_qos_pfc_if_pol,
+      relation_infra_rs_qos_sd_if_pol,
+      relation_infra_rs_mon_if_infra_pol,
+      relation_infra_rs_fc_if_pol,
+      relation_infra_rs_qos_ingress_dpp_if_pol,
+      relation_infra_rs_qos_egress_dpp_if_pol,
+      relation_infra_rs_l2_inst_pol
+    ]
+  } 
+
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/leaf_access_bundle_policy_group
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}"
 resource "aci_leaf_access_bundle_policy_group" "localAciLeafAccessBundlePolicyGroupIterationExternal" {
   for_each                        = local.FilterlocalAciLeafAccessBundlePolicyGroupIterationExternal
 
@@ -1153,6 +1179,28 @@ resource "aci_leaf_access_bundle_policy_group" "localAciLeafAccessBundlePolicyGr
 
   # LLDP Interface Policy:
   relation_infra_rs_lldp_if_pol   = aci_lldp_interface_policy.localAciLldpInterfacePolicyIteration["${each.value.LLDP_POLICY_NAME}"].id 
+
+  lifecycle {
+    ignore_changes = [
+      relation_infra_rs_span_v_src_grp,
+      relation_infra_rs_stormctrl_if_pol,
+      relation_infra_rs_macsec_if_pol,
+      relation_infra_rs_qos_dpp_if_pol,
+      relation_infra_rs_h_if_pol,
+      relation_infra_rs_netflow_monitor_pol,
+      relation_infra_rs_l2_port_auth_pol,
+      relation_infra_rs_l2_port_security_pol,
+      relation_infra_rs_copp_if_pol,
+      relation_infra_rs_span_v_dest_grp,
+      relation_infra_rs_qos_pfc_if_pol,
+      relation_infra_rs_qos_sd_if_pol,
+      relation_infra_rs_mon_if_infra_pol,
+      relation_infra_rs_fc_if_pol,
+      relation_infra_rs_qos_ingress_dpp_if_pol,
+      relation_infra_rs_qos_egress_dpp_if_pol,
+      relation_infra_rs_l2_inst_pol
+    ]
+  } 
 
 }
 
