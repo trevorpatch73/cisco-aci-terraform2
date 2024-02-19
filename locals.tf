@@ -646,12 +646,12 @@ locals {
     } 
 
     FilterlocalAciLeafAccessPortPolicyGroupPhysical ={
-        for key, value in local.aci_ranges_rows : key => value
+        for key, value in local.aci_leaf_access_port_policy_group_rows : key => value
         if lower(value.DOMAIN_TYPE) == "physical"     
     }
 
     FilterlocalAciLeafAccessPortPolicyGroupExternal ={
-        for key, value in local.aci_ranges_rows : key => value
+        for key, value in local.aci_leaf_access_port_policy_group_rows : key => value
         if lower(value.DOMAIN_TYPE) == "external"     
     }
 
@@ -678,12 +678,12 @@ locals {
     }
 
     FilterlocalAciLeafAccessBundlePolicyGroupIterationPhysical ={
-        for key, value in local.aci_ranges_rows : key => value
+        for key, value in local.aci_leaf_access_bundle_policy_group_rows : key => value
         if lower(value.DOMAIN_TYPE) == "physical"     
     }
 
     FilterlocalAciLeafAccessBundlePolicyGroupIterationExternal ={
-        for key, value in local.aci_ranges_rows : key => value
+        for key, value in local.aci_leaf_access_bundle_policy_group_rows : key => value
         if lower(value.DOMAIN_TYPE) == "external"     
     }
 
