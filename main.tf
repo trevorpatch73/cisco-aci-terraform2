@@ -1007,7 +1007,7 @@ resource "aci_leaf_access_port_policy_group" "localAciLeafAccessPortPolicyGroupP
   relation_infra_rs_stp_if_pol  = aci_spanning_tree_interface_policy.localAciSpanningTreeInterfacePolicyIteration["${each.value.STP_POLICY_NAME}"].id 
 
   # CDP Neighbors Interface Policy:
-  relation_infra_rs_cdp_if_pol  = aci_cdp_interface_policy.localAciCdpInterfacePolicyIteration["${each.CDP_value.POLICY_NAME}"].id 
+  relation_infra_rs_cdp_if_pol  = aci_cdp_interface_policy.localAciCdpInterfacePolicyIteration["${each.value.CDP_POLICY_NAME}"].id 
 
   # Miscabling Procotol Interface Policy:
   relation_infra_rs_mcp_if_pol  = aci_miscabling_protocol_interface_policy.localAciMiscablingProtocolInterfacePolicy["${each.value.MCP_POLICY_NAME}"].id 
