@@ -617,14 +617,32 @@ locals {
     aci_access_port_selector_rows = {
         for i in local.aci_access_port_selector_iterations : 
         "${i.NODE_ID}:${i.NODE_SLOT}:${i.NODE_PORT}" => {
-             NODE_ID        = i.NODE_ID
-             NODE_SLOT      = i.NODE_SLOT 
-             NODE_PORT      = i.NODE_PORT
-             ENDPOINT_NAME  = i.ENDPOINT_NAME
-             ENDPOINT_SLOT  = i.ENDPOINT_SLOT
-             ENDPOINT_PORT  = i.ENDPOINT_PORT
+             NODE_ID                    = i.NODE_ID
+             NODE_SLOT                  = i.NODE_SLOT 
+             NODE_PORT                  = i.NODE_PORT
+             TENANT_NAME                = i.TENANT_NAME
+             ENDPOINT_NAME              = i.ENDPOINT_NAME
+             ENDPOINT_SLOT              = i.ENDPOINT_SLOT
+             ENDPOINT_PORT              = i.ENDPOINT_PORT
+             ENDPOINT_MAKE              = i.ENDPOINT_MAKE 
+             ENDPOINT_MODEL             = i.ENDPOINT_MODEL
+             ENDPOINT_OS                = i.ENDPOINT_OS  
+             ENDPOINT_INTERFACE_TYPE    = i.ENDPOINT_INTERFACE_TYPE
+             DOMAIN_TYPE                = i.DOMAIN_TYPE 
+             BOND_ENABLED               = i.BOND_ENABLED
+             BOND_TYPE                  = i.BOND_TYPE
         }
     } 
+
+    FilterlocalAciAccessPortSelectorIterationPhysical ={
+        for key, value in local.aci_access_port_selector_rows : key => value
+        if lower(value.DOMAIN_TYPE) == "physical"     
+    }
+
+    FilterlocalAciAccessPortSelectorIterationExternal ={
+        for key, value in local.aci_access_port_selector_rows : key => value
+        if lower(value.DOMAIN_TYPE) == "external"     
+    }
 
     aci_leaf_access_port_policy_group_iterations = csvdecode(file("./data/aci_leaf_access_port_policy_group.csv"))
 

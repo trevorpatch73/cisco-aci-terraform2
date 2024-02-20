@@ -948,46 +948,6 @@ resource "aci_l2_interface_policy" "localAciL2InterfacePolicyIteration" {
   vlan_scope  = each.value.VLAN_SCOPE
 }
 
-# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/access_port_selector
-# resource index key is "${each.value.NODE_ID}:${each.value.NODE_SLOT}:${each.value.NODE_PORT}"
-resource "aci_access_port_selector" "localAciAccessPortSelectorIteration" {
-  for_each                  = local.aci_access_port_selector_rows 
-  
-  leaf_interface_profile_dn = aci_leaf_interface_profile.localAciLeafInterfaceProfileIteration["${each.value.NODE_ID}"].id
-  name                      = join("_", ["Eth", each.value.NODE_SLOT, each.value.NODE_PORT])
-  description               = join("_", [each.value.ENDPOINT_NAME, each.value.ENDPOINT_SLOT, each.value.ENDPOINT_PORT])
-  access_port_selector_type = "range"
-  annotation                = "orchestrator:terraform"
-  
-  lifecycle {
-    ignore_changes = [
-      description,
-      relation_infra_rs_acc_base_grp #bug, creates noise
-    ]
-  }  
-}
-
-# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/access_port_block
-# resource index key is "${each.value.NODE_ID}:${each.value.NODE_SLOT}:${each.value.NODE_PORT}"
-resource "aci_access_port_block" "localAciAccessPortBlockIteration" {
-  for_each                          = local.aci_access_port_selector_rows
-
-  access_port_selector_dn           = aci_access_port_selector.localAciAccessPortSelectorIteration["${each.value.NODE_ID}:${each.value.NODE_SLOT}:${each.value.NODE_PORT}"].id
-  name                              = join("_", ["Eth", each.value.NODE_SLOT, each.value.NODE_PORT])
-  description                       = join("_", [each.value.ENDPOINT_NAME, each.value.ENDPOINT_SLOT, each.value.ENDPOINT_PORT])
-  annotation                        = "orchestrator:terraform"
-  from_card                         = "${each.value.NODE_SLOT}"
-  from_port                         = "${each.value.NODE_PORT}"
-  to_card                           = "${each.value.NODE_SLOT}"
-  to_port                           = "${each.value.NODE_PORT}"
-
-  lifecycle {
-    ignore_changes = [
-      relation_infra_rs_acc_bndl_subgrp
-    ]
-  }   
-}
-
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/leaf_access_port_policy_group
 # resource index key is "${each.value.TENANT_NAME}:${each.value.ENDPOINT_MAKE}:${each.value.ENDPOINT_MODEL}:${each.value.ENDPOINT_OS}:${each.value.ENDPOINT_INTERFACE_TYPE}" 
 resource "aci_leaf_access_port_policy_group" "localAciLeafAccessPortPolicyGroupPhysical" {
@@ -1203,6 +1163,75 @@ resource "aci_leaf_access_bundle_policy_group" "localAciLeafAccessBundlePolicyGr
   } 
 
 }
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/access_port_selector
+# resource index key is "${each.value.NODE_ID}:${each.value.NODE_SLOT}:${each.value.NODE_PORT}"
+resource "aci_access_port_selector" "localAciAccessPortSelectorIterationPhysical" {
+  for_each                        = local.FilterlocalAciAccessPortSelectorIterationPhysical
+  
+  leaf_interface_profile_dn       = aci_leaf_interface_profile.localAciLeafInterfaceProfileIteration["${each.value.NODE_ID}"].id
+  name                            = join("_", ["Eth", each.value.NODE_SLOT, each.value.NODE_PORT])
+  description                     = join("_", [each.value.ENDPOINT_NAME, each.value.ENDPOINT_SLOT, each.value.ENDPOINT_PORT])
+  access_port_selector_type       = "range"
+  annotation                      = "orchestrator:terraform"
+  relation_infra_rs_acc_base_grp  = lower(each.value.BOND_ENABLED) == "false" ? aci_leaf_access_port_policy_group.localAciLeafAccessPortPolicyGroupPhysical["${each.value.TENANT_NAME}:${each.value.ENDPOINT_MAKE}:${each.value.ENDPOINT_MODEL}:${each.value.ENDPOINT_OS}:${each.value.ENDPOINT_INTERFACE_TYPE}"].id : aci_leaf_access_bundle_policy_group.localAciLeafAccessBundlePolicyGroupIterationPhysical["${each.value.TENANT_NAME}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}"].id
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/access_port_block
+# resource index key is "${each.value.NODE_ID}:${each.value.NODE_SLOT}:${each.value.NODE_PORT}"
+resource "aci_access_port_block" "localAciAccessPortBlockIterationPhysical" {
+  for_each                          = local.FilterlocalAciAccessPortSelectorIterationPhysical
+
+  access_port_selector_dn           = aci_access_port_selector.localAciAccessPortSelectorIterationPhysical["${each.value.NODE_ID}:${each.value.NODE_SLOT}:${each.value.NODE_PORT}"].id
+  name                              = join("_", ["Eth", each.value.NODE_SLOT, each.value.NODE_PORT])
+  description                       = join("_", [each.value.ENDPOINT_NAME, each.value.ENDPOINT_SLOT, each.value.ENDPOINT_PORT])
+  annotation                        = "orchestrator:terraform"
+  from_card                         = "${each.value.NODE_SLOT}"
+  from_port                         = "${each.value.NODE_PORT}"
+  to_card                           = "${each.value.NODE_SLOT}"
+  to_port                           = "${each.value.NODE_PORT}"
+
+  lifecycle {
+    ignore_changes = [
+      relation_infra_rs_acc_bndl_subgrp
+    ]
+  }   
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/access_port_selector
+# resource index key is "${each.value.NODE_ID}:${each.value.NODE_SLOT}:${each.value.NODE_PORT}"
+resource "aci_access_port_selector" "localAciAccessPortSelectorIterationExternal" {
+  for_each                        = local.FilterlocalAciAccessPortSelectorIterationExternal
+  
+  leaf_interface_profile_dn       = aci_leaf_interface_profile.localAciLeafInterfaceProfileIteration["${each.value.NODE_ID}"].id
+  name                            = join("_", ["Eth", each.value.NODE_SLOT, each.value.NODE_PORT])
+  description                     = join("_", [each.value.ENDPOINT_NAME, each.value.ENDPOINT_SLOT, each.value.ENDPOINT_PORT])
+  access_port_selector_type       = "range" 
+  annotation                      = "orchestrator:terraform"
+  relation_infra_rs_acc_base_grp  = lower(each.value.BOND_ENABLED) == "false" ? aci_leaf_access_port_policy_group.localAciLeafAccessPortPolicyGroupExternal["${each.value.TENANT_NAME}:${each.value.ENDPOINT_MAKE}:${each.value.ENDPOINT_MODEL}:${each.value.ENDPOINT_OS}:${each.value.ENDPOINT_INTERFACE_TYPE}"].id : aci_leaf_access_bundle_policy_group.localAciLeafAccessBundlePolicyGroupIterationExternal["${each.value.TENANT_NAME}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}"].id
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/access_port_block
+# resource index key is "${each.value.NODE_ID}:${each.value.NODE_SLOT}:${each.value.NODE_PORT}"
+resource "aci_access_port_block" "localAciAccessPortBlockIterationExternal" {
+  for_each                          = local.FilterlocalAciAccessPortSelectorIterationExternal
+
+  access_port_selector_dn           = aci_access_port_selector.localAciAccessPortSelectorIterationExternal["${each.value.NODE_ID}:${each.value.NODE_SLOT}:${each.value.NODE_PORT}"].id
+  name                              = join("_", ["Eth", each.value.NODE_SLOT, each.value.NODE_PORT])
+  description                       = join("_", [each.value.ENDPOINT_NAME, each.value.ENDPOINT_SLOT, each.value.ENDPOINT_PORT])
+  annotation                        = "orchestrator:terraform"
+  from_card                         = "${each.value.NODE_SLOT}"
+  from_port                         = "${each.value.NODE_PORT}"
+  to_card                           = "${each.value.NODE_SLOT}"
+  to_port                           = "${each.value.NODE_PORT}"
+
+  lifecycle {
+    ignore_changes = [
+      relation_infra_rs_acc_bndl_subgrp
+    ]
+  }   
+}
+
 
 /*
 
