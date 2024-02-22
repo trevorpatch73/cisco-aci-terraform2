@@ -1268,7 +1268,7 @@ resource "aci_epg_to_static_path" "localAciEpgToStaticPathIterationVirtualPortCh
 
 
   application_epg_dn  = aci_application_epg.localAciApplicationEndpointGroupIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
-  tdn                 = lower(each.value.MULTI_TENANT) == "false" ? "topology/pod-${each.value.POD_ID}/protpaths-${each.value.ODD_NODE_ID}-${each.value.EVEN_NODE_ID}/pathep-[${aci_leaf_access_bundle_policy_group.localAciLeafAccessBundlePolicyGroupIterationPhysical["${each.value.TENANT_NAME}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}"].name}]" : "topology/pod-${each.value.POD_ID}/protpaths-${each.value.NODE_ID}/pathep-[${aci_leaf_access_bundle_policy_group.localAciLeafAccessBundlePolicyGroupIterationPhysical["GLOBAL:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}"].name}]" 
+  tdn                 = lower(each.value.MULTI_TENANT) == "false" ? "topology/pod-${each.value.POD_ID}/protpaths-${each.value.ODD_NODE_ID}-${each.value.EVEN_NODE_ID}/pathep-[${aci_leaf_access_bundle_policy_group.localAciLeafAccessBundlePolicyGroupIterationPhysical["${each.value.TENANT_NAME}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}"].name}]" : "topology/pod-${each.value.POD_ID}/protpaths-${each.value.ODD_NODE_ID}-${each.value.EVEN_NODE_ID}/pathep-[${aci_leaf_access_bundle_policy_group.localAciLeafAccessBundlePolicyGroupIterationPhysical["GLOBAL:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}"].name}]" 
   annotation          = "orchestrator:terraform"
   encap               = "vlan-${each.value.VLAN_ID}"
   instr_imedcy        = "immediate"
