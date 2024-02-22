@@ -705,6 +705,61 @@ locals {
         if lower(value.DOMAIN_TYPE) == "external"     
     }
 
+    aci_epg_to_static_path_nonbond_iterations = csvdecode(file("./data/aci_epg_to_static_path_nonbond.csv"))
+
+    aci_epg_to_static_path_nonbond_rows = {
+        for i in local.aci_epg_to_static_path_nonbond_iterations : 
+        "${i.TENANT_NAME}:${i.ZONE_NAME }:${i.APPLICATION_NAME}:${i.DOT1Q_ENABLED}:${i.VLAN_ID}:${i.POD_ID}:${i.NODE_ID}:${i.NODE_SLOT}:${i.NODE_PORT}" => {
+             TENANT_NAME        = i.TENANT_NAME
+             ZONE_NAME          = i.ZONE_NAME
+             APPLICATION_NAME   = i.APPLICATION_NAME 
+             DOT1Q_ENABLED      = i.DOT1Q_ENABLED 
+             VLAN_ID            = i.VLAN_ID 
+             POD_ID             = i.POD_ID
+             NODE_ID            = i.NODE_ID 
+             NODE_SLOT          = i.NODE_SLOT  
+             NODE_PORT          = i.NODE_PORT 
+        }
+    }
+
+    aci_epg_to_static_path_portchannel_iterations = csvdecode(file("./data/aci_epg_to_static_path_portchannel.csv"))
+
+    aci_epg_to_static_path_portchannel_rows = {
+        for i in local.aci_epg_to_static_path_portchannel_iterations : 
+        "${i.TENANT_NAME}:${i.ZONE_NAME }:${i.APPLICATION_NAME}:${i.DOT1Q_ENABLED}:${i.VLAN_ID}:${i.POD_ID}:${i.NODE_ID}:${i.ENDPOINT_NAME}:${i.ENDPOINT_INTERFACE_TYPE }" => {
+             TENANT_NAME                = i.TENANT_NAME
+             ZONE_NAME                  = i.ZONE_NAME
+             APPLICATION_NAME           = i.APPLICATION_NAME
+             DOT1Q_ENABLED              = i.DOT1Q_ENABLED
+             VLAN_ID                    = i.VLAN_ID
+             POD_ID                     = i.POD_ID
+             NODE_ID                    = i.NODE_ID
+             ENDPOINT_NAME              = i.ENDPOINT_NAME
+             ENDPOINT_INTERFACE_TYPE    = i.ENDPOINT_INTERFACE_TYPE
+             MULTI_TENANT               = i.MULTI_TENANT
+        }
+    }
+
+    aci_epg_to_static_path_virtualportchannel_iterations = csvdecode(file("./data/aci_epg_to_static_path_virtualportchannel.csv"))
+
+    aci_epg_to_static_path_virtualportchannel_rows = {
+        for i in local.aci_epg_to_static_path_virtualportchannel_iterations : 
+        "${i.TENANT_NAME}:${i.ZONE_NAME }:${i.APPLICATION_NAME}:${i.DOT1Q_ENABLED}:${i.VLAN_ID}:${i.POD_ID}:${i.ODD_NODE_ID}:${i.EVEN_NODE_ID}:${i.ENDPOINT_NAME}:${i.ENDPOINT_INTERFACE_TYPE }" => {
+             TENANT_NAME                = i.TENANT_NAME
+             ZONE_NAME                  = i.ZONE_NAME
+             APPLICATION_NAME           = i.APPLICATION_NAME
+             DOT1Q_ENABLED              = i.DOT1Q_ENABLED
+             VLAN_ID                    = i.VLAN_ID
+             POD_ID                     = i.POD_ID
+             ODD_NODE_ID                = i.ODD_NODE_ID
+             EVEN_NODE_ID               = i.EVEN_NODE_ID
+             ENDPOINT_NAME              = i.ENDPOINT_NAME
+             ENDPOINT_INTERFACE_TYPE    = i.ENDPOINT_INTERFACE_TYPE
+             MULTI_TENANT               = i.MULTI_TENANT
+        }
+    }
+
+
 }
 
 

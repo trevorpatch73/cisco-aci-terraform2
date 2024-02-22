@@ -1232,6 +1232,49 @@ resource "aci_access_port_block" "localAciAccessPortBlockIterationExternal" {
   }   
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/epg_to_static_path
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME }:${each.value.APPLICATION_NAME}:${each.value.DOT1Q_ENABLED}:${each.value.VLAN_ID}:${each.value.POD_ID}:${each.value.NODE_ID}:${each.value.NODE_SLOT}:${each.value.NODE_PORT}"
+resource "aci_epg_to_static_path" "localAciEpgToStaticPathIterationNonbond" {
+  for_each            = local.aci_epg_to_static_path_nonbond_rows
+
+  application_epg_dn  = aci_application_epg.localAciApplicationEndpointGroupIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
+  tdn                 = "topology/pod-${each.value.POD_ID}/paths-${each.value.NODE_ID}/pathep-[eth${each.value.NODE_SLOT}/${each.value.NODE_PORT}]"
+  annotation          = "orchestrator:terraform"
+  encap               = "vlan-${each.value.VLAN_ID}"
+  instr_imedcy        = "immediate"
+  mode                = lower(each.value.DOT1Q_ENABLED) == "true" ? "regular" : "native"
+  
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/epg_to_static_path
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME }:${each.value.APPLICATION_NAME}:${each.value.DOT1Q_ENABLED}:${each.value.VLAN_ID}:${each.value.POD_ID}:${each.value.NODE_ID}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE }"
+resource "aci_epg_to_static_path" "localAciEpgToStaticPathIterationPortChannel" {
+  for_each            = local.aci_epg_to_static_path_portchannel_rows
+
+
+  application_epg_dn  = aci_application_epg.localAciApplicationEndpointGroupIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
+  tdn                 = lower(each.value.MULTI_TENANT) == "false" ? "topology/pod-${each.value.POD_ID}/protpaths-${each.value.NODE_ID}/pathep-[${aci_leaf_access_bundle_policy_group.localAciLeafAccessBundlePolicyGroupIterationPhysical["${each.value.TENANT_NAME}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}"].name}]" : "topology/pod-${each.value.POD_ID}/protpaths-${each.value.NODE_ID}/pathep-[${aci_leaf_access_bundle_policy_group.localAciLeafAccessBundlePolicyGroupIterationPhysical["GLOBAL:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}"].name}]" 
+  annotation          = "orchestrator:terraform"
+  encap               = "vlan-${each.value.VLAN_ID}"
+  instr_imedcy        = "immediate"
+  mode                = lower(each.value.DOT1Q_ENABLED) == "true" ? "regular" : "native"    
+   
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/epg_to_static_path
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME }:${each.value.APPLICATION_NAME}:${each.value.DOT1Q_ENABLED}:${each.value.VLAN_ID}:${each.value.POD_ID}:${each.value.ODD_NODE_ID}:${each.value.EVEN_NODE_ID}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE }"
+resource "aci_epg_to_static_path" "localAciEpgToStaticPathIterationVirtualPortChannel" {
+  for_each            = local.aci_epg_to_static_path_virtualportchannel_rows
+
+
+  application_epg_dn  = aci_application_epg.localAciApplicationEndpointGroupIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
+  tdn                 = lower(each.value.MULTI_TENANT) == "false" ? "topology/pod-${each.value.POD_ID}/protpaths-${each.value.ODD_NODE_ID}-${each.value.EVEN_NODE_ID}/pathep-[${aci_leaf_access_bundle_policy_group.localAciLeafAccessBundlePolicyGroupIterationPhysical["${each.value.TENANT_NAME}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}"].name}]" : "topology/pod-${each.value.POD_ID}/protpaths-${each.value.NODE_ID}/pathep-[${aci_leaf_access_bundle_policy_group.localAciLeafAccessBundlePolicyGroupIterationPhysical["GLOBAL:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}"].name}]" 
+  annotation          = "orchestrator:terraform"
+  encap               = "vlan-${each.value.VLAN_ID}"
+  instr_imedcy        = "immediate"
+  mode                = lower(each.value.DOT1Q_ENABLED) == "true" ? "regular" : "native"    
+   
+}
 
 /*
 
