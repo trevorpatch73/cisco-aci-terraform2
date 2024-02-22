@@ -1289,6 +1289,8 @@ resource "aci_logical_node_profile" "localAciLogicalNodeProfileIteration" {
 
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/logical_node_to_fabric_node
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.NODE_ID}:${each.value.NODE_RTR_ID}"
 resource "aci_logical_node_to_fabric_node" "localAciLogicalNodeToFabricNodeIteration" {
   for_each                  = local.aci_logical_node_to_fabric_node_rows 
 
@@ -1298,6 +1300,42 @@ resource "aci_logical_node_to_fabric_node" "localAciLogicalNodeToFabricNodeItera
   config_issues             = each.value.CONFIG_ISSUES
   rtr_id                    = "${each.value.NODE_RTR_ID}"
   rtr_id_loop_back          = each.value.RTR_ID_LOOP_BACK 
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/data-sources/l3out_static_route
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.NODE_ID}:${each.value.NODE_RTR_ID}:${each.value.RT_NTWK_PFX}:${each.value.RT_NTWK_CIDR}:${each.value.NEXT_HOP_IP}" 
+resource "aci_l3out_static_route" "localAciL3OutStaticRouteIteration" {
+  for_each        = local.aci_l3out_static_route_rows
+
+  fabric_node_dn  = aci_logical_node_to_fabric_node.localAciLogicalNodeToFabricNodeIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.NODE_ID}:${each.value.NODE_RTR_ID}"].id
+  ip              = "${each.value.RT_NTWK_PFX}/${each.value.RT_NTWK_CIDR}"
+  aggregate       = each.value.AGGREGATE
+  annotation      = "orchestrator:terraform"
+  pref            = each.value.ADMIN_DIST 
+  rt_ctrl         = each.value.RT_CTRL
+  description     = "created via Terraform CI/CD Pipeline"
+
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3out_static_route_next_hop
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.NODE_ID}:${each.value.NODE_RTR_ID}:${each.value.RT_NTWK_PFX}:${each.value.RT_NTWK_CIDR}:${each.value.NEXT_HOP_IP}" 
+resource "aci_l3out_static_route_next_hop" "localAciL3OutNodeProfFabEvenNodeDefRtNextHopNgfwIteration" {
+  for_each              = local.aci_l3out_static_route_rows
+
+  static_route_dn       = aci_l3out_static_route.localAciL3OutStaticRouteIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.NODE_ID}:${each.value.NODE_RTR_ID}:${each.value.RT_NTWK_PFX}:${each.value.RT_NTWK_CIDR}:${each.value.NEXT_HOP_IP}"].id
+  nh_addr               = each.value.NEXT_HOP_IP
+  annotation            = "orchestrator:terraform"
+  pref                  = each.value.ADMIN_DIST
+  nexthop_profile_type  = "prefix"
+  description           = "created via Terraform CI/CD Pipeline"
+
+  lifecycle {
+    ignore_changes = [
+      relation_ip_rs_nexthop_route_track,
+      relation_ip_rs_nh_track_member
+    ]
+  }
+
 }
 
 /*

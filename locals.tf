@@ -788,7 +788,28 @@ locals {
              RTR_ID_LOOP_BACK   = i.RTR_ID_LOOP_BACK
              CONFIG_ISSUES      = i.CONFIG_ISSUES
         }
-    }     
+    }
+
+    aci_l3out_static_route_iterations = csvdecode(file("./data/aci_l3out_static_route.csv"))
+
+    aci_l3out_static_route_rows = {
+        for i in local.aci_l3out_static_route_iterations : 
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${i.POD_ID}:${i.NODE_ID}:${i.NODE_RTR_ID}:${i.RT_NTWK_PFX}:${i.RT_NTWK_CIDR}:${i.NEXT_HOP_IP}" => {
+             TENANT_NAME    = i.TENANT_NAME         
+             ZONE_NAME      = i.ZONE_NAME
+             VRF_NAME       = i.VRF_NAME
+             NEXT_HOP_TYPE  = i.NEXT_HOP_TYPE
+             POD_ID         = i.POD_ID
+             NODE_ID        = i.NODE_ID  
+             NODE_RTR_ID    = i.NODE_RTR_ID
+             RT_NTWK_PFX    = i.RT_NTWK_PFX
+             RT_NTWK_PFX    = i.RT_NTWK_CIDR
+             NEXT_HOP_IP    = i.NEXT_HOP_IP
+             ADMIN_DIST     = i.ADMIN_DIST 
+             AGGREGATE      = i.AGGREGATE
+             RT_CTRL        = i.RT_CTRL
+        }
+    }           
 
 }
 
