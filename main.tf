@@ -1338,6 +1338,16 @@ resource "aci_l3out_static_route_next_hop" "localAciL3OutNodeProfFabEvenNodeDefR
 
 }
 
+resource "aci_logical_interface_profile" "localAciLogicalInterfaceProfileIteration" {
+  for_each                = local.aci_logical_interface_profile_rows
+  
+  logical_node_profile_dn = aci_logical_node_profile.localAciLogicalNodeProfileIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.NODE_ID}"].id
+  description             = join(" ", ["Interface Profile for", each.value.NODE_ID, "as specified by Terraform CICD pipeline."])
+  name                    = join("_", [each.value.NODE_ID, "NODE", "INT", "PROF"])
+  annotation              = "orchestrator:terraform"
+  prio                    = each.value.PRIO
+}
+
 /*
 resource "aci_logical_node_profile" "localAciLogicalNodeProfileIteration" {
   for_each      = local.aci_logical_node_profile_rows
