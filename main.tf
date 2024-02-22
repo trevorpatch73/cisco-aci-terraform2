@@ -1276,6 +1276,8 @@ resource "aci_epg_to_static_path" "localAciEpgToStaticPathIterationVirtualPortCh
    
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/logical_node_profile
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.NODE_ID}"
 resource "aci_logical_node_profile" "localAciLogicalNodeProfileIteration" {
   for_each      = local.aci_logical_node_profile_rows
   
@@ -1285,6 +1287,17 @@ resource "aci_logical_node_profile" "localAciLogicalNodeProfileIteration" {
   annotation    = "orchestrator:terraform"
   target_dscp   = each.value.TARGET_DSCP
 
+}
+
+resource "aci_logical_node_to_fabric_node" "localAciLogicalNodeToFabricNodeIteration" {
+  for_each                  = local.aci_logical_node_to_fabric_node_rows 
+
+  logical_node_profile_dn   = aci_logical_node_profile.localAciLogicalNodeProfileIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.NODE_ID}"].id
+  tdn                       = "topology/pod-${each.value.POD_ID}/node-${each.value.NODE_ID}"
+  annotation                = "orchestrator:terraform"
+  config_issues             = each.value.CONFIG_ISSUES
+  rtr_id                    = "${each.value.NODE_RTR_ID}"
+  rtr_id_loop_back          = each.value.RTR_ID_LOOP_BACK 
 }
 
 /*

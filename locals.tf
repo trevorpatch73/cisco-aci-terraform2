@@ -771,7 +771,24 @@ locals {
              NODE_ID        = i.NODE_ID 
              TARGET_DSCP    = i.TARGET_DSCP
         }
-    } 
+    }
+
+    aci_logical_node_to_fabric_node_iterations = csvdecode(file("./data/aci_logical_node_to_fabric_node.csv"))
+
+    aci_logical_node_to_fabric_node_rows = {
+        for i in local.aci_logical_node_to_fabric_node_iterations : 
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${i.POD_ID}:${i.NODE_ID}:${i.NODE_RTR_ID}" => {
+             TENANT_NAME        = i.TENANT_NAME
+             ZONE_NAME          = i.ZONE_NAME
+             VRF_NAME           = i.VRF_NAME  
+             NEXT_HOP_TYPE      = i.NEXT_HOP_TYPE
+             POD_ID             = i.POD_ID 
+             NODE_ID            = i.NODE_ID
+             NODE_RTR_ID        = i.NODE_RTR_ID  
+             RTR_ID_LOOP_BACK   = i.RTR_ID_LOOP_BACK
+             CONFIG_ISSUES      = i.CONFIG_ISSUES
+        }
+    }     
 
 }
 
