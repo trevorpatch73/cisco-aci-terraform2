@@ -1308,7 +1308,7 @@ resource "aci_l3out_static_route" "localAciL3OutStaticRouteIteration" {
   for_each        = local.aci_l3out_static_route_rows
 
   fabric_node_dn  = aci_logical_node_to_fabric_node.localAciLogicalNodeToFabricNodeIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.NODE_ID}:${each.value.NODE_RTR_ID}"].id
-  ip              = "${each.value.RT_NTWK_PFX}/${each.value.each.value.RT_NTWK_CIDR}"
+  ip              = "${each.value.RT_NTWK_PFX}/${each.value.RT_NTWK_CIDR}"
   aggregate       = each.value.AGGREGATE
   annotation      = "orchestrator:terraform"
   pref            = each.value.ADMIN_DIST 

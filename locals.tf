@@ -803,7 +803,7 @@ locals {
              NODE_ID        = i.NODE_ID  
              NODE_RTR_ID    = i.NODE_RTR_ID
              RT_NTWK_PFX    = i.RT_NTWK_PFX
-             RT_NTWK_PFX    = i.RT_NTWK_CIDR
+             RT_NTWK_CIDR   = i.RT_NTWK_CIDR
              NEXT_HOP_IP    = i.NEXT_HOP_IP
              ADMIN_DIST     = i.ADMIN_DIST 
              AGGREGATE      = i.AGGREGATE
