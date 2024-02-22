@@ -759,6 +759,19 @@ locals {
         }
     }
 
+    aci_logical_node_profile_iterations = csvdecode(file("./data/aci_logical_node_profile.csv"))
+
+    aci_logical_node_profile_rows = {
+        for i in local.aci_logical_node_profile_iterations : 
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${NODE_ID}" => {
+             TENANT_NAME    = i.TENANT_NAME
+             ZONE_NAME      = i.ZONE_NAME
+             VRF_NAME       = i.VRF_NAME
+             NEXT_HOP_TYPE  = i.NEXT_HOP_TYPE
+             NODE_ID        = i.NODE_ID 
+             TARGET_DSCP    = i.TARGET_DSCP
+        }
+    } 
 
 }
 

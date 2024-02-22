@@ -1276,6 +1276,26 @@ resource "aci_epg_to_static_path" "localAciEpgToStaticPathIterationVirtualPortCh
    
 }
 
-/*
+resource "aci_logical_node_profile" "localAciLogicalNodeProfileIteration" {
+  for_each      = local.aci_logical_node_profile_rows
+  
+  l3_outside_dn = aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
+  description   = join(" ", ["Node Profile for", each.value.NODE_ID, "as specified by Terraform CICD pipeline."])
+  name          = join("_", [each.value.NODE_ID, "NODE", "PROF"])
+  annotation    = "orchestrator:terraform"
+  target_dscp   = each.value.TARGET_DSCP
 
+}
+
+/*
+resource "aci_logical_node_profile" "localAciLogicalNodeProfileIteration" {
+  for_each      = local.aci_logical_node_profile_rows
+  
+  l3_outside_dn = aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
+  description   = join(" ", ["Node Profile for", join("-", [each.value.ODD_NODE_ID, each.value.EVEN_NODE_ID]), "as specified by Terraform CICD pipeline."])
+  name          = join("_", [join("-", [each.value.ODD_NODE_ID, each.value.EVEN_NODE_ID]), "NODE", "PROF"])
+  annotation    = "orchestrator:terraform"
+  target_dscp   = "unspecified"
+
+}
 */
