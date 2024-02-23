@@ -1429,6 +1429,12 @@ resource "aci_l3out_path_attachment" "localAciL3OutPathAttachmentIterationSviVpc
   mode                          = lower(each.value.DOT1Q_ENABLED) == "true" ? "regular" : "native"
   mtu                           = each.value.MTU 
   target_dscp                   = each.value.TARGET_DCSP
+
+  lifecycle {
+    ignore_changes = [
+      addr
+    ]
+  }    
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3out_vpc_member
