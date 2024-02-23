@@ -297,6 +297,15 @@ resource "aci_rest_managed" "localAciMaintenanceGroupSchedulePolicyIteration" {
   depends_on = [
     aci_fabric_node_member.localAciFabricNodeMemberIteration
   ]
+
+  lifecycle {
+    ignore_changes = all  # This resource cannot be stored in TF State successufully
+                          # and creates immense noise. To silence the noise, the
+                          # everything about the resource is ignored after creation
+                          # and the resource must be tainted to enact changes or
+                          # correct drift
+  } 
+
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/data-sources/maintenance_policy
