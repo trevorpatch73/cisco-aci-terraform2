@@ -763,12 +763,13 @@ locals {
 
     aci_logical_node_profile_rows = {
         for i in local.aci_logical_node_profile_iterations : 
-        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${i.NODE_ID}" => {
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${i.ODD_NODE_ID}:${i.EVEN_NODE_ID}" => {
              TENANT_NAME    = i.TENANT_NAME
              ZONE_NAME      = i.ZONE_NAME
              VRF_NAME       = i.VRF_NAME
              NEXT_HOP_TYPE  = i.NEXT_HOP_TYPE
-             NODE_ID        = i.NODE_ID 
+             ODD_NODE_ID    = i.ODD_NODE_ID 
+             EVEN_NODE_ID   = i.EVEN_NODE_ID 
              TARGET_DSCP    = i.TARGET_DSCP
         }
     }
@@ -777,14 +778,16 @@ locals {
 
     aci_logical_node_to_fabric_node_rows = {
         for i in local.aci_logical_node_to_fabric_node_iterations : 
-        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${i.POD_ID}:${i.NODE_ID}:${i.NODE_RTR_ID}" => {
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${i.POD_ID}:${i.ODD_NODE_ID}:${i.ODD_NODE_RTR_ID}:${i.EVEN_NODE_ID}:${i.EVEN_NODE_RTR_ID}" => {
              TENANT_NAME        = i.TENANT_NAME
              ZONE_NAME          = i.ZONE_NAME
              VRF_NAME           = i.VRF_NAME  
              NEXT_HOP_TYPE      = i.NEXT_HOP_TYPE
              POD_ID             = i.POD_ID 
-             NODE_ID            = i.NODE_ID
-             NODE_RTR_ID        = i.NODE_RTR_ID  
+             ODD_NODE_ID        = i.ODD_NODE_ID
+             ODD_NODE_RTR_ID    = i.ODD_NODE_RTR_ID  
+             EVEN_NODE_ID       = i.EVEN_NODE_ID
+             EVEN_NODE_RTR_ID   = i.EVEN_NODE_RTR_ID               
              RTR_ID_LOOP_BACK   = i.RTR_ID_LOOP_BACK
              CONFIG_ISSUES      = i.CONFIG_ISSUES
         }
@@ -794,20 +797,22 @@ locals {
 
     aci_l3out_static_route_rows = {
         for i in local.aci_l3out_static_route_iterations : 
-        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${i.POD_ID}:${i.NODE_ID}:${i.NODE_RTR_ID}:${i.RT_NTWK_PFX}:${i.RT_NTWK_CIDR}:${i.NEXT_HOP_IP}" => {
-             TENANT_NAME    = i.TENANT_NAME         
-             ZONE_NAME      = i.ZONE_NAME
-             VRF_NAME       = i.VRF_NAME
-             NEXT_HOP_TYPE  = i.NEXT_HOP_TYPE
-             POD_ID         = i.POD_ID
-             NODE_ID        = i.NODE_ID  
-             NODE_RTR_ID    = i.NODE_RTR_ID
-             RT_NTWK_PFX    = i.RT_NTWK_PFX
-             RT_NTWK_CIDR   = i.RT_NTWK_CIDR
-             NEXT_HOP_IP    = i.NEXT_HOP_IP
-             ADMIN_DIST     = i.ADMIN_DIST 
-             AGGREGATE      = i.AGGREGATE
-             RT_CTRL        = i.RT_CTRL
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${i.POD_ID}:${i.ODD_NODE_ID}:${i.ODD_NODE_RTR_ID}:${i.EVEN_NODE_ID}:${i.EVEN_NODE_RTR_ID}:${i.RT_NTWK_PFX}:${i.RT_NTWK_CIDR}:${i.NEXT_HOP_IP}" => {
+             TENANT_NAME        = i.TENANT_NAME         
+             ZONE_NAME          = i.ZONE_NAME
+             VRF_NAME           = i.VRF_NAME
+             NEXT_HOP_TYPE      = i.NEXT_HOP_TYPE
+             POD_ID             = i.POD_ID
+             ODD_NODE_ID        = i.ODD_NODE_ID
+             ODD_NODE_RTR_ID    = i.ODD_NODE_RTR_ID  
+             EVEN_NODE_ID       = i.EVEN_NODE_ID
+             EVEN_NODE_RTR_ID   = i.EVEN_NODE_RTR_ID  
+             RT_NTWK_PFX        = i.RT_NTWK_PFX
+             RT_NTWK_CIDR       = i.RT_NTWK_CIDR
+             NEXT_HOP_IP        = i.NEXT_HOP_IP
+             ADMIN_DIST         = i.ADMIN_DIST 
+             AGGREGATE          = i.AGGREGATE
+             RT_CTRL            = i.RT_CTRL
         }
     }           
 
@@ -815,16 +820,42 @@ locals {
 
     aci_logical_interface_profile_rows = {
         for i in local.aci_logical_interface_profile_iterations : 
-        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${i.NODE_ID}" => {
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${i.ODD_NODE_ID}:${i.EVEN_NODE_ID}" => {
              TENANT_NAME    = i.TENANT_NAME
              ZONE_NAME      = i.ZONE_NAME
              VRF_NAME       = i.VRF_NAME
              NEXT_HOP_TYPE  = i.NEXT_HOP_TYPE
-             NODE_ID        = i.NODE_ID 
+             ODD_NODE_ID    = i.ODD_NODE_ID
+             EVEN_NODE_ID   = i.EVEN_NODE_ID 
              PRIO           = i.PRIO
         }
     }
 
+    aci_l3out_path_attachment_iterations = csvdecode(file("./data/aci_l3out_path_attachment.csv"))
+
+    aci_l3out_path_attachment_rows = {
+        for i in local.aci_l3out_path_attachment_iterations : 
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${i.ODD_NODE_ID}:${i.EVEN_NODE_ID}:${i.ENDPOINT_NAME}:${i.ENDPOINT_INTERFACE_TYPE}:${i.VLAN_ID}" => {
+             MULTI_TENANT               = i.MULTI_TENANT 
+             TENANT_NAME                = i.TENANT_NAME
+             ZONE_NAME                  = i.ZONE_NAME 
+             VRF_NAME                   = i.VRF_NAME 
+             NEXT_HOP_TYPE              = i.NEXT_HOP_TYPE 
+             ODD_NODE                   = i.ODD_NODE 
+             EVEN_NODE                  = i.EVEN_NODE
+             ENDPOINT_NAME              = i.ENDPOINT_NAME
+             ENDPOINT_INTERFACE_TYPE    = i.ENDPOINT_INTERFACE_TYPE 
+             DOT1Q_ENABLED              = i.DOT1Q_ENABLED 
+             VLAN_ID                    = i.VLAN_ID
+             AUTO_STATE                 = i.AUTO_STATE
+             LL_ADDR                    = i.LL_ADDR
+             MAC_ADDR                   = i.MAC_ADDR 
+             MTU                        = i.MTU  
+             TARGET_DCSP                = i.TARGET_DCSP
+             ENCAP_SCOPE                = i.ENCAP_SCOPE
+             IPV6_DAD                   = i.IPV6_DAD
+        }
+    }
 
 }
 

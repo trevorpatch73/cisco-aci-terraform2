@@ -1277,52 +1277,78 @@ resource "aci_epg_to_static_path" "localAciEpgToStaticPathIterationVirtualPortCh
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/logical_node_profile
-# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.NODE_ID}"
-resource "aci_logical_node_profile" "localAciLogicalNodeProfileIteration" {
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.EVEN_NODE_ID}"
+resource "aci_logical_node_profile" "localAciLogicalNodeProfileIterationSviVpc" {
   for_each      = local.aci_logical_node_profile_rows
   
   l3_outside_dn = aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
-  description   = join(" ", ["Node Profile for", each.value.NODE_ID, "as specified by Terraform CICD pipeline."])
-  name          = join("_", [each.value.NODE_ID, "NODE", "PROF"])
+  description   = join(" ", ["Node Profile for", join("-", [each.value.ODD_NODE_ID, each.value.EVEN_NODE_ID]), "as specified by Terraform CICD pipeline."])
+  name          = join("_", [join("-", [each.value.ODD_NODE_ID, each.value.EVEN_NODE_ID]), "NODE", "PROF"])
   annotation    = "orchestrator:terraform"
   target_dscp   = each.value.TARGET_DSCP
 
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/logical_node_to_fabric_node
-# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.NODE_ID}:${each.value.NODE_RTR_ID}"
-resource "aci_logical_node_to_fabric_node" "localAciLogicalNodeToFabricNodeIteration" {
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_RTR_ID}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_RTR_ID}"
+resource "aci_logical_node_to_fabric_node" "localAciLogicalNodeToFabricNodeIterationSviVpcOddNode" {
   for_each                  = local.aci_logical_node_to_fabric_node_rows 
 
-  logical_node_profile_dn   = aci_logical_node_profile.localAciLogicalNodeProfileIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.NODE_ID}"].id
-  tdn                       = "topology/pod-${each.value.POD_ID}/node-${each.value.NODE_ID}"
+  logical_node_profile_dn   = aci_logical_node_profile.localAciLogicalNodeProfileIterationSviVpc["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.EVEN_NODE_ID}"].id
+  tdn                       = "topology/pod-${each.value.POD_ID}/node-${each.value.ODD_NODE_ID}"
   annotation                = "orchestrator:terraform"
   config_issues             = each.value.CONFIG_ISSUES
-  rtr_id                    = "${each.value.NODE_RTR_ID}"
+  rtr_id                    = "${each.value.ODD_NODE_RTR_ID}"
+  rtr_id_loop_back          = each.value.RTR_ID_LOOP_BACK 
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/logical_node_to_fabric_node
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_RTR_ID}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_RTR_ID}"
+resource "aci_logical_node_to_fabric_node" "localAciLogicalNodeToFabricNodeIterationSviVpcEvenNode" {
+  for_each                  = local.aci_logical_node_to_fabric_node_rows 
+
+  logical_node_profile_dn   = aci_logical_node_profile.localAciLogicalNodeProfileIterationSviVpc["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.EVEN_NODE_ID}"].id
+  tdn                       = "topology/pod-${each.value.POD_ID}/node-${each.value.EVEN_NODE_ID}"
+  annotation                = "orchestrator:terraform"
+  config_issues             = each.value.CONFIG_ISSUES
+  rtr_id                    = "${each.value.EVEN_NODE_RTR_ID}"
   rtr_id_loop_back          = each.value.RTR_ID_LOOP_BACK 
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/data-sources/l3out_static_route
-# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.NODE_ID}:${each.value.NODE_RTR_ID}:${each.value.RT_NTWK_PFX}:${each.value.RT_NTWK_CIDR}:${each.value.NEXT_HOP_IP}" 
-resource "aci_l3out_static_route" "localAciL3OutStaticRouteIteration" {
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_RTR_ID}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_RTR_ID}:${each.value.RT_NTWK_PFX}:${each.value.RT_NTWK_CIDR}:${each.value.NEXT_HOP_IP}" 
+resource "aci_l3out_static_route" "localAciL3OutStaticRouteIterationSviVpcOddNode" {
   for_each        = local.aci_l3out_static_route_rows
 
-  fabric_node_dn  = aci_logical_node_to_fabric_node.localAciLogicalNodeToFabricNodeIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.NODE_ID}:${each.value.NODE_RTR_ID}"].id
+  fabric_node_dn  = aci_logical_node_to_fabric_node.localAciLogicalNodeToFabricNodeIterationSviVpcOddNode["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_RTR_ID}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_RTR_ID}"].id
   ip              = "${each.value.RT_NTWK_PFX}/${each.value.RT_NTWK_CIDR}"
   aggregate       = each.value.AGGREGATE
   annotation      = "orchestrator:terraform"
   pref            = each.value.ADMIN_DIST 
   rt_ctrl         = each.value.RT_CTRL
   description     = "created via Terraform CI/CD Pipeline"
+}
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/data-sources/l3out_static_route
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_RTR_ID}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_RTR_ID}:${each.value.RT_NTWK_PFX}:${each.value.RT_NTWK_CIDR}:${each.value.NEXT_HOP_IP}" 
+resource "aci_l3out_static_route" "localAciL3OutStaticRouteIterationSviVpcEvenNode" {
+  for_each        = local.aci_l3out_static_route_rows
+
+  fabric_node_dn  = aci_logical_node_to_fabric_node.localAciLogicalNodeToFabricNodeIterationSviVpcEvenNode["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_RTR_ID}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_RTR_ID}"].id
+  ip              = "${each.value.RT_NTWK_PFX}/${each.value.RT_NTWK_CIDR}"
+  aggregate       = each.value.AGGREGATE
+  annotation      = "orchestrator:terraform"
+  pref            = each.value.ADMIN_DIST 
+  rt_ctrl         = each.value.RT_CTRL
+  description     = "created via Terraform CI/CD Pipeline"
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3out_static_route_next_hop
-# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.NODE_ID}:${each.value.NODE_RTR_ID}:${each.value.RT_NTWK_PFX}:${each.value.RT_NTWK_CIDR}:${each.value.NEXT_HOP_IP}" 
-resource "aci_l3out_static_route_next_hop" "localAciL3OutNodeProfFabEvenNodeDefRtNextHopNgfwIteration" {
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_RTR_ID}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_RTR_ID}:${each.value.RT_NTWK_PFX}:${each.value.RT_NTWK_CIDR}:${each.value.NEXT_HOP_IP}" 
+resource "aci_l3out_static_route_next_hop" "localAciL3OutNodeProfFabEvenNodeDefRtNextHopNgfwIterationSviVpcOddNode" {
   for_each              = local.aci_l3out_static_route_rows
 
-  static_route_dn       = aci_l3out_static_route.localAciL3OutStaticRouteIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.NODE_ID}:${each.value.NODE_RTR_ID}:${each.value.RT_NTWK_PFX}:${each.value.RT_NTWK_CIDR}:${each.value.NEXT_HOP_IP}"].id
+  static_route_dn       = aci_l3out_static_route.localAciL3OutStaticRouteIterationSviVpcOddNode["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_RTR_ID}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_RTR_ID}:${each.value.RT_NTWK_PFX}:${each.value.RT_NTWK_CIDR}:${each.value.NEXT_HOP_IP}"].id
   nh_addr               = each.value.NEXT_HOP_IP
   annotation            = "orchestrator:terraform"
   pref                  = each.value.ADMIN_DIST
@@ -1338,14 +1364,69 @@ resource "aci_l3out_static_route_next_hop" "localAciL3OutNodeProfFabEvenNodeDefR
 
 }
 
-resource "aci_logical_interface_profile" "localAciLogicalInterfaceProfileIteration" {
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3out_static_route_next_hop
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_RTR_ID}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_RTR_ID}:${each.value.RT_NTWK_PFX}:${each.value.RT_NTWK_CIDR}:${each.value.NEXT_HOP_IP}" 
+resource "aci_l3out_static_route_next_hop" "localAciL3OutNodeProfFabEvenNodeDefRtNextHopNgfwIterationSviVpcEvenNode" {
+  for_each              = local.aci_l3out_static_route_rows
+
+  static_route_dn       = aci_l3out_static_route.localAciL3OutStaticRouteIterationSviVpcEvenNode["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.POD_ID}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_RTR_ID}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_RTR_ID}:${each.value.RT_NTWK_PFX}:${each.value.RT_NTWK_CIDR}:${each.value.NEXT_HOP_IP}"].id
+  nh_addr               = each.value.NEXT_HOP_IP
+  annotation            = "orchestrator:terraform"
+  pref                  = each.value.ADMIN_DIST
+  nexthop_profile_type  = "prefix"
+  description           = "created via Terraform CI/CD Pipeline"
+
+  lifecycle {
+    ignore_changes = [
+      relation_ip_rs_nexthop_route_track,
+      relation_ip_rs_nh_track_member
+    ]
+  }
+
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/logical_interface_profile
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.EVEN_NODE_ID}"
+resource "aci_logical_interface_profile" "localAciLogicalInterfaceProfileIterationSviVpc" {
   for_each                = local.aci_logical_interface_profile_rows
   
-  logical_node_profile_dn = aci_logical_node_profile.localAciLogicalNodeProfileIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.NODE_ID}"].id
-  description             = join(" ", ["Interface Profile for", each.value.NODE_ID, "as specified by Terraform CICD pipeline."])
-  name                    = join("_", [each.value.NODE_ID, "NODE", "INT", "PROF"])
+  logical_node_profile_dn = aci_logical_node_profile.localAciLogicalNodeProfileIterationSviVpc["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.EVEN_NODE_ID}"].id
+  description             = join(" ", ["Interface Profile for", join("-", [each.value.ODD_NODE_ID, each.value.EVEN_NODE_ID]), "as specified by Terraform CICD pipeline."])
+  name                    = join("_", [join("-", [each.value.ODD_NODE_ID, each.value.EVEN_NODE_ID]), "NODE", "INT", "PROF"])
   annotation              = "orchestrator:terraform"
   prio                    = each.value.PRIO
+
+  lifecycle {
+    ignore_changes = [
+      relation_l3ext_rs_pim_ip_if_pol,
+      relation_l3ext_rs_pim_ipv6_if_pol,
+      relation_l3ext_rs_igmp_if_pol,
+      relation_l3ext_rs_l_if_p_to_netflow_monitor_pol,
+      relation_l3ext_rs_egress_qos_dpp_pol,
+      relation_l3ext_rs_ingress_qos_dpp_pol,
+      relation_l3ext_rs_l_if_p_cust_qos_pol,
+      relation_l3ext_rs_nd_if_pol 
+    ]
+  }  
+}
+
+resource "aci_l3out_path_attachment" "localAciL3OutPathAttachmentIterationSviVpc" {
+  for_each                      = local.aci_l3out_path_attachment_rows
+
+  logical_interface_profile_dn  = aci_logical_interface_profile.localAciLogicalInterfaceProfileIterationSviVpc["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.EVEN_NODE_ID}"].id
+  target_dn                     = lower(each.value.MULTI_TENANT) == "false" ? "topology/pod-${each.value.POD_ID}/protpaths-${each.value.ODD_NODE_ID}-${each.value.EVEN_NODE_ID}/pathep-[${aci_leaf_access_bundle_policy_group.localAciLeafAccessBundlePolicyGroupIterationExternal["${each.value.TENANT_NAME}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}"].name}]" : "topology/pod-${each.value.POD_ID}/protpaths-${each.value.ODD_NODE_ID}-${each.value.EVEN_NODE_ID}/pathep-[${aci_leaf_access_bundle_policy_group.localAciLeafAccessBundlePolicyGroupIterationExternal["GLOBAL:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}"].name}]"
+  if_inst_t                     = "ext-svi"
+  description                   = join(" ", ["Interface Configuration for", join("-", [each.value.ODD_NODE_ID, each.value.EVEN_NODE_ID]), "as specified by Terraform CICD pipeline."])
+  annotation                    = "orchestrator:terraform"
+  autostate                     = each.value.AUTO_STATE
+  encap                         = "vlan-${each.value.VLAN_ID}"
+  encap_scope                   = each.value.ENCAP_SCOPE
+  ipv6_dad                      = each.value.IPV6_DAD
+  ll_addr                       = each.value.LL_ADDR
+  mac                           = each.value.MAC_ADDR 
+  mode                          = lower(each.value.DOT1Q_ENABLED) == "true" ? "regular" : "native"
+  mtu                           = each.value.MTU 
+  target_dscp                   = each.value.TARGET_DCSP
 }
 
 /*
