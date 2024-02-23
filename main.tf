@@ -1410,6 +1410,8 @@ resource "aci_logical_interface_profile" "localAciLogicalInterfaceProfileIterati
   }  
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3out_path_attachment
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.EVEN_NODE_ID}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}:${each.value.VLAN_ID}"
 resource "aci_l3out_path_attachment" "localAciL3OutPathAttachmentIterationSviVpc" {
   for_each                      = local.aci_l3out_path_attachment_rows
 

@@ -841,8 +841,8 @@ locals {
              ZONE_NAME                  = i.ZONE_NAME 
              VRF_NAME                   = i.VRF_NAME 
              NEXT_HOP_TYPE              = i.NEXT_HOP_TYPE 
-             ODD_NODE                   = i.ODD_NODE 
-             EVEN_NODE                  = i.EVEN_NODE
+             ODD_NODE_ID                = i.ODD_NODE_ID 
+             EVEN_NODE_ID               = i.EVEN_NODE_ID
              ENDPOINT_NAME              = i.ENDPOINT_NAME
              ENDPOINT_INTERFACE_TYPE    = i.ENDPOINT_INTERFACE_TYPE 
              DOT1Q_ENABLED              = i.DOT1Q_ENABLED 
