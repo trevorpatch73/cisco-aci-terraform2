@@ -1411,7 +1411,7 @@ resource "aci_logical_interface_profile" "localAciLogicalInterfaceProfileIterati
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3out_path_attachment
-# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.EVEN_NODE_ID}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}:${each.value.VLAN_ID}"
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_IP}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_IP}:${each.value.SHARED_IP}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}:${each.value.VLAN_ID}"
 resource "aci_l3out_path_attachment" "localAciL3OutPathAttachmentIterationSviVpc" {
   for_each                      = local.aci_l3out_path_attachment_rows
 
@@ -1424,22 +1424,67 @@ resource "aci_l3out_path_attachment" "localAciL3OutPathAttachmentIterationSviVpc
   encap                         = "vlan-${each.value.VLAN_ID}"
   encap_scope                   = each.value.ENCAP_SCOPE
   ipv6_dad                      = each.value.IPV6_DAD
-  #ll_addr                       = each.value.LL_ADDR
+  ll_addr                       = each.value.LL_ADDR
   mac                           = each.value.MAC_ADDR 
   mode                          = lower(each.value.DOT1Q_ENABLED) == "true" ? "regular" : "native"
   mtu                           = each.value.MTU 
   target_dscp                   = each.value.TARGET_DCSP
 }
 
-/*
-resource "aci_logical_node_profile" "localAciLogicalNodeProfileIteration" {
-  for_each      = local.aci_logical_node_profile_rows
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3out_vpc_member
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_IP}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_IP}:${each.value.SHARED_IP}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}:${each.value.VLAN_ID}" 
+resource "aci_l3out_vpc_member" "localAciL3OutVpcMemberIterationSviVpcOddNode" {
+  for_each      = local.aci_l3out_path_attachment_rows
   
-  l3_outside_dn = aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
-  description   = join(" ", ["Node Profile for", join("-", [each.value.ODD_NODE_ID, each.value.EVEN_NODE_ID]), "as specified by Terraform CICD pipeline."])
-  name          = join("_", [join("-", [each.value.ODD_NODE_ID, each.value.EVEN_NODE_ID]), "NODE", "PROF"])
+  leaf_port_dn  = aci_l3out_path_attachment.localAciL3OutPathAttachmentIterationSviVpc["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_IP}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_IP}:${each.value.SHARED_IP}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}:${each.value.VLAN_ID}"].id
+  side          = "A"
+  addr          = "${each.value.ODD_NODE_IP}/${each.value.NETWORK_CIDR}"
   annotation    = "orchestrator:terraform"
-  target_dscp   = "unspecified"
-
+  ipv6_dad      = each.value.IPV6_DAD
+  ll_addr       = each.value.LL_ADDR
+  description   = join(" ", ["Interface Configuration for", each.value.ODD_NODE_ID, "as specified by Terraform CICD pipeline."])
 }
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3out_vpc_member
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_IP}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_IP}:${each.value.SHARED_IP}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}:${each.value.VLAN_ID}" 
+resource "aci_l3out_vpc_member" "localAciL3OutVpcMemberIterationSviVpcEvenNode" {
+  for_each      = local.aci_l3out_path_attachment_rows
+  
+  leaf_port_dn  = aci_l3out_path_attachment.localAciL3OutPathAttachmentIterationSviVpc["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_IP}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_IP}:${each.value.SHARED_IP}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}:${each.value.VLAN_ID}"].id
+  side          = "B"
+  addr          = "${each.value.EVEN_NODE_IP}/${each.value.NETWORK_CIDR}"
+  annotation    = "orchestrator:terraform"
+  ipv6_dad      = each.value.IPV6_DAD
+  ll_addr       = each.value.LL_ADDR
+  description   = join(" ", ["Interface Configuration for", each.value.EVEN_NODE_ID, "as specified by Terraform CICD pipeline."])
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3out_path_attachment_secondary_ip
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_IP}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_IP}:${each.value.SHARED_IP}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}:${each.value.VLAN_ID}" 
+resource "aci_l3out_path_attachment_secondary_ip" "localAciL3OutPathAttachmentSecondaryIpIterationSviVpcOddNode" {
+  for_each                  = local.aci_l3out_path_attachment_rows
+  
+  l3out_path_attachment_dn  = aci_l3out_vpc_member.localAciL3OutVpcMemberIterationSviVpcOddNode["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_IP}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_IP}:${each.value.SHARED_IP}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}:${each.value.VLAN_ID}"].id
+  addr                      = "${each.value.SHARED_IP}/${each.value.NETWORK_CIDR}"
+  annotation                = "orchestrator:terraform"
+  description               = join(" ", ["Interface Configuration for", join("-", [each.value.ODD_NODE_ID, each.value.EVEN_NODE_ID]), "as specified by Terraform CICD pipeline."])
+  ipv6_dad                  = each.value.IPV6_DAD
+  dhcp_relay                = each.value.DHCP_RELAY
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3out_path_attachment_secondary_ip
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_IP}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_IP}:${each.value.SHARED_IP}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}:${each.value.VLAN_ID}" 
+resource "aci_l3out_path_attachment_secondary_ip" "localAciL3OutPathAttachmentSecondaryIpIterationSviVpcEvenNode" {
+  for_each                  = local.aci_l3out_path_attachment_rows
+  
+  l3out_path_attachment_dn  = aci_l3out_vpc_member.localAciL3OutVpcMemberIterationSviVpcEvenNode["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_IP}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_IP}:${each.value.SHARED_IP}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}:${each.value.VLAN_ID}"].id
+  addr                      = "${each.value.SHARED_IP}/${each.value.NETWORK_CIDR}"
+  annotation                = "orchestrator:terraform"
+  description               = join(" ", ["Interface Configuration for", join("-", [each.value.ODD_NODE_ID, each.value.EVEN_NODE_ID]), "as specified by Terraform CICD pipeline."])
+  ipv6_dad                  = each.value.IPV6_DAD
+  dhcp_relay                = each.value.DHCP_RELAY
+}
+
+/*
+
 */
