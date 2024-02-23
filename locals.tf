@@ -848,7 +848,6 @@ locals {
              DOT1Q_ENABLED              = i.DOT1Q_ENABLED 
              VLAN_ID                    = i.VLAN_ID
              AUTO_STATE                 = i.AUTO_STATE
-             #LL_ADDR                    = i.LL_ADDR
              MAC_ADDR                   = i.MAC_ADDR 
              MTU                        = i.MTU  
              TARGET_DCSP                = i.TARGET_DCSP
