@@ -836,7 +836,7 @@ locals {
     aci_l3out_path_attachment_rows = {
         for i in local.aci_l3out_path_attachment_iterations : 
         "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${i.ODD_NODE_ID}:${i.EVEN_NODE_ID}:${i.ENDPOINT_NAME}:${i.ENDPOINT_INTERFACE_TYPE}:${i.VLAN_ID}" => {
-             MULTI_TENANT               = i.MULTI_TENANT 
+             MULTI_TENANT               = i.MULTI_TENANT
              TENANT_NAME                = i.TENANT_NAME
              ZONE_NAME                  = i.ZONE_NAME 
              VRF_NAME                   = i.VRF_NAME 
