@@ -1424,7 +1424,7 @@ resource "aci_l3out_path_attachment" "localAciL3OutPathAttachmentIterationSviVpc
   encap                         = "vlan-${each.value.VLAN_ID}"
   encap_scope                   = each.value.ENCAP_SCOPE
   ipv6_dad                      = each.value.IPV6_DAD
-  ll_addr                       = each.value.LL_ADDR
+  #ll_addr                       = each.value.LL_ADDR
   mac                           = each.value.MAC_ADDR 
   mode                          = lower(each.value.DOT1Q_ENABLED) == "true" ? "regular" : "native"
   mtu                           = each.value.MTU 
