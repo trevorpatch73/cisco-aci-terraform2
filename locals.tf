@@ -839,7 +839,8 @@ locals {
              TENANT_NAME                = i.TENANT_NAME
              ZONE_NAME                  = i.ZONE_NAME 
              VRF_NAME                   = i.VRF_NAME 
-             NEXT_HOP_TYPE              = i.NEXT_HOP_TYPE 
+             NEXT_HOP_TYPE              = i.NEXT_HOP_TYPE
+             POD_ID                     = i.POD_ID 
              ODD_NODE_ID                = i.ODD_NODE_ID 
              EVEN_NODE_ID               = i.EVEN_NODE_ID
              ENDPOINT_NAME              = i.ENDPOINT_NAME
