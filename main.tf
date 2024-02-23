@@ -833,6 +833,12 @@ resource "aci_contract_subject_filter" "localAciContractSubjectFilterIterationL3
   action                = "permit"
   directives            = ["log"]
   priority_override     = "default"
+
+  lifecycle {
+    ignore_changes = [
+      annotation # Creates Noise; Ignoring to Silence
+    ]
+  }      
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/filter
