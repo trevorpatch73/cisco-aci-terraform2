@@ -909,6 +909,18 @@ locals {
         }
     }
 
+    aci_bgp_best_path_policy_iterations = csvdecode(file("./data/aci_bgp_best_path_policy.csv"))
+
+    aci_bgp_best_path_policy_rows = {
+        for i in local.aci_bgp_best_path_policy_iterations : 
+        "${i.TENANT_NAME}:${i.VRF_NAME}:${i.PEER_GROUP}" => {
+             TENANT_NAME            = i.TENANT_NAME
+             VRF_NAME               = i.VRF_NAME
+             PEER_GROUP             = i.PEER_GROUP 
+             CONTROL_STATE          = split(";", i.CONTROL_STATE)
+        }
+    }
+
 }
 
 

@@ -1539,17 +1539,29 @@ resource "aci_bgp_address_family_context" "localAciBgpAddressFamilyContextIterat
   max_ecmp_ibgp = each.value.MAX_IBGP_ECMP
 }
 
-# https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/bgp_route_summarization
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/bgp_route_summarization
 # resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
 resource "aci_bgp_route_summarization" "localAciBgpRouteSummarizationIteration" {
   for_each              = local.aci_bgp_route_summarization_rows
 
   tenant_dn             = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
-  name                  = join("_",[each.value.TENANT_NAME, each.value.VRF_NAME, each.value.PEER_GROUP, "RT_POL"])
+  name                  = join("_",[each.value.TENANT_NAME, each.value.VRF_NAME, each.value.PEER_GROUP, "BGP_RT_POL"])
   description           = "created via Terraform CI/CD Pipeline"
   attrmap               = join("_",[each.value.TENANT_NAME, each.value.VRF_NAME, each.value.PEER_GROUP, "ATTR_MAP"])
   ctrl                  = each.value.CONTROL_STATE
   address_type_controls = each.value.ADDRESS_TYPE_CONTROLS
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/bgp_best_path_policy
+# resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
+resource "aci_bgp_best_path_policy" "localAciBgpBestPathPolicyIteration" {
+  for_each    = local.aci_bgp_best_path_policy_rows 
+  
+  tenant_dn   = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
+  name        = join("_",[each.value.TENANT_NAME, each.value.VRF_NAME, each.value.PEER_GROUP, "BGP_PATH_POL"])
+  annotation  = "orchestrator:terraform"
+  description = "created via Terraform CI/CD Pipeline"
+  ctrl        = each.value.CONTROL_STATE
 }
 
 /*
