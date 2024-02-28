@@ -904,8 +904,8 @@ locals {
              TENANT_NAME            = i.TENANT_NAME
              VRF_NAME               = i.VRF_NAME
              PEER_GROUP             = i.PEER_GROUP 
-             CONTROL_STATE          = i.CONTROL_STATE 
-             ADDRESS_TYPE_CONTROLS  = i.ADDRESS_TYPE_CONTROLS 
+             CONTROL_STATE          = split(";", i.CONTROL_STATE)
+             ADDRESS_TYPE_CONTROLS  = split(";", i.ADDRESS_TYPE_CONTROLS)
         }
     }
 
