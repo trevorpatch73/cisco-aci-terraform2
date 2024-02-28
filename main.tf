@@ -1552,6 +1552,7 @@ resource "aci_bgp_route_summarization" "localAciBgpRouteSummarizationIteration" 
   address_type_controls = each.value.ADDRESS_TYPE_CONTROLS
 }
 
+/*
 # https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/bgp_best_path_policy
 # resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
 resource "aci_bgp_best_path_policy" "localAciBgpBestPathPolicyIteration" {
@@ -1563,6 +1564,7 @@ resource "aci_bgp_best_path_policy" "localAciBgpBestPathPolicyIteration" {
   description = "created via Terraform CI/CD Pipeline"
   ctrl        = "${each.value.CONTROL_STATE}"
 }
+*/
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/bgp_peer_prefix
 # resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
