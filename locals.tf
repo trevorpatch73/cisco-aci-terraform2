@@ -879,6 +879,23 @@ locals {
         }
     }
 
+    aci_bgp_address_family_context_iterations = csvdecode(file("./data/aci_bgp_address_family_context.csv"))
+
+    aci_bgp_address_family_context_rows = {
+        for i in local.aci_bgp_address_family_context_iterations : 
+        "${i.TENANT_NAME}:${i.VRF_NAME}:${i.PEER_GROUP}" => {
+             TENANT_NAME            = i.TENANT_NAME
+             VRF_NAME               = i.VRF_NAME
+             PEER_GROUP             = i.PEER_GROUP 
+             CONTROL_STATE          = i.CONTROL_STATE 
+             EBGP_ADMIN_DISTANCE    = i.EBGP_ADMIN_DISTANCE
+             IBGP_ADMIN_DISTANCE    = i.IBGP_ADMIN_DISTANCE
+             LOCAL_ADMIN_DISTANCE   = i.LOCAL_ADMIN_DISTANCE
+             MAX_EBGP_ECMP          = i.MAX_EBGP_ECMP 
+             MAX_IBGP_ECMP          = i.MAX_IBGP_ECMP
+        }
+    }
+
 }
 
 
