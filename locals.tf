@@ -921,6 +921,21 @@ locals {
         }
     }
 
+    aci_bgp_peer_prefix_iterations = csvdecode(file("./data/aci_bgp_peer_prefix.csv"))
+
+    aci_bgp_peer_prefix_rows = {
+        for i in local.aci_bgp_peer_prefix_iterations : 
+        "${i.TENANT_NAME}:${i.VRF_NAME}:${i.PEER_GROUP}" => {
+             TENANT_NAME            = i.TENANT_NAME
+             VRF_NAME               = i.VRF_NAME
+             PEER_GROUP             = i.PEER_GROUP 
+             ACTION                 = i.ACTION
+             MAX_PREFIX             = i.MAX_PREFIX
+             RESTART_TIME           = i.RESTART_TIME
+             THRESHOLD              = i.THRESHOLD 
+        }
+    }
+
 }
 
 

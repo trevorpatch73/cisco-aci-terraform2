@@ -1556,12 +1556,27 @@ resource "aci_bgp_route_summarization" "localAciBgpRouteSummarizationIteration" 
 # resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
 resource "aci_bgp_best_path_policy" "localAciBgpBestPathPolicyIteration" {
   for_each    = local.aci_bgp_best_path_policy_rows 
-  
+
   tenant_dn   = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
   name        = join("_",[each.value.TENANT_NAME, each.value.VRF_NAME, each.value.PEER_GROUP, "BGP_PATH_POL"])
   annotation  = "orchestrator:terraform"
   description = "created via Terraform CI/CD Pipeline"
   ctrl        = each.value.CONTROL_STATE
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/bgp_peer_prefix
+# resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
+resource "aci_bgp_peer_prefix" "localAciBgpPeerPrefixIteration" {
+  for_each     = local.aci_bgp_peer_prefix_rows 
+
+  tenant_dn    = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
+  name         = join("_",[each.value.TENANT_NAME, each.value.VRF_NAME, each.value.PEER_GROUP, "BGP_PEER_PFX"])
+  description  = "created via Terraform CI/CD Pipeline"
+  action       = each.value.ACTION
+  annotation   = "orchestrator:terraform"
+  max_pfx      = each.value.MAX_PREFIX
+  restart_time = each.value.RESTART_TIME
+  thresh       = each.value.THRESHOLD
 }
 
 /*
