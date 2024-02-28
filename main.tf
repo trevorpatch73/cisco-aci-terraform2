@@ -1561,7 +1561,7 @@ resource "aci_bgp_best_path_policy" "localAciBgpBestPathPolicyIteration" {
   name        = join("_",[each.value.TENANT_NAME, each.value.VRF_NAME, each.value.PEER_GROUP, "BGP_PATH_POL"])
   annotation  = "orchestrator:terraform"
   description = "created via Terraform CI/CD Pipeline"
-  ctrl        = each.value.CONTROL_STATE
+  ctrl        = "${each.value.CONTROL_STATE}"
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/bgp_peer_prefix
