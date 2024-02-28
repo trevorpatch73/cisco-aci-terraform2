@@ -1505,7 +1505,23 @@ resource "aci_l3out_path_attachment_secondary_ip" "localAciL3OutPathAttachmentSe
   ipv6_dad                  = each.value.IPV6_DAD
   dhcp_relay                = each.value.DHCP_RELAY
 }
-
 /*
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/bgp_timers
+# resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
+resource "aci_bgp_timers" "localAciBgpTimers" {
+  for_each     = local.aci_bgp_timers_rows
+
+  tenant_dn    = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
+  description  = "created via Terraform CI/CD Pipeline"
+  name         = join("_",[each.value.TENANT_NAME, each.value.VRF_NAME, each.value.PEER_GROUP])
+  annotation   = "orchestrator:terraform"
+  gr_ctrl      = each.value.GRACEFUL_CONTROL
+  hold_intvl   = each.value.HOLD_INTERVAL
+  ka_intvl     = each.value.KEEPALIVE_INTERVAL
+  max_as_limit = each.value.MAX_AS_LIMIT
+  stale_intvl  = each.value.STALE_INTERVAL
+}
+
+
 
 */

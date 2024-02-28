@@ -863,6 +863,22 @@ locals {
         }
     }
 
+    aci_bgp_timers_iterations = csvdecode(file("./data/aci_bgp_timers.csv"))
+
+    aci_bgp_timers_rows = {
+        for i in local.aci_bgp_timers_iterations : 
+        "${i.TENANT_NAME}:${i.VRF_NAME}:${i.PEER_GROUP}" => {
+             TENANT_NAME         = i.TENANT_NAME  
+             VRF_NAME            = i.VRF_NAME  
+             PEER_GROUP          = i.PEER_GROUP  
+             GRACEFUL_CONTROL    = i.GRACEFUL_CONTROL
+             HOLD_INTERVAL       = i.HOLD_INTERVAL  
+             KEEPALIVE_INTERVAL  = i.KEEPALIVE_INTERVAL
+             MAX_AS_LIMIT        = i.MAX_AS_LIMIT 
+             STALE_INTERVAL      = i.STALE_INTERVAL  
+        }
+    }
+
 }
 
 
