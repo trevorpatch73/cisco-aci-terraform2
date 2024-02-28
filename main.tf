@@ -1523,10 +1523,10 @@ resource "aci_bgp_timers" "localAciBgpTimersIteration" {
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/bgp_address_family_context
-# resource index key is 
+# resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
 resource "aci_bgp_address_family_context" "localAciBgpAddressFamilyContextIteration" {
   for_each      = local.aci_bgp_address_family_context_rows
-  
+
   tenant_dn     = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
   name          = join("_",[each.value.TENANT_NAME, each.value.VRF_NAME, each.value.PEER_GROUP, "PG_BGP_AFC"])
   description   = "created via Terraform CI/CD Pipeline"
@@ -1537,6 +1537,19 @@ resource "aci_bgp_address_family_context" "localAciBgpAddressFamilyContextIterat
   local_dist    = each.value.LOCAL_ADMIN_DISTANCE
   max_ecmp      = each.value.MAX_EBGP_ECMP
   max_ecmp_ibgp = each.value.MAX_IBGP_ECMP
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/bgp_route_summarization
+# resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
+resource "aci_bgp_route_summarization" "localAciBgpRouteSummarizationIteration" {
+  for_each              = local.aci_bgp_route_summarization_rows
+  
+  tenant_dn             = aci_tenant.localAciTenantIteration["${each.value.TENANT_NAME}"].id
+  name                  = join("_",[each.value.TENANT_NAME, each.value.VRF_NAME, each.value.PEER_GROUP, "RT_POL"])
+  description           = "created via Terraform CI/CD Pipeline"
+  attrmap               = join("_",[each.value.TENANT_NAME, each.value.VRF_NAME, each.value.PEER_GROUP, "ATTR_MAP"])
+  ctrl                  = ["${each.value.CONTROL_STATE}"]
+  address_type_controls = ["${each.value.ADDRESS_TYPE_CONTROLS}"]
 }
 
 /*

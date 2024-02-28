@@ -896,6 +896,19 @@ locals {
         }
     }
 
+    aci_bgp_route_summarization_iterations = csvdecode(file("./data/aci_bgp_route_summarization.csv"))
+
+    aci_bgp_route_summarization_rows = {
+        for i in local.aci_bgp_route_summarization_iterations : 
+        "${i.TENANT_NAME}:${i.VRF_NAME}:${i.PEER_GROUP}" => {
+             TENANT_NAME            = i.TENANT_NAME
+             VRF_NAME               = i.VRF_NAME
+             PEER_GROUP             = i.PEER_GROUP 
+             CONTROL_STATE          = i.CONTROL_STATE 
+             ADDRESS_TYPE_CONTROLS  = i.ADDRESS_TYPE_CONTROLS 
+        }
+    }
+
 }
 
 
