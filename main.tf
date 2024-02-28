@@ -1505,7 +1505,7 @@ resource "aci_l3out_path_attachment_secondary_ip" "localAciL3OutPathAttachmentSe
   ipv6_dad                  = each.value.IPV6_DAD
   dhcp_relay                = each.value.DHCP_RELAY
 }
-/*
+
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/bgp_timers
 # resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
 resource "aci_bgp_timers" "localAciBgpTimers" {
@@ -1523,5 +1523,5 @@ resource "aci_bgp_timers" "localAciBgpTimers" {
 }
 
 
-
+/*
 */
