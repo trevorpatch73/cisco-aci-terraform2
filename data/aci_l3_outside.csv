@@ -1,4 +1,5 @@
 TENANT_NAME,ZONE_NAME,VRF_NAME,NEXT_HOP_TYPE,ENF_RT_CTRL,TARGET_DSCP,MPLS_ENABLED,PIM
+SS,OUT,DEFAULT_VRF,CORE,export,unspecified,no,ipv4
 SS,SS,DEFAULT_VRF,PAN,export,unspecified,no,ipv4
 SS,BU1,DEFAULT_VRF,PAN,export,unspecified,no,ipv4
 SS,BU2,DEFAULT_VRF,PAN,export,unspecified,no,ipv4
