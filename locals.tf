@@ -507,6 +507,7 @@ locals {
              TARGET_DSCP    = i.TARGET_DSCP
              MPLS_ENABLED   = i.MPLS_ENABLED
              PIM            = i.PIM
+             BGP_ENABLE     = i.BGP_ENABLE
         }
     } 
 
@@ -934,6 +935,11 @@ locals {
              RESTART_TIME           = i.RESTART_TIME
              THRESHOLD              = i.THRESHOLD 
         }
+    }
+
+    FilterlocalAciL3OutBgpExternalPolicyIteration ={
+        for key, value in local.aci_l3_outside_rows : key => value
+        if lower(value.BGP_ENABLE) == "true"     
     }
 
 }
