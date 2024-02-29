@@ -397,6 +397,22 @@ resource "aci_vrf" "localAciVrfIteration" {
   pc_enf_dir              = each.value.POL_ENF_DIR
   pc_enf_pref             = each.value.POL_ENF_PREF
 
+  lifecycle {
+    ignore_changes = [
+      relation_fv_rs_ctx_to_bgp_ctx_af_pol, # set by resoure "aci_vrf_to_bgp_address_family_context"
+      relation_fv_rs_ctx_to_ext_route_tag_pol,
+      relation_fv_rs_ctx_mon_pol,
+      relation_fv_rs_bgp_ctx_pol,
+      relation_fv_rs_ctx_to_ep_ret,
+      relation_fv_rs_ctx_to_ospf_ctx_pol,
+      relation_fv_rs_ctx_to_eigrp_ctx_af_pol,
+      relation_fv_rs_ctx_mcast_to,
+      relation_fv_rs_vrf_validation_pol,
+      relation_fv_rs_ospf_ctx_pol,
+      name_alias
+    ]
+  } 
+
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/vrf_snmp_context
