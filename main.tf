@@ -1642,13 +1642,13 @@ resource "aci_bgp_peer_connectivity_profile" "localAciBgpPeerConnectivityProfile
   parent_dn                     = aci_l3out_path_attachment.localAciL3OutPathAttachmentIterationSviVpc["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_IP}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_IP}:${each.value.SHARED_IP}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}:${each.value.VLAN_ID}"].id
   addr                          = each.value.PEER_IP
   description                   = "created via Terraform CI/CD Pipeline"
-  addr_t_ctrl                   = lower(each.value.PEER_ADDRESS_TYPE) != "null" ? each.value.PEER_ADDRESS_TYPE : null
+  addr_t_ctrl                   = lower(each.value.PEER_ADDRESS_TYPE) != "null" ? [each.value.PEER_ADDRESS_TYPE] : []
   allowed_self_as_cnt           = lower(each.value.ALLOWED_LOCAL_AS_COUNT) != "null" ? each.value.ALLOWED_LOCAL_AS_COUNT : null
   annotation                    = "orchestrator:terraform"
-  ctrl                          = lower(each.value.BGP_CONTROLS) != "null" ? each.value.BGP_CONTROLS : null
+  ctrl                          = lower(each.value.BGP_CONTROLS) != "null" ? [each.value.BGP_CONTROLS] : []
   password                      = random_password.localAciBgpPeerConnectivityProfileIterationsPassword[each.key].result
-  peer_ctrl                     = lower(each.value.PEER_CONTROLS) != "null" ? each.value.PEER_CONTROLS : null
-  private_a_sctrl               = lower(each.value.PRIVATE_AS_ACTION) != "null" ? each.value.PRIVATE_AS_ACTION : null
+  peer_ctrl                     = lower(each.value.PEER_CONTROLS) != "null" ? [each.value.PEER_CONTROLS] : []
+  private_a_sctrl               = lower(each.value.PRIVATE_AS_ACTION) != "null" && each.value.PRIVATE_AS_ACTION != "null" ? [each.value.PRIVATE_AS_ACTION] : []
   ttl                           = lower(each.value.TTL) != "null" ? each.value.TTL : null
   weight                        = lower(each.value.WEIGHT) != "null" ? each.value.WEIGHT : null
   as_number                     = lower(each.value.AS_NUMBER) != "null" ? each.value.AS_NUMBER : null
