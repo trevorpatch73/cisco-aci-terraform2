@@ -2,6 +2,7 @@ NETWORK_PREFIX,NETWORK_CIDR,VLAN_ID,LOCATION,ENVIRONMENT,TENANT,ZONE,APPLICATION
 30.0.0.0,23,10,sandboxapicdc,sbox,infra,aci-mgmt,OOB,To be used IP ACI Node Mgmt Ports
 30.0.2.0,23,unspecified,sandboxapicdc,sbox,infra,rtr-id,NTWK,To be used as Router-IDs for L3Outs per VRF per Node
 30.0.4.0,28,11,sandboxapicdc,sbox,SS,ss_transit,ss_transit,To be used to IP L3Outs per interface per VRF per Node connecting to Tenant NGFW Outside interface
+30.0.4.16,28,1101,sandboxapicdc,sbox,SS,out,core,To be used to IP L3outs going to core
 30.0.4.32,28,13,sandboxapicdc,sbox,SS,adc_transit,adc_transit,To be used to IP L3Outs per interface per VRF per Node connecting to Application Delivery Controller
 30.0.4.48,28,14,sandboxapicdc,sbox,SS,mgmt_transit,zone_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
 30.0.4.96,28,17,sandboxapicdc,sbox,SS,storage_transit,zone_transit,To be used to IP L3outs per interface per VRF per Node connecting to MacroSegmentation Firewall
