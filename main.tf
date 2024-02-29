@@ -1608,6 +1608,7 @@ resource "aci_bgp_peer_prefix" "localAciBgpPeerPrefixIteration" {
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/bgp_route_control_profile
 # resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
 resource "aci_bgp_route_control_profile" "localAciBgpRouteControlProfileIterations" {
+  for_each                   = local.aci_bgp_route_control_profile_rows
   
   parent_dn                  = aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
   name                       = join("_",[each.value.TENANT_NAME, each.value.VRF_NAME, each.value.PEER_GROUP, "BGP_RT_CTRL_PROF"])

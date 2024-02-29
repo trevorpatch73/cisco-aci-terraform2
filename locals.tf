@@ -996,7 +996,9 @@ locals {
         for i in local.aci_bgp_route_control_profile_iterations : 
         "${i.TENANT_NAME}:${i.VRF_NAME}:${i.PEER_GROUP}" => {
              TENANT_NAME                = i.TENANT_NAME
+             ZONE_NAME                  = i.ZONE_NAME
              VRF_NAME                   = i.VRF_NAME
+             NEXT_HOP_TYPE              = i.NEXT_HOP_TYPE
              PEER_GROUP                 = i.PEER_GROUP 
              ROUTE_CONTROL_PROFILE_TYPE = i.ROUTE_CONTROL_PROFILE_TYPE
         }
