@@ -1605,10 +1605,21 @@ resource "aci_bgp_peer_prefix" "localAciBgpPeerPrefixIteration" {
   thresh       = each.value.THRESHOLD
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/bgp_route_control_profile
+# resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
+resource "aci_bgp_route_control_profile" "localAciBgpRouteControlProfileIterations" {
+  
+  parent_dn                  = aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
+  name                       = join("_",[each.value.TENANT_NAME, each.value.VRF_NAME, each.value.PEER_GROUP, "BGP_RT_CTRL_PROF"])
+  annotation                 = "orchestrator:terraform"
+  description                = "created via Terraform CI/CD Pipeline"
+  route_control_profile_type = each.value.ROUTE_CONTROL_PROFILE_TYPE
+}
+
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3out_bgp_external_policy
 # resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
 resource "aci_l3out_bgp_external_policy" "localAciL3OutBgpExternalPolicyIteration" {
-  for_each       = local.FilterlocalAciL3OutBgpExternalPolicyIteration 
+  for_each      = local.FilterlocalAciL3OutBgpExternalPolicyIteration 
 
   l3_outside_dn = aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
   annotation    = "orchestrator:terraform"
@@ -1658,6 +1669,8 @@ resource "aci_bgp_peer_connectivity_profile" "localAciBgpPeerConnectivityProfile
 
   relation_bgp_rs_peer_pfx_pol  = aci_bgp_peer_prefix.localAciBgpPeerPrefixIteration["${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"].id
 }
+
+
 
 /*
 */
