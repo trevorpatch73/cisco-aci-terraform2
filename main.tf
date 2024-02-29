@@ -787,8 +787,8 @@ resource "aci_external_network_instance_profile" "localAciExternalNetworkInstanc
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3_ext_subnet
 # resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ALLOWED_PREFIX}"
-resource "aci_l3_ext_subnet" "localAciL3ExtSubnetIteration" {
-  for_each                              = local.aci_l3_ext_subnet_rows
+resource "aci_l3_ext_subnet" "localAciL3ExtSubnetIterationImport" {
+  for_each                              = local.FilterlocalAciL3ExtSubnetIterationImport
   
   external_network_instance_profile_dn  = aci_external_network_instance_profile.localAciExternalNetworkInstanceProfileIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
   description                           = "Allowed"
@@ -796,6 +796,21 @@ resource "aci_l3_ext_subnet" "localAciL3ExtSubnetIteration" {
   annotation                            = "orchestrator:terraform" 
   scope                                 = ["${each.value.SCOPE}"]
 
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3_ext_subnet
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ALLOWED_PREFIX}"
+resource "aci_l3_ext_subnet" "localAciL3ExtSubnetIterationExport" {
+  for_each                              = local.FilterlocalAciL3ExtSubnetIterationExport
+  
+  external_network_instance_profile_dn  = aci_external_network_instance_profile.localAciExternalNetworkInstanceProfileIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
+  description                           = "Allowed"
+  ip                                    = "${each.value.ALLOWED_PREFIX}/${each.value.ALLOWED_CIDR}"
+  annotation                            = "orchestrator:terraform" 
+  scope                                 = ["${each.value.SCOPE}"]
+  
+  relation_l3ext_rs_subnet_to_rt_summ   = aci_bgp_route_summarization.localAciBgpRouteSummarizationIteration["${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"].id
+  
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/contract

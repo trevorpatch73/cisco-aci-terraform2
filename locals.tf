@@ -540,8 +540,19 @@ locals {
              ALLOWED_PREFIX = i.ALLOWED_PREFIX
              ALLOWED_CIDR   = i.ALLOWED_CIDR 
              SCOPE          = i.SCOPE  
+             PEER_GROUP     = i.PEER_GROUP
         }
-    }   
+    }
+
+    FilterlocalAciL3ExtSubnetIterationImport ={
+        for key, value in local.aci_l3_ext_subnet_rows : key => value
+        if lower(value.SCOPE) == "import-rtctrl"     
+    } 
+
+    FilterlocalAciL3ExtSubnetIterationExport ={
+        for key, value in local.aci_l3_ext_subnet_rows : key => value
+        if lower(value.SCOPE) == "export-rtctrl"     
+    }               
 
     ###############################################
     #####  SWITCHPORT CONFIGURATION WORKFLOW ######
