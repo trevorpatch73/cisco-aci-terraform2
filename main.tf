@@ -1595,7 +1595,7 @@ resource "aci_bgp_peer_prefix" "localAciBgpPeerPrefixIteration" {
 resource "aci_l3out_bgp_external_policy" "localAciL3OutBgpExternalPolicyIteration" {
   for_each       = local.FilterlocalAciL3OutBgpExternalPolicyIteration 
 
-  l3_outside_dn = aci_l3_outside.aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
+  l3_outside_dn = aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id
   annotation    = "orchestrator:terraform"
   description   = "created via Terraform CI/CD Pipeline"
 }
