@@ -1617,7 +1617,7 @@ resource "aci_l3out_bgp_external_policy" "localAciL3OutBgpExternalPolicyIteratio
 
 # https://registry.terraform.io/providers/hashicorp/random/3.6.0/docs/resources/password
 # resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_IP}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_IP}:${each.value.AS_NUMBER}:${each.value.PEER_IP}"
-resource "random_password" "localAciBgpPeerConnectivityProfileIterationsPassword" {
+resource "random_string" "localAciBgpPeerConnectivityProfileIterationsPassword" {
   for_each    = local.aci_bgp_peer_connectivity_profile_rows
 
   length      = 16
@@ -1646,7 +1646,7 @@ resource "aci_bgp_peer_connectivity_profile" "localAciBgpPeerConnectivityProfile
   allowed_self_as_cnt           = lower(each.value.ALLOWED_LOCAL_AS_COUNT) != "null" ? each.value.ALLOWED_LOCAL_AS_COUNT : null
   annotation                    = "orchestrator:terraform"
   ctrl                          = lower(each.value.BGP_CONTROLS) != "null" ? [each.value.BGP_CONTROLS] : []
-  password                      = random_password.localAciBgpPeerConnectivityProfileIterationsPassword[each.key].result
+  password                      = random_string.localAciBgpPeerConnectivityProfileIterationsPassword[each.key].result
   peer_ctrl                     = lower(each.value.PEER_CONTROLS) != "null" ? [each.value.PEER_CONTROLS] : []
   private_a_sctrl               = lower(each.value.PRIVATE_AS_ACTION) != "null" && each.value.PRIVATE_AS_ACTION != "null" ? [each.value.PRIVATE_AS_ACTION] : []
   ttl                           = lower(each.value.TTL) != "null" ? each.value.TTL : null
