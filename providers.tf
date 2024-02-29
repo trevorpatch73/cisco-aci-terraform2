@@ -7,6 +7,10 @@ terraform {
     aci = {
       source  = "ciscodevnet/aci"
       version = "2.13.2"
+    }
+    random = {
+      source = "hashicorp/random"
+      version = "3.6.0"
     } 
   }
   
@@ -19,6 +23,10 @@ terraform {
     key    = "root/workspaces/github/terraform.tfstate" # Path to the state file
     region = "us-east-1" # AWS region
   }      
+}
+
+provider "random" {
+
 }
 
 # Configure the ACI provider

@@ -1615,5 +1615,49 @@ resource "aci_l3out_bgp_external_policy" "localAciL3OutBgpExternalPolicyIteratio
   description   = "created via Terraform CI/CD Pipeline"
 }
 
+# https://registry.terraform.io/providers/hashicorp/random/3.6.0/docs/resources/password
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_IP}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_IP}:${each.value.AS_NUMBER}:${each.value.PEER_IP}"
+resource "random_password" "localAciBgpPeerConnectivityProfileIterationsPassword" {
+  for_each    = local.aci_bgp_peer_connectivity_profile_rows
+
+  length      = 16
+  special     = false
+  lower       = true
+  min_lower   = 1 
+  upper       = true
+  min_upper   = 1 
+  numeric     = true
+  min_numeric = 1
+
+  lifecycle{
+    ignore_changes = all
+  } 
+}
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/bgp_peer_connectivity_profile
+# resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_IP}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_IP}:${each.value.AS_NUMBER}:${each.value.PEER_IP}"
+resource "aci_bgp_peer_connectivity_profile" "localAciBgpPeerConnectivityProfileIterations" {
+  for_each                      = local.aci_bgp_peer_connectivity_profile_rows
+
+  parent_dn                     = aci_l3out_path_attachment.localAciL3OutPathAttachmentIterationSviVpc["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ODD_NODE_ID}:${each.value.ODD_NODE_IP}:${each.value.EVEN_NODE_ID}:${each.value.EVEN_NODE_IP}:${each.value.SHARED_IP}:${each.value.ENDPOINT_NAME}:${each.value.ENDPOINT_INTERFACE_TYPE}:${each.value.VLAN_ID}"].id
+  addr                          = each.value.PEER_IP
+  description                   = "created via Terraform CI/CD Pipeline"
+  addr_t_ctrl                   = lower(each.value.PEER_ADDRESS_TYPE) != "null" ? each.value.PEER_ADDRESS_TYPE : null
+  allowed_self_as_cnt           = lower(each.value.ALLOWED_LOCAL_AS_COUNT) != "null" ? each.value.ALLOWED_LOCAL_AS_COUNT : null
+  annotation                    = "orchestrator:terraform"
+  ctrl                          = lower(each.value.BGP_CONTROLS) != "null" ? each.value.BGP_CONTROLS : null
+  password                      = random_password.localAciBgpPeerConnectivityProfileIterationsPassword[each.key].result
+  peer_ctrl                     = lower(each.value.PEER_CONTROLS) != "null" ? each.value.PEER_CONTROLS : null
+  private_a_sctrl               = lower(each.value.PRIVATE_AS_ACTION) != "null" ? each.value.PRIVATE_AS_ACTION : null
+  ttl                           = lower(each.value.TTL) != "null" ? each.value.TTL : null
+  weight                        = lower(each.value.WEIGHT) != "null" ? each.value.WEIGHT : null
+  as_number                     = lower(each.value.AS_NUMBER) != "null" ? each.value.AS_NUMBER : null
+  local_asn                     = lower(each.value.LOCAL_ASN) != "null" ? each.value.LOCAL_ASN : null
+  local_asn_propagate           = lower(each.value.LOCAL_ASN_PROP) != "null" ? each.value.LOCAL_ASN_PROP : null
+  admin_state                   = lower(each.value.ADMIN_STATE) != "null" ? each.value.ADMIN_STATE : null
+
+  relation_bgp_rs_peer_pfx_pol  = aci_bgp_peer_prefix.localAciBgpPeerPrefixIteration["${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"].id
+}
+
 /*
 */

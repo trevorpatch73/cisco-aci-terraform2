@@ -953,6 +953,43 @@ locals {
         if lower(value.BGP_ENABLE) == "true"     
     }
 
+
+    aci_bgp_peer_connectivity_profile_iterations = csvdecode(file("./data/aci_bgp_peer_connectivity_profile.csv"))
+
+    aci_bgp_peer_connectivity_profile_rows = {
+        for i in local.aci_bgp_peer_connectivity_profile_iterations : 
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${i.ODD_NODE_ID}:${i.ODD_NODE_IP}:${i.EVEN_NODE_ID}:${i.EVEN_NODE_IP}:${i.AS_NUMBER}:${i.PEER_IP}" => {
+             TENANT_NAME                = i.TENANT_NAME  
+             ZONE_NAME                  = i.ZONE_NAME    
+             VRF_NAME                   = i.VRF_NAME
+             NEXT_HOP_TYPE              = i.NEXT_HOP_TYPE   
+             POD_ID                     = i.POD_ID    
+             ODD_NODE_ID                = i.ODD_NODE_ID
+             ODD_NODE_IP                = i.ODD_NODE_IP 
+             EVEN_NODE_ID               = i.EVEN_NODE_ID 
+             EVEN_NODE_IP               = i.EVEN_NODE_IP
+             SHARED_IP                  = i.SHARED_IP 
+             NETWORK_CIDR               = i.NETWORK_CIDR
+             ENDPOINT_NAME              = i.ENDPOINT_NAME  
+             ENDPOINT_INTERFACE_TYPE    = i.ENDPOINT_INTERFACE_TYPE
+             VLAN_ID                    = i.VLAN_ID 
+             AS_NUMBER                  = i.AS_NUMBER 
+             PEER_GROUP                 = i.PEER_GROUP
+             PEER_NAME                  = i.PEER_NAME 
+             PEER_IP                    = i.PEER_IP 
+             PEER_ADDRESS_TYPE          = i.PEER_ADDRESS_TYPE
+             PEER_CONTROLS              = i.PEER_CONTROLS 
+             BGP_CONTROLS               = i.BGP_CONTROLS
+             ADMIN_STATE                = i.ADMIN_STATE  
+             ALLOWED_LOCAL_AS_COUNT     = i.ALLOWED_LOCAL_AS_COUNT
+             LOCAL_ASN                  = i.LOCAL_ASN
+             LOCAL_ASN_PROP             = i.LOCAL_ASN_PROP
+             PRIVATE_AS_ACTION          = i.PRIVATE_AS_ACTION 
+             TTL                        = i.TTL   
+             WEIGHT                     = i.WEIGHT  
+        }
+    }
+
 }
 
 
