@@ -452,7 +452,7 @@ resource "aci_bridge_domain" "localAciBridgeDomainIteration" {
   v6unk_mcast_act             = each.value.V6_UNK_MCAST_ACT
   vmac                        = "not-applicable" # ISN via Nexus Dashboard MSO Not Used
 
-  relation_fv_rs_ctx = aci_vrf.localAciVrfIteration["${each.value.TENANT_NAME}:${each.value.VRF_NAME}"].id
+  relation_fv_rs_ctx          = aci_vrf.localAciVrfIteration["${each.value.TENANT_NAME}:${each.value.VRF_NAME}"].id
 
 }
 
@@ -1539,6 +1539,15 @@ resource "aci_bgp_address_family_context" "localAciBgpAddressFamilyContextIterat
   max_ecmp_ibgp = each.value.MAX_IBGP_ECMP
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/vrf_to_bgp_address_family_context
+# resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
+resource "aci_vrf_to_bgp_address_family_context" "localAciVrfToBgpAddresFamilyContextIteration" {
+  for_each                      = local.aci_bgp_address_family_context_rows
+  vrf_dn                        = aci_vrf.localAciVrfIteration["${each.value.TENANT_NAME}:${each.value.VRF_NAME}" ].id
+  bgp_address_family_context_dn = aci_bgp_address_family_context.localAciBgpAddressFamilyContextIteration["${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"].id
+  address_family                = "ipv4-ucast"
+}
+
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/bgp_route_summarization
 # resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
 resource "aci_bgp_route_summarization" "localAciBgpRouteSummarizationIteration" {
@@ -1553,7 +1562,7 @@ resource "aci_bgp_route_summarization" "localAciBgpRouteSummarizationIteration" 
 }
 
 /*
-# https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/bgp_best_path_policy
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/bgp_best_path_policy
 # resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
 resource "aci_bgp_best_path_policy" "localAciBgpBestPathPolicyIteration" {
   for_each    = local.aci_bgp_best_path_policy_rows 
@@ -1566,7 +1575,7 @@ resource "aci_bgp_best_path_policy" "localAciBgpBestPathPolicyIteration" {
 }
 */
 
-# https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/bgp_peer_prefix
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/bgp_peer_prefix
 # resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"
 resource "aci_bgp_peer_prefix" "localAciBgpPeerPrefixIteration" {
   for_each     = local.aci_bgp_peer_prefix_rows 
@@ -1580,6 +1589,7 @@ resource "aci_bgp_peer_prefix" "localAciBgpPeerPrefixIteration" {
   restart_time = each.value.RESTART_TIME
   thresh       = each.value.THRESHOLD
 }
+
 
 /*
 */
