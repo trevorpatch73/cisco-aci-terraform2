@@ -1,4 +1,5 @@
 TENANT_NAME,ZONE_NAME,VRF_NAME,NEXT_HOP_TYPE,FLOOD_ON_ENCAP,MATCH_T,PREF_GR_MEMB,PRIO,TARGET_DSCP
+SS,OUT,DEFAULT_VRF,CORE,disabled,AtleastOne,exclude,unspecified,unspecified
 SS,SS,DEFAULT_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified
 SS,BU1,DEFAULT_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified
 SS,BU2,DEFAULT_VRF,PAN,disabled,AtleastOne,exclude,unspecified,unspecified
