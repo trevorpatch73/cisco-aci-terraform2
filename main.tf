@@ -469,7 +469,7 @@ resource "aci_bridge_domain" "localAciBridgeDomainIteration" {
   vmac                        = "not-applicable" # ISN via Nexus Dashboard MSO Not Used
 
   relation_fv_rs_ctx          = aci_vrf.localAciVrfIteration["${each.value.TENANT_NAME}:${each.value.VRF_NAME}"].id
-  relation_fv_rs_bd_to_out    = each.value.NEXT_HOP_TYPE != "null" ? aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id : null
+  relation_fv_rs_bd_to_out = each.value.NEXT_HOP_TYPE != "null" ? toset([aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id]) : toset([])
 
   lifecycle {
     ignore_changes = [
