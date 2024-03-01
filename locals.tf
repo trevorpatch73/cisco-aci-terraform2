@@ -540,7 +540,7 @@ locals {
              NEXT_HOP_TYPE  = i.NEXT_HOP_TYPE
              ALLOWED_PREFIX = i.ALLOWED_PREFIX
              ALLOWED_CIDR   = i.ALLOWED_CIDR 
-             SCOPE          = i.SCOPE  
+             SCOPE          = split(";", i.SCOPE)  
              PEER_GROUP     = i.PEER_GROUP
         }
     }
