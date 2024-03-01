@@ -879,10 +879,9 @@ locals {
 
     aci_bgp_timers_rows = {
         for i in local.aci_bgp_timers_iterations : 
-        "${i.TENANT_NAME}:${i.VRF_NAME}:${i.PEER_GROUP}" => {
+        "${i.TENANT_NAME}:${i.VRF_NAME}" => {
              TENANT_NAME         = i.TENANT_NAME  
-             VRF_NAME            = i.VRF_NAME  
-             PEER_GROUP          = i.PEER_GROUP  
+             VRF_NAME            = i.VRF_NAME   
              GRACEFUL_CONTROL    = i.GRACEFUL_CONTROL
              HOLD_INTERVAL       = i.HOLD_INTERVAL  
              KEEPALIVE_INTERVAL  = i.KEEPALIVE_INTERVAL
