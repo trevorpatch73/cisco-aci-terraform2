@@ -399,7 +399,7 @@ resource "aci_vrf" "localAciVrfIteration" {
 
   lifecycle {
     ignore_changes = [
-      #relation_fv_rs_ctx_to_bgp_ctx_af_pol, # set by resoure "aci_vrf_to_bgp_address_family_context"
+      relation_fv_rs_ctx_to_bgp_ctx_af_pol, # set by resoure "aci_vrf_to_bgp_address_family_context"
       relation_fv_rs_ctx_to_ext_route_tag_pol,
       relation_fv_rs_ctx_mon_pol,
       relation_fv_rs_bgp_ctx_pol,
