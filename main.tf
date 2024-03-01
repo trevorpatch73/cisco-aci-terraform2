@@ -469,6 +469,22 @@ resource "aci_bridge_domain" "localAciBridgeDomainIteration" {
   vmac                        = "not-applicable" # ISN via Nexus Dashboard MSO Not Used
 
   relation_fv_rs_ctx          = aci_vrf.localAciVrfIteration["${each.value.TENANT_NAME}:${each.value.VRF_NAME}"].id
+  relation_fv_rs_bd_to_out    = each.value.NEXT_HOP_TYPE != "null" ? aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id : null
+
+  lifecycle {
+    ignore_changes = [
+      relation_fv_rs_bd_to_ep_ret,
+      relation_fv_rs_igmpsn,
+      relation_fv_rs_bd_to_netflow_monitor_pol, 
+      relation_fv_rs_bd_to_relay_p,
+      relation_fv_rs_bd_to_fhs,
+      relation_fv_rs_bd_flood_to, 
+      relation_fv_rs_bd_to_nd_p,
+      relation_fv_rs_abd_pol_mon_pol,
+      relation_fv_rs_mldsn,
+      relation_fv_rs_bd_to_profile
+    ]
+  }
 
 }
 
@@ -1557,7 +1573,7 @@ resource "aci_bgp_timers" "localAciBgpTimersIteration" {
 # resource index key is "${each.value.TENANT_NAME}:${each.value.VRF_NAME}"
 resource "aci_rest" "localAciBgpTimersToVrfAssociationIteration" {
   for_each     = local.aci_bgp_timers_rows
-  
+
   path       = "/api/node/mo/uni/tn-${each.value.TENANT_NAME}/ctx-${each.value.VRF_NAME}/rsbgpCtxPol.json"
   payload = <<EOF
 {

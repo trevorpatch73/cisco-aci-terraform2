@@ -271,6 +271,7 @@ locals {
             ZONE_NAME               = i.ZONE_NAME  
             VRF_NAME                = i.VRF_NAME 
             APPLICATION_NAME        = i.APPLICATION_NAME
+            NEXT_HOP_TYPE           = i.NEXT_HOP_TYPE
             VLAN_ID                 = i.VLAN_ID  
             BD_TYPE                 = i.BD_TYPE 
             UNICAST_ROUTE           = i.UNICAST_ROUTE   
