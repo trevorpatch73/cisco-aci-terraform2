@@ -945,7 +945,7 @@ resource "aci_rest_managed" "localAciLeafInterfaceLinkLevelPolicyIteration" {
   content             = {
     name              = each.value.POLICY_NAME
     descr             = "created via Terraform CI/CD Pipeline"
-    annotation        = "orchestrator:terraform"
+    #annotation        = "orchestrator:terraform" #Annotation is not supported in content per APIC Error
     autoNeg           = each.value.AUTONEG
     dfeDelayMs        = each.value.DFEDELAYMS
     emiRetrain        = each.value.EMIRETRAIN
