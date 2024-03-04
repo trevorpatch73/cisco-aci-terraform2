@@ -958,7 +958,8 @@ resource "aci_rest_managed" "localAciLeafInterfaceLinkLevelPolicyIteration" {
     fecMode           = lower(each.value.FECMODE)
     linkDebounce      = each.value.LINKDEBOUNCE
     portPhyMediaType  = lower(each.value.PORTPHYMEDIATYPE)
-    speed             = lower(each.value.SPEED)
+    speed             = can(regex("[0-9]+", each.value.SPEED)) ? each.value.SPEED : lower(each.value.SPEED)
+
   }
 }
 
