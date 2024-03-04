@@ -935,7 +935,7 @@ resource "aci_filter_entry" "localAciFilterEntryIterationIpAny" {
 #####  SWITCHPORT CONFIGURATION WORKFLOW ######
 ###############################################
 
-
+/*
 # THIS RESOURCE WAS NOT WORKING WITH THE CISCO
 # DEVNET SANDBOX AS EXPECTED; GETTING 200s
 # BUT RESOURCE NOT BEING CREATED; CREATED 
@@ -962,6 +962,7 @@ resource "aci_rest_managed" "localAciLeafInterfaceLinkLevelPolicyIteration" {
 
   }
 }
+*/
 
 /*
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/rest
