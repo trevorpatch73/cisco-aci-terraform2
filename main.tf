@@ -935,6 +935,12 @@ resource "aci_filter_entry" "localAciFilterEntryIterationIpAny" {
 #####  SWITCHPORT CONFIGURATION WORKFLOW ######
 ###############################################
 
+/*
+# THIS RESOURCE WAS NOT WORKING WITH THE CISCO
+# DEVNET SANDBOX AS EXPECTED; GETTING 200s
+# BUT RESOURCE NOT BEING CREATED; CREATED 
+# REGULAR REST CALL
+
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/aci_rest_managed
 # resource index key is "${each.value.POLICY_NAME}"
 resource "aci_rest_managed" "localAciLeafInterfaceLinkLevelPolicyIteration" {
@@ -954,6 +960,35 @@ resource "aci_rest_managed" "localAciLeafInterfaceLinkLevelPolicyIteration" {
     portPhyMediaType  = each.value.PORTPHYMEDIATYPE
     speed             = each.value.SPEED
   }
+}
+*/
+
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/rest
+# resource index key is "${each.value.POLICY_NAME}"
+resource "aci_rest" "localAciLeafInterfaceLinkLevelPolicyIteration" {
+  for_each   = local.aci_leaf_interface_link_level_policy_rows
+
+  path       = "/api/node/mo/uni/infra/hintfpol-${each.value.POLICY_NAME}.json"
+  payload = <<EOF
+{
+  "fabricHIfPol": {
+    "attributes": {
+      "dn" : "uni/infra/hintfpol-${each.value.POLICY_NAME}",
+      "name" : "${each.value.POLICY_NAME}",
+      "autoNeg" : "${each.value.AUTONEG}",
+      "dfeDelayMs" : "${each.value.DFEDELAYMS}",
+      "emiRetrain" : "${each.value.EMIRETRAIN}",
+      "fecMode" : "${each.value.FECMODE}",
+      "linkDebounce" : "${each.value.LINKDEBOUNCE}",
+      "portPhyMediaType" : "${each.value.PORTPHYMEDIATYPE}",
+      "speed" : "${each.value.SPEED}",
+      "rn" : "hintfpol-${each.value.POLICY_NAME}",
+      "status" : "created"
+    },
+    "children": []
+  }
+}
+  EOF
 }
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/lacp_policy
