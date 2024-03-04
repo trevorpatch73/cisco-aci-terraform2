@@ -964,27 +964,27 @@ resource "aci_rest_managed" "localAciLeafInterfaceLinkLevelPolicyIteration" {
 }
 */
 
-/*
+
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/rest
 # resource index key is "${each.value.POLICY_NAME}"
 resource "aci_rest" "localAciLeafInterfaceLinkLevelPolicyIteration" {
   for_each   = local.aci_leaf_interface_link_level_policy_rows
 
-  path       = "/api/node/mo/uni/infra/hintfpol-${each.value.POLICY_NAME}.json"
+  path       = "/api/node/mo/uni/infra/hintfpol-${upper(each.value.POLICY_NAME)}.json"
   payload = <<EOF
 {
   "fabricHIfPol": {
     "attributes": {
-      "dn" : "uni/infra/hintfpol-${each.value.POLICY_NAME}",
-      "name" : "${each.value.POLICY_NAME}",
+      "dn" : "uni/infra/hintfpol-${upper(each.value.POLICY_NAME)}",
+      "name" : "${upper(each.value.POLICY_NAME)}",
       "autoNeg" : "${lower(each.value.AUTONEG)}",
       "dfeDelayMs" : "${each.value.DFEDELAYMS}",
       "emiRetrain" : "${lower(each.value.EMIRETRAIN)}",
       "fecMode" : "${lower(each.value.FECMODE)}",
       "linkDebounce" : "${each.value.LINKDEBOUNCE}",
       "portPhyMediaType" : "${lower(each.value.PORTPHYMEDIATYPE)}",
-      "speed" : "${each.value.SPEED}",
-      "rn" : "hintfpol-${each.value.POLICY_NAME}",
+      "speed" : "${can(regex("[0-9]+", each.value.SPEED)) ? each.value.SPEED : lower(each.value.SPEED)}",
+      "rn" : "hintfpol-${upper(each.value.POLICY_NAME)}",
       "status" : "created"
     },
     "children": []
@@ -992,7 +992,7 @@ resource "aci_rest" "localAciLeafInterfaceLinkLevelPolicyIteration" {
 }
   EOF
 }
-*/
+
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/lacp_policy
 # resource index key is "${each.value.POLICY_NAME}"
