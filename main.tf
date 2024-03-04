@@ -935,6 +935,27 @@ resource "aci_filter_entry" "localAciFilterEntryIterationIpAny" {
 #####  SWITCHPORT CONFIGURATION WORKFLOW ######
 ###############################################
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/aci_rest_managed
+# resource index key is "${each.value.POLICY_NAME}"
+resource "aci_rest_managed" "localAciLeafInterfaceLinkLevelPolicyIteration" {
+  for_each            = local.aci_leaf_interface_link_level_policy_rows
+
+  dn                  = "uni/infra/hintfpol-${each.value.POLICY_NAME}"
+  class_name          = "fabricHIfPol"
+  content             = {
+    name              = each.value.POLICY_NAME
+    descr             = "created via Terraform CI/CD Pipeline"
+    annotation        = "orchestrator:terraform"
+    autoNeg           = each.value.AUTONEG
+    dfeDelayMs        = each.value.DFEDELAYMS
+    emiRetrain        = each.value.EMIRETRAIN
+    fecMode           = each.value.FECMODE
+    linkDebounce      = each.value.LINKDEBOUNCE
+    portPhyMediaType  = each.value.PORTPHYMEDIATYPE
+    speed             = each.value.SPEED
+  }
+}
+
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/lacp_policy
 # resource index key is "${each.value.POLICY_NAME}"
 resource "aci_lacp_policy" "localAciLacpActivePolicyIteration" {

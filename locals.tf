@@ -559,6 +559,22 @@ locals {
     #####  SWITCHPORT CONFIGURATION WORKFLOW ######
     ###############################################
 
+    aci_leaf_interface_link_level_policy_iterations = csvdecode(file("./data/aci_leaf_interface_link_level_policy.csv"))
+
+    aci_leaf_interface_link_level_policy_rows = {
+        for i in local.aci_leaf_interface_link_level_policy_iterations : 
+        i.POLICY_NAME => {
+             POLICY_NAME        = i.POLICY_NAME
+             AUTONEG            = i.AUTONEG   
+             DFEDELAYMS         = i.DFEDELAYMS 
+             EMIRETRAIN         = i.EMIRETRAIN 
+             FECMODE            = i.FECMODE  
+             LINKDEBOUNCE       = i.LINKDEBOUNCE
+             PORTPHYMEDIATYPE   = i.PORTPHYMEDIATYPE
+             SPEED              = i.SPEED 
+        }
+    }  
+
     aci_lacp_policy_iterations = csvdecode(file("./data/aci_lacp_policy.csv"))
 
     aci_lacp_policy_rows = {
