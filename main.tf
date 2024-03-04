@@ -826,7 +826,7 @@ resource "aci_l3_ext_subnet" "localAciL3ExtSubnetIterationImport" {
   description                           = "Allowed"
   ip                                    = "${each.value.ALLOWED_PREFIX}/${each.value.ALLOWED_CIDR}"
   annotation                            = "orchestrator:terraform" 
-  scope                                 = ["${each.value.SCOPE}"]
+  scope                                 = "${each.value.SCOPE}"
 
 }
 
@@ -839,7 +839,7 @@ resource "aci_l3_ext_subnet" "localAciL3ExtSubnetIterationExport" {
   description                           = "Allowed"
   ip                                    = "${each.value.ALLOWED_PREFIX}/${each.value.ALLOWED_CIDR}"
   annotation                            = "orchestrator:terraform" 
-  scope                                 = ["${each.value.SCOPE}"]
+  scope                                 = "${each.value.SCOPE}"
   
   relation_l3ext_rs_subnet_to_rt_summ   = aci_bgp_route_summarization.localAciBgpRouteSummarizationIteration["${each.value.TENANT_NAME}:${each.value.VRF_NAME}:${each.value.PEER_GROUP}"].id
   
