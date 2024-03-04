@@ -935,7 +935,7 @@ resource "aci_filter_entry" "localAciFilterEntryIterationIpAny" {
 #####  SWITCHPORT CONFIGURATION WORKFLOW ######
 ###############################################
 
-/*
+
 # THIS RESOURCE WAS NOT WORKING WITH THE CISCO
 # DEVNET SANDBOX AS EXPECTED; GETTING 200s
 # BUT RESOURCE NOT BEING CREATED; CREATED 
@@ -946,23 +946,23 @@ resource "aci_filter_entry" "localAciFilterEntryIterationIpAny" {
 resource "aci_rest_managed" "localAciLeafInterfaceLinkLevelPolicyIteration" {
   for_each            = local.aci_leaf_interface_link_level_policy_rows
 
-  dn                  = "uni/infra/hintfpol-${each.value.POLICY_NAME}"
+  dn                  = "uni/infra/hintfpol-${upper(each.value.POLICY_NAME)}"
   class_name          = "fabricHIfPol"
   content             = {
-    name              = each.value.POLICY_NAME
+    name              = upper(each.value.POLICY_NAME)
     descr             = "created via Terraform CI/CD Pipeline"
     #annotation        = "orchestrator:terraform" #Annotation is not supported in content per APIC Error
-    autoNeg           = each.value.AUTONEG
+    autoNeg           = lower(each.value.AUTONEG)
     dfeDelayMs        = each.value.DFEDELAYMS
-    emiRetrain        = each.value.EMIRETRAIN
-    fecMode           = each.value.FECMODE
+    emiRetrain        = lower(each.value.EMIRETRAIN)
+    fecMode           = lower(each.value.FECMODE)
     linkDebounce      = each.value.LINKDEBOUNCE
-    portPhyMediaType  = each.value.PORTPHYMEDIATYPE
-    speed             = each.value.SPEED
+    portPhyMediaType  = lower(each.value.PORTPHYMEDIATYPE)
+    speed             = lower(each.value.SPEED)
   }
 }
-*/
 
+/*
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/rest
 # resource index key is "${each.value.POLICY_NAME}"
 resource "aci_rest" "localAciLeafInterfaceLinkLevelPolicyIteration" {
@@ -990,6 +990,7 @@ resource "aci_rest" "localAciLeafInterfaceLinkLevelPolicyIteration" {
 }
   EOF
 }
+*/
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/lacp_policy
 # resource index key is "${each.value.POLICY_NAME}"
