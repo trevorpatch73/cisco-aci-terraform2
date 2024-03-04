@@ -977,7 +977,7 @@ resource "aci_rest" "localAciLeafInterfaceLinkLevelPolicyIteration" {
       "name" : "${each.value.POLICY_NAME}",
       "autoNeg" : "${lower(each.value.AUTONEG)}",
       "dfeDelayMs" : "${each.value.DFEDELAYMS}",
-      "emiRetrain" : "${each.value.EMIRETRAIN}",
+      "emiRetrain" : "${lower(each.value.EMIRETRAIN)}",
       "fecMode" : "${lower(each.value.FECMODE)}",
       "linkDebounce" : "${each.value.LINKDEBOUNCE}",
       "portPhyMediaType" : "${lower(each.value.PORTPHYMEDIATYPE)}",
