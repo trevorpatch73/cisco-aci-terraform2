@@ -545,15 +545,15 @@ locals {
         }
     }
 
-    FilterlocalAciL3ExtSubnetIterationImport ={
+    FilterlocalAciL3ExtSubnetIterationImport = {
         for key, value in local.aci_l3_ext_subnet_rows : key => value
-        if lower(value.SCOPE) == "import-rtctrl"     
-    } 
+        if contains([for scope in value.SCOPE : lower(scope)], "import-rtctrl")
+    }
 
-    FilterlocalAciL3ExtSubnetIterationExport ={
+    FilterlocalAciL3ExtSubnetIterationExport = {
         for key, value in local.aci_l3_ext_subnet_rows : key => value
-        if lower(value.SCOPE) == "export-rtctrl"     
-    }               
+        if contains([for scope in value.SCOPE : lower(scope)], "export-rtctrl")
+    }             
 
     ###############################################
     #####  SWITCHPORT CONFIGURATION WORKFLOW ######
