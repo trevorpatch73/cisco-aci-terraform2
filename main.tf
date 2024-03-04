@@ -975,12 +975,12 @@ resource "aci_rest" "localAciLeafInterfaceLinkLevelPolicyIteration" {
     "attributes": {
       "dn" : "uni/infra/hintfpol-${each.value.POLICY_NAME}",
       "name" : "${each.value.POLICY_NAME}",
-      "autoNeg" : "${each.value.AUTONEG}",
+      "autoNeg" : "${lower(each.value.AUTONEG)}",
       "dfeDelayMs" : "${each.value.DFEDELAYMS}",
       "emiRetrain" : "${each.value.EMIRETRAIN}",
-      "fecMode" : "${each.value.FECMODE}",
+      "fecMode" : "${lower(each.value.FECMODE)}",
       "linkDebounce" : "${each.value.LINKDEBOUNCE}",
-      "portPhyMediaType" : "${each.value.PORTPHYMEDIATYPE}",
+      "portPhyMediaType" : "${lower(each.value.PORTPHYMEDIATYPE)}",
       "speed" : "${each.value.SPEED}",
       "rn" : "hintfpol-${each.value.POLICY_NAME}",
       "status" : "created"
