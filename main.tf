@@ -978,11 +978,6 @@ resource "aci_rest" "localAciLeafInterfaceLinkLevelPolicyIteration" {
         "dn" : "uni/infra/hintfpol-${upper(each.value.POLICY_NAME)}",
         "name" : upper(each.value.POLICY_NAME),
         "autoNeg" : lower(each.value.AUTONEG),
-        "dfeDelayMs" : each.value.DFEDELAYMS,
-        "emiRetrain" : lower(each.value.EMIRETRAIN),
-        "fecMode" : lower(each.value.FECMODE),
-        "linkDebounce" : each.value.LINKDEBOUNCE,
-        "portPhyMediaType" : lower(each.value.PORTPHYMEDIATYPE),
         "speed" : can(regex("[0-9]+", each.value.SPEED)) ? each.value.SPEED : lower(each.value.SPEED),
         "rn" : "hintfpol-${upper(each.value.POLICY_NAME)}",
         "status" : "created"

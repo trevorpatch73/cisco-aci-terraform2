@@ -565,12 +565,7 @@ locals {
         for i in local.aci_leaf_interface_link_level_policy_iterations : 
         i.POLICY_NAME => {
              POLICY_NAME        = i.POLICY_NAME
-             AUTONEG            = i.AUTONEG   
-             DFEDELAYMS         = i.DFEDELAYMS 
-             EMIRETRAIN         = i.EMIRETRAIN 
-             FECMODE            = i.FECMODE  
-             LINKDEBOUNCE       = i.LINKDEBOUNCE
-             PORTPHYMEDIATYPE   = i.PORTPHYMEDIATYPE
+             AUTONEG            = i.AUTONEG
              SPEED              = i.SPEED 
         }
     }  
