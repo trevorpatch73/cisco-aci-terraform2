@@ -935,7 +935,7 @@ resource "aci_filter_entry" "localAciFilterEntryIterationIpAny" {
 #####  SWITCHPORT CONFIGURATION WORKFLOW ######
 ###############################################
 
-/*
+
 # THIS RESOURCE WAS NOT WORKING WITH THE CISCO
 # DEVNET SANDBOX AS EXPECTED; GETTING 200s
 # BUT RESOURCE NOT BEING CREATED; CREATED 
@@ -953,18 +953,13 @@ resource "aci_rest_managed" "localAciLeafInterfaceLinkLevelPolicyIteration" {
     descr             = "created via Terraform CI/CD Pipeline"
     #annotation        = "orchestrator:terraform" #Annotation is not supported in content per APIC Error
     autoNeg           = lower(each.value.AUTONEG)
-    dfeDelayMs        = each.value.DFEDELAYMS
-    emiRetrain        = lower(each.value.EMIRETRAIN)
-    fecMode           = lower(each.value.FECMODE)
-    linkDebounce      = each.value.LINKDEBOUNCE
-    portPhyMediaType  = lower(each.value.PORTPHYMEDIATYPE)
     speed             = can(regex("[0-9]+", each.value.SPEED)) ? each.value.SPEED : lower(each.value.SPEED)
 
   }
 }
-*/
 
 
+/*
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/rest
 # resource index key is "${each.value.POLICY_NAME}"
 resource "aci_rest" "localAciLeafInterfaceLinkLevelPolicyIteration" {
@@ -986,6 +981,7 @@ resource "aci_rest" "localAciLeafInterfaceLinkLevelPolicyIteration" {
     }
   })
 }
+*/
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/lacp_policy
 # resource index key is "${each.value.POLICY_NAME}"
