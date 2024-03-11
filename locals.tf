@@ -683,7 +683,8 @@ locals {
              LLDP_POLICY_NAME           = i.LLDP_POLICY_NAME
              L2_POLICY_NAME             = i.L2_POLICY_NAME
              STP_POLICY_NAME            = i.STP_POLICY_NAME
-             MCP_POLICY_NAME            = i.MCP_POLICY_NAME 
+             MCP_POLICY_NAME            = i.MCP_POLICY_NAME
+             LINK_LEVEL_NAME            = i.LINK_LEVEL_NAME 
         }
     } 
 
@@ -716,6 +717,7 @@ locals {
              L2_POLICY_NAME             = i.L2_POLICY_NAME
              STP_POLICY_NAME            = i.STP_POLICY_NAME
              MCP_POLICY_NAME            = i.MCP_POLICY_NAME
+             LINK_LEVEL_NAME            = i.LINK_LEVEL_NAME
         }
     }
 

@@ -935,12 +935,6 @@ resource "aci_filter_entry" "localAciFilterEntryIterationIpAny" {
 #####  SWITCHPORT CONFIGURATION WORKFLOW ######
 ###############################################
 
-
-# THIS RESOURCE WAS NOT WORKING WITH THE CISCO
-# DEVNET SANDBOX AS EXPECTED; GETTING 200s
-# BUT RESOURCE NOT BEING CREATED; CREATED 
-# REGULAR REST CALL
-
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/aci_rest_managed
 # resource index key is "${each.value.POLICY_NAME}"
 resource "aci_rest_managed" "localAciLeafInterfaceLinkLevelPolicyIteration" {
@@ -957,31 +951,6 @@ resource "aci_rest_managed" "localAciLeafInterfaceLinkLevelPolicyIteration" {
 
   }
 }
-
-
-/*
-# https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/rest
-# resource index key is "${each.value.POLICY_NAME}"
-resource "aci_rest" "localAciLeafInterfaceLinkLevelPolicyIteration" {
-  for_each = local.aci_leaf_interface_link_level_policy_rows
-
-  path = "/api/node/mo/uni/infra/hintfpol-${upper(each.value.POLICY_NAME)}.json"
-  
-  payload = jsonencode({
-    "fabricHIfPol": {
-      "attributes": {
-        "dn" : "uni/infra/hintfpol-${upper(each.value.POLICY_NAME)}",
-        "name" : upper(each.value.POLICY_NAME),
-        "autoNeg" : lower(each.value.AUTONEG),
-        "speed" : can(regex("[0-9]+", each.value.SPEED)) ? each.value.SPEED : lower(each.value.SPEED),
-        "rn" : "hintfpol-${upper(each.value.POLICY_NAME)}",
-        "status" : "created"
-      },
-      "children": []
-    }
-  })
-}
-*/
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/lacp_policy
 # resource index key is "${each.value.POLICY_NAME}"
@@ -1085,6 +1054,9 @@ resource "aci_leaf_access_port_policy_group" "localAciLeafAccessPortPolicyGroupP
   # LLDP Interface Policy:
   relation_infra_rs_lldp_if_pol = aci_lldp_interface_policy.localAciLldpInterfacePolicyIteration["${each.value.LLDP_POLICY_NAME}"].id 
 
+  # Link Level Interface Policy:
+  relation_infra_rs_h_if_pol    = aci_rest_managed.localAciLeafInterfaceLinkLevelPolicyIteration["${each.value.LINK_LEVEL_POLICY_NAME}"].id 
+
   lifecycle {
     ignore_changes = [
       relation_infra_rs_qos_egress_dpp_if_pol,
@@ -1100,7 +1072,6 @@ resource "aci_leaf_access_port_policy_group" "localAciLeafAccessPortPolicyGroupP
       relation_infra_rs_l2_port_security_pol,
       relation_infra_rs_l2_port_auth_pol,
       relation_infra_rs_netflow_monitor_pol,
-      relation_infra_rs_h_if_pol,
       relation_infra_rs_qos_dpp_if_pol,
       relation_infra_rs_macsec_if_pol,
       relation_infra_rs_poe_if_pol,
@@ -1138,6 +1109,9 @@ resource "aci_leaf_access_port_policy_group" "localAciLeafAccessPortPolicyGroupE
   # LLDP Interface Policy:
   relation_infra_rs_lldp_if_pol = aci_lldp_interface_policy.localAciLldpInterfacePolicyIteration["${each.value.LLDP_POLICY_NAME}"].id 
 
+  # Link Level Interface Policy:
+  relation_infra_rs_h_if_pol    = aci_rest_managed.localAciLeafInterfaceLinkLevelPolicyIteration["${each.value.LINK_LEVEL_POLICY_NAME}"].id 
+
   lifecycle {
     ignore_changes = [
       relation_infra_rs_qos_egress_dpp_if_pol,
@@ -1153,7 +1127,6 @@ resource "aci_leaf_access_port_policy_group" "localAciLeafAccessPortPolicyGroupE
       relation_infra_rs_l2_port_security_pol,
       relation_infra_rs_l2_port_auth_pol,
       relation_infra_rs_netflow_monitor_pol,
-      relation_infra_rs_h_if_pol,
       relation_infra_rs_qos_dpp_if_pol,
       relation_infra_rs_macsec_if_pol,
       relation_infra_rs_poe_if_pol,
@@ -1195,13 +1168,15 @@ resource "aci_leaf_access_bundle_policy_group" "localAciLeafAccessBundlePolicyGr
   # LLDP Interface Policy:
   relation_infra_rs_lldp_if_pol   = aci_lldp_interface_policy.localAciLldpInterfacePolicyIteration["${each.value.LLDP_POLICY_NAME}"].id 
 
+  # Link Level Interface Policy:
+  relation_infra_rs_h_if_pol    = aci_rest_managed.localAciLeafInterfaceLinkLevelPolicyIteration["${each.value.LINK_LEVEL_POLICY_NAME}"].id 
+
   lifecycle {
     ignore_changes = [
       relation_infra_rs_span_v_src_grp,
       relation_infra_rs_stormctrl_if_pol,
       relation_infra_rs_macsec_if_pol,
       relation_infra_rs_qos_dpp_if_pol,
-      relation_infra_rs_h_if_pol,
       relation_infra_rs_netflow_monitor_pol,
       relation_infra_rs_l2_port_auth_pol,
       relation_infra_rs_l2_port_security_pol,
@@ -1250,13 +1225,15 @@ resource "aci_leaf_access_bundle_policy_group" "localAciLeafAccessBundlePolicyGr
   # LLDP Interface Policy:
   relation_infra_rs_lldp_if_pol   = aci_lldp_interface_policy.localAciLldpInterfacePolicyIteration["${each.value.LLDP_POLICY_NAME}"].id 
 
+  # Link Level Interface Policy:
+  relation_infra_rs_h_if_pol    = aci_rest_managed.localAciLeafInterfaceLinkLevelPolicyIteration["${each.value.LINK_LEVEL_POLICY_NAME}"].id 
+
   lifecycle {
     ignore_changes = [
       relation_infra_rs_span_v_src_grp,
       relation_infra_rs_stormctrl_if_pol,
       relation_infra_rs_macsec_if_pol,
       relation_infra_rs_qos_dpp_if_pol,
-      relation_infra_rs_h_if_pol,
       relation_infra_rs_netflow_monitor_pol,
       relation_infra_rs_l2_port_auth_pol,
       relation_infra_rs_l2_port_security_pol,
