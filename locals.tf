@@ -548,8 +548,7 @@ locals {
         for i in local.aci_external_network_instance_profile_iterations : 
         "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}" => {
              TENANT_NAME        = i.TENANT_NAME
-             ZONE_NAME          = i.ZONE_NAME
-             APPLICATION_NAME   = split(";", i.APPLICATION_LIST)  
+             ZONE_NAME          = i.ZONE_NAME 
              VRF_NAME           = i.VRF_NAME
              NEXT_HOP_TYPE      = i.NEXT_HOP_TYPE
              FLOOD_ON_ENCAP     = i.FLOOD_ON_ENCAP
@@ -557,6 +556,19 @@ locals {
              PREF_GR_MEMB       = i.PREF_GR_MEMB
              PRIO               = i.PRIO 
              TARGET_DSCP        = i.TARGET_DSCP   
+        }
+    }     
+
+    aci_external_epg_to_contract_iterations = csvdecode(file("./data/aci_external_epg_to_contract.csv"))
+
+    aci_external_epg_to_contract_profile_rows = {
+        for i in local.aci_external_epg_to_contract_iterations : 
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}:${i.APPLICATION_NAME}" => {
+             TENANT_NAME        = i.TENANT_NAME
+             ZONE_NAME          = i.ZONE_NAME 
+             VRF_NAME           = i.VRF_NAME
+             NEXT_HOP_TYPE      = i.NEXT_HOP_TYPE
+             APPLICATION_NAME   = i.APPLICATION_NAME  
         }
     }     
 

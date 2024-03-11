@@ -855,20 +855,28 @@ resource "aci_external_network_instance_profile" "localAciExternalNetworkInstanc
   prio            = each.value.PRIO 
   target_dscp     = each.value.TARGET_DSCP
 
-  dynamic "relation_fv_rs_prov" {
-    for_each = each.value.APPLICATION_NAME
-    content {
-      relation_fv_rs_prov = aci_contract.localAciEpgToContractIterationOutbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${relation_fv_rs_prov.value}"].id
-    }
+  lifecycle {
+    ignore_changes = [
+      relation_fv_rs_sec_inherited,
+      relation_fv_rs_prov,
+      relation_fv_rs_cons_if,
+      relation_l3ext_rs_inst_p_to_profile,
+      relation_fv_rs_cons,
+      relation_fv_rs_prot_by
+    ]
   }
 
-  dynamic "relation_fv_rs_cons" {
-    for_each = each.value.APPLICATION_NAME
-    content {
-      relation_fv_rs_cons = aci_contract.localAciEpgToContractIterationInbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${relation_fv_rs_cons.value}"].id
-    }
-  }
 } 
+
+resource "aci_rest_managed" "localAciExternalEpgToContractIterationInbound" {
+  for_each            = local.aci_external_epg_to_contract_profile_rows
+
+  dn                  = "uni/tn-${each.value.TENANT_NAME}/out-${aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].name}/instP-${aci_external_network_instance_profile.localAciExternalNetworkInstanceProfileIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].name}/rsprov-${aci_contract.localAciContractIterationEpgOutbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].name}"
+  class_name          = "fvRsProv"
+  content             = {
+    tnVzBrCPName      = aci_contract.localAciContractIterationEpgOutbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].name
+  }
+}
 
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/l3_ext_subnet
 # resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}:${each.value.ALLOWED_PREFIX}"
