@@ -531,7 +531,7 @@ resource "aci_application_epg" "localAciApplicationEndpointGroupIteration" {
 resource "aci_epg_to_contract" "localAciEpgToContractIterationInbound" {
   for_each           = local.aci_contract_rows
 
-  application_epg_dn = aci_application_epg.localAciApplicationEndpointGroupIteratio["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
+  application_epg_dn = aci_application_epg.localAciApplicationEndpointGroupIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
   contract_dn        = aci_contract.localAciContractIterationEpgInbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
   contract_type      = "provider"
   annotation         = "orchestrator:terraform"
@@ -590,7 +590,7 @@ resource "aci_contract_subject_filter" "localAciContractSubjectFilterIterationEp
 resource "aci_epg_to_contract" "localAciEpgToContractIterationOutbound" {
   for_each           = local.aci_contract_rows
 
-  application_epg_dn = aci_application_epg.localAciApplicationEndpointGroupIteratio["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
+  application_epg_dn = aci_application_epg.localAciApplicationEndpointGroupIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
   contract_dn        = aci_contract.localAciContractIterationEpgOutbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
   contract_type      = "consumer"
   annotation         = "orchestrator:terraform"
