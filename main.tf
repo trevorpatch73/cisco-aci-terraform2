@@ -529,7 +529,7 @@ resource "aci_application_epg" "localAciApplicationEndpointGroupIteration" {
 # https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/epg_to_contract
 # resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"
 resource "aci_epg_to_contract" "localAciEpgToContractIterationInbound" {
-  for_each           = local.aci_contract_rows
+  for_each           = local.aci_epg_to_contract_rows
 
   application_epg_dn = aci_application_epg.localAciApplicationEndpointGroupIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
   contract_dn        = aci_contract.localAciContractIterationEpgInbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
@@ -588,7 +588,7 @@ resource "aci_contract_subject_filter" "localAciContractSubjectFilterIterationEp
 # https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/epg_to_contract
 # resource index key is "${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"
 resource "aci_epg_to_contract" "localAciEpgToContractIterationOutbound" {
-  for_each           = local.aci_contract_rows
+  for_each           = local.aci_epg_to_contract_rows
 
   application_epg_dn = aci_application_epg.localAciApplicationEndpointGroupIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
   contract_dn        = aci_contract.localAciContractIterationEpgOutbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id
