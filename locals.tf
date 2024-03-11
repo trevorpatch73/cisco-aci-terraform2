@@ -331,6 +331,19 @@ locals {
         }
     }
 
+    aci_epg_to_contract_iterations = csvdecode(file("./data/aci_epg_to_contract.csv"))
+
+    aci_epg_to_contract_rows = {
+        for i in local.aci_epg_to_contract_iterations: 
+        "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.APPLICATION_NAME}" => {
+            TENANT_NAME             = i.TENANT_NAME  
+            ZONE_NAME               = i.ZONE_NAME  
+            APPLICATION_NAME        = i.APPLICATION_NAME
+            MATCH_T                 = i.MATCH_T
+            PRIO                    = i.PRIO
+        }
+    }
+
     aci_contract_iterations = csvdecode(file("./data/aci_contract.csv"))
 
     aci_contract_rows = {
@@ -344,7 +357,7 @@ locals {
             SCOPE                   = i.SCOPE 
             TARGET_DSCP             = i.TARGET_DSCP 
         }
-    }
+    }    
 
     aci_contract_subject_iterations = csvdecode(file("./data/aci_contract_subject.csv"))
 
