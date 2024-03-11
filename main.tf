@@ -662,9 +662,9 @@ resource "aci_epg_to_contract" "localAciSrcEpgConsumeDstEpgContractIteration" {
   for_each           = local.aci_src-epg_consume_dst-epg-contract_rows
 
   # CONSUMER (SRC) EPG:
-  application_epg_dn = aci_application_epg.localAciApplicationEndpointGroupIteration["${each.value.SRC_TENANT_NAME}:${each.value.SRC_ZONE_NAME}"].id
+  application_epg_dn = aci_application_epg.localAciApplicationEndpointGroupIteration["${each.value.SRC_TENANT_NAME}:${each.value.SRC_ZONE_NAME}:${each.value.SRC_APPLICATION_NAME}"].id
   # PROVIDER (DST) EPG:
-  contract_dn        = aci_contract.localAciContractIterationEpgOutbound["${each.value.DST_TENANT_NAME}:${each.value.DST_ZONE_NAME}:${each.value.DST_APPLICATION_NAME}"].id
+  contract_dn        = aci_contract.localAciContractIterationEpgInbound["${each.value.DST_TENANT_NAME}:${each.value.DST_ZONE_NAME}:${each.value.DST_APPLICATION_NAME}"].id
   contract_type      = "consumer"
   annotation         = "orchestrator:terraform"
   prio               = each.value.PRIO
