@@ -885,7 +885,7 @@ resource "aci_rest_managed" "localAciExternalEpgToContractIterationInbound" {
 resource "aci_rest_managed" "localAciExternalEpgToContractIterationOutbound" {
   for_each            = local.aci_external_epg_to_contract_profile_rows
 
-  dn                  = "uni/tn-${each.value.TENANT_NAME}/out-${aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].name}/instP-${aci_external_network_instance_profile.localAciExternalNetworkInstanceProfileIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].name}/rsprov-${aci_contract.localAciContractIterationEpgInbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].name}"
+  dn                  = "uni/tn-${each.value.TENANT_NAME}/out-${aci_l3_outside.localAciL3OutsideIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].name}/instP-${aci_external_network_instance_profile.localAciExternalNetworkInstanceProfileIteration["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].name}/rscons-${aci_contract.localAciContractIterationEpgInbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].name}"
   class_name          = "fvRsCons"
   content             = {
     tnVzBrCPName      = aci_contract.localAciContractIterationEpgInbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].name
