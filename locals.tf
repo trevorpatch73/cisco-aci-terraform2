@@ -343,12 +343,6 @@ locals {
             PRIO                    = i.PRIO
         }
     }
-
-    aci_contract_ids_for_external_network = {
-        for key, value in local.aci_contract_rows : key => value.id
-        if split(":", key)[0] == each.value.TENANT_NAME && split(":", key)[1] == each.value.ZONE_NAME
-    }    
-
     aci_src-epg_consume_dst-epg-contract_iterations = csvdecode(file("./data/aci_src-epg_consume_dst-epg-contract.csv"))
 
     aci_src-epg_consume_dst-epg-contract_rows = {
@@ -553,15 +547,16 @@ locals {
     aci_external_network_instance_profile_rows = {
         for i in local.aci_external_network_instance_profile_iterations : 
         "${i.TENANT_NAME}:${i.ZONE_NAME}:${i.VRF_NAME}:${i.NEXT_HOP_TYPE}" => {
-             TENANT_NAME    = i.TENANT_NAME
-             ZONE_NAME      = i.ZONE_NAME
-             VRF_NAME       = i.VRF_NAME
-             NEXT_HOP_TYPE  = i.NEXT_HOP_TYPE
-             FLOOD_ON_ENCAP = i.FLOOD_ON_ENCAP
-             MATCH_T        = i.MATCH_T
-             PREF_GR_MEMB   = i.PREF_GR_MEMB
-             PRIO           = i.PRIO 
-             TARGET_DSCP    = i.TARGET_DSCP   
+             TENANT_NAME        = i.TENANT_NAME
+             ZONE_NAME          = i.ZONE_NAME
+             APPLICATION_NAME   = split(";", i.APPLICATION_LIST)  
+             VRF_NAME           = i.VRF_NAME
+             NEXT_HOP_TYPE      = i.NEXT_HOP_TYPE
+             FLOOD_ON_ENCAP     = i.FLOOD_ON_ENCAP
+             MATCH_T            = i.MATCH_T
+             PREF_GR_MEMB       = i.PREF_GR_MEMB
+             PRIO               = i.PRIO 
+             TARGET_DSCP        = i.TARGET_DSCP   
         }
     }     
 
