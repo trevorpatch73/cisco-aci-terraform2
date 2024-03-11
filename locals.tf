@@ -344,6 +344,11 @@ locals {
         }
     }
 
+    aci_contract_ids_for_external_network = {
+        for key, value in local.aci_contract_rows : key => value.id
+        if split(":", key)[0] == each.value.TENANT_NAME && split(":", key)[1] == each.value.ZONE_NAME
+    }    
+
     aci_src-epg_consume_dst-epg-contract_iterations = csvdecode(file("./data/aci_src-epg_consume_dst-epg-contract.csv"))
 
     aci_src-epg_consume_dst-epg-contract_rows = {

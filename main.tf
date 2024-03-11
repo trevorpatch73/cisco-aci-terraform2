@@ -855,8 +855,16 @@ resource "aci_external_network_instance_profile" "localAciExternalNetworkInstanc
   prio            = each.value.PRIO 
   target_dscp     = each.value.TARGET_DSCP
   
-  relation_fv_rs_prov  = [aci_contract.localAciContractIterationL3Out["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id]
-  relation_fv_rs_cons  = [aci_contract.localAciContractIterationL3Out["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id]
+  #relation_fv_rs_prov  = [aci_contract.localAciContractIterationL3Out["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id]
+  #relation_fv_rs_cons  = [aci_contract.localAciContractIterationL3Out["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.VRF_NAME}:${each.value.NEXT_HOP_TYPE}"].id]
+
+  dynamic "relation_fv_rs" {
+    for_each = [for id in local.aci_contract_ids_for_external_network : id if id.TENANT_NAME == each.value.TENANT_NAME && id.ZONE_NAME == each.value.ZONE_NAME]
+    content {
+      relation_fv_rs_prov   = [aci_contract.localAciEpgToContractIterationOutbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id]
+      relation_fv_rs_cons   = [aci_contract.localAciEpgToContractIterationInbound["${each.value.TENANT_NAME}:${each.value.ZONE_NAME}:${each.value.APPLICATION_NAME}"].id]
+    }
+  }
 
 }  
 
