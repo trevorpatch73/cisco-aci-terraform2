@@ -656,6 +656,21 @@ resource "aci_filter" "localAciFiltersIteration" {
 
 }
 
+# https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/epg_to_contract
+# resource index key is "${each.value.SRC_TENANT_NAME}:${each.value.SRC_ZONE_NAME}:${each.value.SRC_APPLICATION_NAME}:${each.value.DST_TENANT_NAME}:${each.value.DST_ZONE_NAME}:${each.value.DST_APPLICATION_NAME}"
+resource "aci_epg_to_contract" "localAciSrcEpgConsumeDstEpgContractIteration" {
+  for_each           = local.aci_src-epg_consume_dst-epg-contract_rows
+
+  # CONSUMER (SRC) EPG:
+  application_epg_dn = aci_application_epg.localAciApplicationEndpointGroupIteration["${each.value.SRC_TENANT_NAME}:${each.value.SRC_ZONE_NAME}"].id
+  # PROVIDER (DST) EPG:
+  contract_dn        = aci_contract.localAciContractIterationEpgOutbound["${each.value.DST_TENANT_NAME}:${each.value.DST_ZONE_NAME}:${each.value.DST_APPLICATION_NAME}"].id
+  contract_type      = "consumer"
+  annotation         = "orchestrator:terraform"
+  prio               = each.value.PRIO
+
+}
+
 # https://registry.terraform.io/providers/CiscoDevNet/aci/2.13.2/docs/resources/vlan_pool
 # resource index key is "${each.value.TENANT_NAME}:${each.value.POOL_DOMAIN}"
 resource "aci_vlan_pool" "localAciPhysicalDomainVlanPoolIteration" {

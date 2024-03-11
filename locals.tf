@@ -344,6 +344,24 @@ locals {
         }
     }
 
+    aci_src-epg_consume_dst-epg-contract_iterations = csvdecode(file("./data/aci_src-epg_consume_dst-epg-contract.csv"))
+
+    aci_src-epg_consume_dst-epg-contract_rows = {
+        for i in local.aci_src-epg_consume_dst-epg-contract_iterations: 
+        "${i.SRC_TENANT_NAME}:${i.SRC_ZONE_NAME}:${i.SRC_APPLICATION_NAME}:${i.DST_TENANT_NAME}:${i.DST_ZONE_NAME}:${i.DST_APPLICATION_NAME}" => {
+            #PROVIDER EPG
+            SRC_TENANT_NAME         = i.SRC_TENANT_NAME  
+            SRC_ZONE_NAME           = i.SRC_ZONE_NAME  
+            SRC_APPLICATION_NAME    = i.SRC_APPLICATION_NAME
+            #CONSUMER EPG
+            DST_TENANT_NAME         = i.DST_TENANT_NAME  
+            DST_ZONE_NAME           = i.DST_ZONE_NAME  
+            DST_APPLICATION_NAME    = i.DST_APPLICATION_NAME
+            #SETTINGS
+            PRIO                    = i.PRIO
+        }
+    }    
+
     aci_contract_iterations = csvdecode(file("./data/aci_contract.csv"))
 
     aci_contract_rows = {

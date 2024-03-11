@@ -1,0 +1,9 @@
+SRC_TENANT_NAME,SRC_ZONE_NAME,SRC_APPLICATION_NAME,DST_TENANT_NAME,DST_ZONE_NAME,DST_APPLICATION_NAME,PRIO
+BU1,MIDTIER,SparkleQuest,BU1,FRONTEND,SparkleQuest,unspecified
+BU1,BACKEND,SparkleQuest,BU1,MIDTIER,SparkleQuest,unspecified
+BU1,MIDTIER,RainbowSky,BU1,FRONTEND,RainbowSky,unspecified
+BU1,BACKEND,RainbowSky,BU1,MIDTIER,RainbowSky,unspecified
+BU2,MIDTIER,SpiritJourney,BU2,FRONTEND,SpiritJourney,unspecified
+BU2,BACKEND,SpiritJourney,BU2,MIDTIER,SpiritJourney,unspecified
+BU2,MIDTIER,TrailTrekker,BU2,FRONTEND,TrailTrekker,unspecified
+BU2,BACKEND,TrailTrekker,BU2,MIDTIER,TrailTrekker,unspecified
