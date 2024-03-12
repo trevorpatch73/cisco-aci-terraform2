@@ -82,3 +82,8 @@ jobs:
           output-file: README.md
           output-method: inject
           git-push: "true"
+          git-push-user-name: "trevorpatch73"
+          git-push-user-email: "trevorpatch73@gmail.com"
+          git-commit-message: "Update README with Terraform Docs"
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
