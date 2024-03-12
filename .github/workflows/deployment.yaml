@@ -66,3 +66,19 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push' && env.TERRAFORM_STATUS == 'destroy'
         run: | 
           terraform destroy --auto-approve                     
+
+  docs:
+    name: Generate Terraform Docs
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Render terraform docs and push changes back to PR or Main
+        uses: terraform-docs/gh-actions@main
+        with:
+          working-dir: .
+          output-file: README.md
+          output-method: inject
+          git-push: "true"
