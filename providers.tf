@@ -6,16 +6,16 @@ terraform {
     # The ACI provider is used to interact with Cisco's Application Centric Infrastructure
     aci = {
       source  = "ciscodevnet/aci"
-      version = "2.13.2"
+      #version = "2.13.2"
     }
     random = {
       source = "hashicorp/random"
-      version = "3.6.0"
+      #version = "3.6.0"
     } 
   }
   
   # Define the required Terraform version for this configuration
-  required_version = "~> 1.7.2"
+  #required_version = "~> 1.7.2"
   
   # Configure the backend for storing Terraform state in an S3 bucket
   backend "s3" {
